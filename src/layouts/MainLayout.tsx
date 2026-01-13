@@ -12,7 +12,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, onNavClick }) => {
   const location = useLocation();
 
   // Routes where navbar should NOT be displayed
-  const noNavbarRoutes = [ROUTES.LOGIN, ROUTES.SIGNUP];
+  const noNavbarRoutes = [ROUTES.SIGNUP];
   const shouldShowNavbar = !noNavbarRoutes.includes(location.pathname as typeof noNavbarRoutes[number]);
 
   return (

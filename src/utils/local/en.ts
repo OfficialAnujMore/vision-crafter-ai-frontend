@@ -3,52 +3,6 @@
  * All UI text and messages are centralized here
  */
 
-export const REGISTER_PAGE = {
-  // Left side
-  logo: "Vision Crafter AI",
-  backToWebsite: "Back to website →",
-  slogan1: "Transform Your Imagination Into Reality",
-  slogan2: "The future of editing with AI",
-  
-  // Right side - Header
-  title: "Create an account",
-  subtitle: "Already have an account?",
-  loginLink: "Log in",
-  
-  // Form fields
-  firstNameLabel: "First name",
-  firstNamePlaceholder: "First name",
-  lastNameLabel: "Last name",
-  lastNamePlaceholder: "Last name",
-  username: "Username",
-  emailLabel: "Email",
-  usernamePlaceholder: "Username",
-  emailPlaceholder: "Email",
-  passwordLabel: "Password",
-  passwordPlaceholder: "Enter your password",
-  
-  // Terms & Actions
-  termsPrefix: "I agree to the",
-  termsLink: "Terms & Conditions",
-  createAccountButton: "Create account",
-  
-  // Alerts
-  termsRequiredAlert: "Please agree to the Terms & Conditions",
-};
-
-export const LOGIN_PAGE = {
-  title: "Welcome back",
-  subtitle: "Don't have an account?",
-  signupLink: "Sign up",
-  emailLabel: "Email",
-  emailPlaceholder: "Enter your email",
-  passwordLabel: "Password",
-  passwordPlaceholder: "Enter your password",
-  forgotPassword: "Forgot password?",
-  loginButton: "Log in",
-  rememberMe: "Remember me",
-};
-
 export const COMMON = {
   loading: "Loading...",
   error: "An error occurred",

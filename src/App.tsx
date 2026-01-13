@@ -2,8 +2,7 @@ import { Route, BrowserRouter, Routes, Navigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import './App.css'
 import LandingPage from './pages/LandingPage';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import MainLayout from './layouts/MainLayout';
 import { injectCSSVariables } from './utils/injectColors';
@@ -14,7 +13,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const accessToken = localStorage.getItem('access_token');
   
   if (!accessToken) {
-    return <Navigate to={ROUTES.LOGIN} replace />;
+    return <Navigate to={ROUTES.SIGNUP} replace />;
   }
   
   return <>{children}</>;
@@ -30,8 +29,7 @@ function App() {
       <MainLayout>
         <Routes>
           <Route path={ROUTES.HOME} element={<LandingPage />} />
-          <Route path={ROUTES.LOGIN} element={<Login />} />
-          <Route path={ROUTES.SIGNUP} element={<Register />} />
+          <Route path={ROUTES.SIGNUP} element={<SignUp />} />
           <Route
             path={ROUTES.DASHBOARD}
             element={

@@ -1,0 +1,102 @@
+.signup-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.signup-left {
+  flex: 1;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.signup-left::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,197.3C1248,203,1344,149,1392,122.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+  background-size: cover;
+  opacity: 0.5;
+}
+
+.signup-left-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 1;
+}
+
+.signup-slogan {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 1;
+}
+
+.signup-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  background-color: var(--background-color);
+}
+
+.signup-form {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.signup-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.signup-google-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.signup-google-container button {
+  min-width: 280px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 968px) {
+  .signup-container {
+    flex-direction: column;
+  }
+
+  .signup-left {
+    min-height: 40vh;
+    padding: 2rem;
+  }
+
+  .signup-right {
+    padding: 2rem;
+  }
+
+  .signup-left-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .signup-slogan {
+    display: none;
+  }
+}

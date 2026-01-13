@@ -38,7 +38,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
     if (isAuthenticated) {
       navigate(ROUTES.DASHBOARD);
     } else {
-      navigate(ROUTES.LOGIN);
+      navigate(ROUTES.SIGNUP);
     }
     setIsMenuOpen(false);
   };
