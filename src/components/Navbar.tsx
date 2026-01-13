@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from './CustomButton';
 import CustomText from './CustomText';
@@ -7,17 +7,43 @@ import { ROUTES } from '../constants/routes';
 import '../styles/Navbar/Navbar.css';
 
 interface NavbarProps {
-  onNavClick: (section: 'home' | 'features' | 'pricing') => void;
+  onNavClick?: (section: 'home' | 'features' | 'pricing') => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('access_token'));
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Listen for storage changes (e.g., when logging in from another tab)
+    const handleStorageChange = () => {
+      const token = localStorage.getItem('access_token');
+      setIsAuthenticated(!!token);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const handleNavClick = (section: 'home' | 'features' | 'pricing') => {
-    onNavClick(section);
+    if (onNavClick) {
+      onNavClick(section);
+    }
     setIsMenuOpen(false);
   };
+
+  const handleAuthAction = () => {
+    if (isAuthenticated) {
+      navigate(ROUTES.DASHBOARD);
+    } else {
+      navigate(ROUTES.LOGIN);
+    }
+    setIsMenuOpen(false);
+  };
+
+  const authButtonText = isAuthenticated ? 'Dashboard' : LANDING_PAGE.navLogin;
 
   return (
     <nav className="navbar">
@@ -30,6 +56,8 @@ const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
             to: '#A795FF',
             angle: 135
           }}
+          onClick={() => navigate(ROUTES.HOME)}
+          style={{ cursor: 'pointer' }}
         />
         
         <div className={`navbar-links ${isMenuOpen ? 'active' : ''}`}>
@@ -51,11 +79,11 @@ const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
             color="secondary"
             onClick={() => handleNavClick('pricing')}
           />
-          <div className="mobile-login">
+          <div className="mobile-auth">
             <CustomButton
               variant="primary"
-              text={LANDING_PAGE.navLogin}
-              onClick={() => navigate(ROUTES.LOGIN)}
+              text={authButtonText}
+              onClick={handleAuthAction}
             />
           </div>
         </div>
@@ -70,11 +98,11 @@ const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
           <span></span>
         </button>
 
-        <div className="desktop-login">
+        <div className="desktop-auth">
           <CustomButton
             variant="primary"
-            text={LANDING_PAGE.navLogin}
-            onClick={() => navigate(ROUTES.LOGIN)}
+            text={authButtonText}
+            onClick={handleAuthAction}
           />
         </div>
       </div>

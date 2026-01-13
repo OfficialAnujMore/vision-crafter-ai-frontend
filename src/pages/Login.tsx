@@ -6,16 +6,31 @@ import CustomText from '../components/CustomText';
 import { LOGIN_PAGE } from '../utils/local/en';
 import { ROUTES } from '../constants/routes';
 import '../styles/Login/Login.css';
+import { authService } from '../services/api/authService';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
+    const [error, setError] = useState('');
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
+        setError('');
         console.log('Login:', { email, password, rememberMe });
-        // Add your login logic here
+
+        try {
+            await authService.login({
+                email, password
+            })
+            navigate(ROUTES.DASHBOARD)
+        }
+        catch (err: any) {
+            console.log(err);
+
+            const errorMessage = err.message || 'Login Failed';
+            setError(errorMessage);
+        }
     };
 
     return (
@@ -55,6 +70,12 @@ const Login: React.FC = () => {
                             />
                         </div>
                     </div>
+
+                    {error && (
+                        <div className="error-message" style={{ color: '#ff4444', marginBottom: '16px', padding: '8px', backgroundColor: 'rgba(255, 68, 68, 0.1)', borderRadius: '4px', fontSize: '14px' }}>
+                            {error}
+                        </div>
+                    )}
 
                     <div className="form-fields">
                         <CustomInput
@@ -101,3 +122,4 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+

@@ -6,23 +6,40 @@ import CustomText from '../components/CustomText';
 import { REGISTER_PAGE } from '../utils/local/en';
 import { ROUTES } from '../constants/routes';
 import '../styles/Register/Register.css';
+import { authService } from '../services/api/authService';
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
+    setError('');
+    
     if (!agreedToTerms) {
-      alert(REGISTER_PAGE.termsRequiredAlert);
+      setError(REGISTER_PAGE.termsRequiredAlert);
       return;
     }
-    
-    console.log('Register:', { firstName, lastName, email, password });
-    // Add your registration logic here
+
+    console.log('Register:', { firstName, lastName, username, email, password });
+
+    try {
+      await authService.register({
+        first_name: firstName, last_name: lastName, username, email, password
+      })
+      navigate(ROUTES.DASHBOARD)
+    }
+    catch (err: any) {
+      console.log(err);
+
+      const errorMessage = err.message || 'Registration Failed';
+      setError(errorMessage);
+    }
   };
 
   return (
@@ -49,10 +66,10 @@ const Register: React.FC = () => {
           <div className="register-header">
             <CustomText variant="h2" value={REGISTER_PAGE.title} color="white" />
             <div className="register-subtext">
-              <CustomText 
-                variant="p" 
+              <CustomText
+                variant="p"
                 value={`${REGISTER_PAGE.subtitle}`}
-                color="secondary" 
+                color="secondary"
               />
               <CustomText
                 variant="p"
@@ -62,6 +79,12 @@ const Register: React.FC = () => {
               />
             </div>
           </div>
+
+          {error && (
+            <div className="error-message" style={{ color: '#ff4444', marginBottom: '16px', padding: '8px', backgroundColor: 'rgba(255, 68, 68, 0.1)', borderRadius: '4px', fontSize: '14px' }}>
+              {error}
+            </div>
+          )}
 
           <div className="form-fields">
             <div className="name-row">
@@ -79,12 +102,21 @@ const Register: React.FC = () => {
               />
             </div>
 
-            <CustomInput
-              label={REGISTER_PAGE.emailLabel}
-              placeholder={REGISTER_PAGE.emailPlaceholder}
-              value={email}
-              onChange={setEmail}
-            />
+            <div className="name-row">
+
+              <CustomInput
+                label={REGISTER_PAGE.username}
+                placeholder={REGISTER_PAGE.usernamePlaceholder}
+                value={username}
+                onChange={setUsername}
+              />
+              <CustomInput
+                label={REGISTER_PAGE.emailLabel}
+                placeholder={REGISTER_PAGE.emailPlaceholder}
+                value={email}
+                onChange={setEmail}
+              />
+            </div>
 
             <CustomInput
               label={REGISTER_PAGE.passwordLabel}
@@ -102,15 +134,15 @@ const Register: React.FC = () => {
                 onChange={(e) => setAgreedToTerms(e.target.checked)}
               />
               <label htmlFor="terms">
-                <CustomText 
-                  variant="caption" 
+                <CustomText
+                  variant="caption"
                   value={
                     <>
                       {REGISTER_PAGE.termsPrefix}{' '}
                       <a href="/terms" className="terms-link">{REGISTER_PAGE.termsLink}</a>
                     </>
-                  } 
-                  color="secondary" 
+                  }
+                  color="secondary"
                 />
               </label>
             </div>

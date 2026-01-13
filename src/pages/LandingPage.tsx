@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 import CustomButton from '../components/CustomButton';
 import CustomText from '../components/CustomText';
 import { LANDING_PAGE } from '../utils/local/en';
@@ -13,30 +12,8 @@ const LandingPage: React.FC = () => {
   const featuresRef = useRef<HTMLDivElement>(null);
   const pricingRef = useRef<HTMLDivElement>(null);
 
-  const handleNavClick = (section: 'home' | 'features' | 'pricing') => {
-    let ref: React.RefObject<HTMLDivElement> | null = null;
-
-    switch (section) {
-      case 'home':
-        ref = homeRef as React.RefObject<HTMLDivElement>;
-        break;
-      case 'features':
-        ref = featuresRef as React.RefObject<HTMLDivElement>;
-        break;
-      case 'pricing':
-        ref = pricingRef as React.RefObject<HTMLDivElement>;
-        break;
-    }
-
-    if (ref?.current) {
-      ref.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <div className="landing-page">
-      <Navbar onNavClick={handleNavClick} />
-
       {/* Home Section */}
       <section ref={homeRef} className="hero-section">
         <div className="hero-content">
