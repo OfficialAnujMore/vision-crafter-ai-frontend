@@ -1,5 +1,15 @@
 import axios from 'axios';
+import type { AxiosResponse } from 'axios';
 import { API_CONFIG } from '../../config/api.ts';
+
+class APIError extends Error {
+  response?: AxiosResponse;
+  
+  constructor(message: string) {
+    super(message);
+    this.name = 'APIError';
+  }
+}
 
 const axiosInstance = axios.create({
   baseURL: API_CONFIG.BASE_URL,
@@ -56,7 +66,7 @@ axiosInstance.interceptors.response.use(
 
     // Create a custom error object with the detail message from backend
     const errorMessage = error.response?.data?.detail || error.message || 'An error occurred';
-    const customError = new Error(errorMessage);
+    const customError = new APIError(errorMessage);
     customError.response = error.response;
     
     return Promise.reject(customError);

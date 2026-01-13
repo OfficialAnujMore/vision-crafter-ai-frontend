@@ -131,7 +131,7 @@ const CustomText: React.FC<CustomTextProps> = ({ variant, value, color = 'black'
   };
 
   // Apply custom fontSize and lineHeight if provided
-  let style = { ...styles[variant] };
+  const style = { ...styles[variant] };
   if (fontSize) style.fontSize = fontSize;
   if (lineHeight) style.lineHeight = lineHeight;
   if (onClick) style.cursor = 'pointer';

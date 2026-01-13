@@ -57,7 +57,6 @@ const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
             angle: 135
           }}
           onClick={() => navigate(ROUTES.HOME)}
-          style={{ cursor: 'pointer' }}
         />
         
         <div className={`navbar-links ${isMenuOpen ? 'active' : ''}`}>
