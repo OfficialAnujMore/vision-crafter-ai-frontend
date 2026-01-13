@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CustomButton from './CustomButton';
 import CustomText from './CustomText';
 import { LANDING_PAGE } from '../utils/local/en';
+import { ROUTES } from '../constants/routes';
 import '../styles/Navbar/Navbar.css';
 
 interface NavbarProps {
@@ -10,6 +12,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleNavClick = (section: 'home' | 'features' | 'pricing') => {
     onNavClick(section);
@@ -52,7 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
             <CustomButton
               variant="primary"
               text={LANDING_PAGE.navLogin}
-              onClick={() => window.location.href = '/login'}
+              onClick={() => navigate(ROUTES.LOGIN)}
             />
           </div>
         </div>
@@ -71,7 +74,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
           <CustomButton
             variant="primary"
             text={LANDING_PAGE.navLogin}
-            onClick={() => window.location.href = '/login'}
+            onClick={() => navigate(ROUTES.LOGIN)}
           />
         </div>
       </div>

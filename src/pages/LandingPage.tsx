@@ -1,11 +1,14 @@
 import React, { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import CustomButton from '../components/CustomButton';
 import CustomText from '../components/CustomText';
 import { LANDING_PAGE } from '../utils/local/en';
+import { ROUTES } from '../constants/routes';
 import '../styles/LandingPage/LandingPage.css';
 
 const LandingPage: React.FC = () => {
+  const navigate = useNavigate();
   const homeRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
   const pricingRef = useRef<HTMLDivElement>(null);
@@ -55,7 +58,7 @@ const LandingPage: React.FC = () => {
           <CustomButton
             variant="primary"
             text={LANDING_PAGE.homeCtaButton}
-            onClick={() => window.location.href = '/signup'}
+            onClick={() => navigate(ROUTES.SIGNUP)}
           />
         </div>
         <div className="hero-image-container">

@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import CustomText from '../components/CustomText';
 import { REGISTER_PAGE } from '../utils/local/en';
+import { ROUTES } from '../constants/routes';
 import '../styles/Register/Register.css';
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -31,7 +34,7 @@ const Register: React.FC = () => {
           <CustomButton
             variant="primary"
             text={REGISTER_PAGE.backToWebsite}
-            onClick={() => window.location.href = '/'}
+            onClick={() => navigate(ROUTES.HOME)}
           />
         </div>
         <div className="register-slogan">
@@ -55,7 +58,7 @@ const Register: React.FC = () => {
                 variant="p"
                 value={REGISTER_PAGE.loginLink}
                 color="primary"
-                onClick={() => window.location.href = '/login'}
+                onClick={() => navigate(ROUTES.LOGIN)}
               />
             </div>
           </div>

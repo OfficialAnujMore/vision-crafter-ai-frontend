@@ -5,6 +5,7 @@ import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import { injectCSSVariables } from './utils/injectColors';
+import { ROUTES } from './constants/routes';
 
 function App() {
   useEffect(() => {
@@ -14,9 +15,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Register />} />
+        <Route path={ROUTES.HOME} element={<LandingPage />} />
+        <Route path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.SIGNUP} element={<Register />} />
         {/* <Route
           path="/dashboard"
           element={

@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import CustomText from '../components/CustomText';
 import { LOGIN_PAGE } from '../utils/local/en';
+import { ROUTES } from '../constants/routes';
 import '../styles/Login/Login.css';
 
 const Login: React.FC = () => {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
@@ -24,7 +27,7 @@ const Login: React.FC = () => {
                     <CustomButton
                         variant="secondary"
                         text="Back to website →"
-                        onClick={() => window.location.href = '/'}
+                        onClick={() => navigate(ROUTES.HOME)}
                     />
                 </div>
                 <div className="login-slogan">
@@ -48,7 +51,7 @@ const Login: React.FC = () => {
                                 variant="p"
                                 value={LOGIN_PAGE.signupLink}
                                 color="primary"
-                                onClick={() => window.location.href = '/signup'}
+                                onClick={() => navigate(ROUTES.SIGNUP)}
                             />
                         </div>
                     </div>
