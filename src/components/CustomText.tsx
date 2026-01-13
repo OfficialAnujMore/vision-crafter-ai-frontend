@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { colors } from '../constants/colors';
 
 type TextVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'subheading' | 'caption';
@@ -8,9 +8,19 @@ interface CustomTextProps {
   variant: TextVariant;
   value: string | React.ReactNode;
   color?: TextColor;
+  fontSize?: string | number;
+  lineHeight?: number;
+  gradient?: {
+    from: string;
+    to: string;
+    angle?: number;
+  };
+  onClick?: () => void;
 }
 
-const CustomText: React.FC<CustomTextProps> = ({ variant, value, color = 'black' }) => {
+const CustomText: React.FC<CustomTextProps> = ({ variant, value, color = 'black', fontSize, lineHeight, gradient, onClick }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   const colorMap: Record<TextColor, string> = {
     primary: colors.primary[600],
     secondary: colors.text.primary,
@@ -22,94 +32,133 @@ const CustomText: React.FC<CustomTextProps> = ({ variant, value, color = 'black'
     info: colors.info,
   };
 
+  const hoverColorMap: Record<TextColor, string> = {
+    primary: colors.primary[400],
+    secondary: colors.text.primary,
+    black: colors.neutral[900],
+    white: colors.neutral[0],
+    success: colors.success,
+    error: colors.error,
+    warning: colors.warning,
+    info: colors.info,
+  };
+
   const styles: Record<TextVariant, React.CSSProperties> = {
     h1: {
-      fontSize: '3rem',
+      fontSize: '3.8rem',
       fontWeight: 700,
-      lineHeight: 1.2,
+      lineHeight: 1.1,
       margin: 0,
-      color: colorMap[color],
+      background: `linear-gradient(135deg, ${colors.text.primary} 0%, ${colors.primary[300]} 50%, ${colors.primary[600]} 100%)`,
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text',
+      color: 'transparent',
+      display: 'inline-block',
+      width: '100%',
     },
     h2: {
       fontSize: '2.5rem',
       fontWeight: 600,
       lineHeight: 1.3,
       margin: 0,
-      color: colorMap[color],
+      display: 'inline-block',
+      width: '100%',
+      ...(gradient ? {
+        background: `linear-gradient(${gradient.angle || 135}deg, ${gradient.from} 0%, ${gradient.to} 100%)`,
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+        color: 'transparent',
+      } : {
+        color: colorMap[color],
+      }),
     },
     h3: {
-      fontSize: '2rem',
+      fontSize: '1.5rem',
       fontWeight: 600,
       lineHeight: 1.3,
       margin: 0,
-      color: colorMap[color],
+      color: colors.primary[400],
     },
     h4: {
       fontSize: '1.5rem',
       fontWeight: 500,
       lineHeight: 1.4,
       margin: 0,
-      color: colorMap[color],
+      color: colors.primary[400],
     },
     h5: {
       fontSize: '1.25rem',
       fontWeight: 500,
       lineHeight: 1.4,
       margin: 0,
-      color: colorMap[color],
+      color: onClick && isHovered ? hoverColorMap[color] : colorMap[color],
+      transition: 'color 0.3s ease',
     },
     h6: {
       fontSize: '1rem',
       fontWeight: 500,
       lineHeight: 1.5,
       margin: 0,
-      color: colorMap[color],
+      color: onClick && isHovered ? hoverColorMap[color] : colorMap[color],
+      transition: 'color 0.3s ease',
     },
     p: {
-      fontSize: '1rem',
+      fontSize: '1.1rem',
       fontWeight: 400,
       lineHeight: 1.6,
       margin: 0,
-      color: colorMap[color],
+      color: onClick && isHovered ? hoverColorMap[color] : (color === 'black' ? colors.text.secondary : colorMap[color]),
+      transition: 'color 0.3s ease',
     },
     subheading: {
       fontSize: '1.125rem',
       fontWeight: 400,
       lineHeight: 1.5,
       margin: 0,
-      color: colorMap[color],
+      color: onClick && isHovered ? hoverColorMap[color] : colorMap[color],
+      transition: 'color 0.3s ease',
     },
     caption: {
       fontSize: '0.875rem',
       fontWeight: 400,
       lineHeight: 1.4,
       margin: 0,
-      color: colorMap[color],
+      color: onClick && isHovered ? hoverColorMap[color] : colorMap[color],
+      transition: 'color 0.3s ease',
     },
   };
 
-  const style = styles[variant];
+  // Apply custom fontSize and lineHeight if provided
+  let style = { ...styles[variant] };
+  if (fontSize) style.fontSize = fontSize;
+  if (lineHeight) style.lineHeight = lineHeight;
+  if (onClick) style.cursor = 'pointer';
+
+  const handleMouseEnter = onClick ? () => setIsHovered(true) : undefined;
+  const handleMouseLeave = onClick ? () => setIsHovered(false) : undefined;
 
   switch (variant) {
     case 'h1':
-      return <h1 style={style}>{value}</h1>;
+      return <h1 style={style} onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>{value}</h1>;
     case 'h2':
-      return <h2 style={style}>{value}</h2>;
+      return <h2 style={style} onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>{value}</h2>;
     case 'h3':
-      return <h3 style={style}>{value}</h3>;
+      return <h3 style={style} onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>{value}</h3>;
     case 'h4':
-      return <h4 style={style}>{value}</h4>;
+      return <h4 style={style} onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>{value}</h4>;
     case 'h5':
-      return <h5 style={style}>{value}</h5>;
+      return <h5 style={style} onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>{value}</h5>;
     case 'h6':
-      return <h6 style={style}>{value}</h6>;
+      return <h6 style={style} onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>{value}</h6>;
     case 'subheading':
-      return <p style={style}>{value}</p>;
+      return <p style={style} onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>{value}</p>;
     case 'caption':
-      return <small style={style}>{value}</small>;
+      return <small style={style} onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>{value}</small>;
     case 'p':
     default:
-      return <p style={style}>{value}</p>;
+      return <p style={style} onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>{value}</p>;
   }
 };
 

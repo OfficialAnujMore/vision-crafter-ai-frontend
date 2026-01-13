@@ -62,7 +62,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
     border: `1.5px solid ${colors.border.light}`,
     borderRadius: 8,
     outline: 'none',
-    color: colors.text.primary,
+    color: colors.text.inverse,
     backgroundColor: disabled ? colors.neutral[100] : colors.neutral[0],
     transition: 'border-color 0.2s',
   };
