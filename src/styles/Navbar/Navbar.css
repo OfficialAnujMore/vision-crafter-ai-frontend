@@ -4,10 +4,10 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: linear-gradient(180deg, rgba(15, 13, 26, 0.98) 0%, rgba(38, 38, 60, 0.85) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, rgba(23, 23, 23, 0.95) 100%);
   backdrop-filter: blur(30px);
-  border-bottom: 1px solid rgba(124, 92, 255, 0.15);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border-bottom: 1px solid var(--border-secondary);
+  box-shadow: var(--shadow-md);
 }
 
 .navbar-container {
@@ -87,7 +87,7 @@
 .hamburger span {
   width: 24px;
   height: 2.5px;
-  background: #A795FF;
+  background: var(--color-accent);
   border-radius: 2px;
   transition: all 0.3s ease;
 }
@@ -129,9 +129,9 @@
     right: 0;
     flex-direction: column;
     gap: 0;
-    background: linear-gradient(180deg, rgba(15, 13, 26, 0.99) 0%, rgba(23, 21, 42, 0.99) 100%);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.99) 0%, var(--bg-secondary) 100%);
     backdrop-filter: blur(30px);
-    border-bottom: 1px solid rgba(124, 92, 255, 0.15);
+    border-bottom: 1px solid var(--border-secondary);
     padding: 0;
     max-height: 0;
     overflow: hidden;

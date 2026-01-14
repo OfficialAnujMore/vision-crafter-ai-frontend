@@ -22,25 +22,25 @@ const CustomText: React.FC<CustomTextProps> = ({ variant, value, color = 'black'
   const [isHovered, setIsHovered] = useState(false);
 
   const colorMap: Record<TextColor, string> = {
-    primary: colors.primary[600],
-    secondary: colors.text.primary,
-    black: colors.neutral[900],
-    white: colors.neutral[0],
-    success: colors.success,
-    error: colors.error,
-    warning: colors.warning,
-    info: colors.info,
+    primary: colors.accent,
+    secondary: colors.text.secondary,
+    black: colors.black,
+    white: colors.white,
+    success: '#4ADE80',
+    error: '#F87171',
+    warning: '#FBBF24',
+    info: '#60A5FA',
   };
 
   const hoverColorMap: Record<TextColor, string> = {
-    primary: colors.primary[400],
+    primary: colors.accent,
     secondary: colors.text.primary,
-    black: colors.neutral[900],
-    white: colors.neutral[0],
-    success: colors.success,
-    error: colors.error,
-    warning: colors.warning,
-    info: colors.info,
+    black: colors.black,
+    white: colors.white,
+    success: '#4ADE80',
+    error: '#F87171',
+    warning: '#FBBF24',
+    info: '#60A5FA',
   };
 
   const styles: Record<TextVariant, React.CSSProperties> = {
@@ -49,7 +49,7 @@ const CustomText: React.FC<CustomTextProps> = ({ variant, value, color = 'black'
       fontWeight: 700,
       lineHeight: 1.1,
       margin: 0,
-      background: `linear-gradient(135deg, ${colors.text.primary} 0%, ${colors.primary[300]} 50%, ${colors.primary[600]} 100%)`,
+      background: `linear-gradient(135deg, ${colors.white} 0%, ${colors.accent} 100%)`,
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text',
@@ -79,14 +79,14 @@ const CustomText: React.FC<CustomTextProps> = ({ variant, value, color = 'black'
       fontWeight: 600,
       lineHeight: 1.3,
       margin: 0,
-      color: colors.primary[400],
+      color: colors.accent,
     },
     h4: {
       fontSize: '1.5rem',
       fontWeight: 500,
       lineHeight: 1.4,
       margin: 0,
-      color: colors.primary[400],
+      color: colors.accent,
     },
     h5: {
       fontSize: '1.25rem',

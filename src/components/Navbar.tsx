@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from './CustomButton';
 import CustomText from './CustomText';
+import ProfileDropdown from './ProfileDropdown';
 import { LANDING_PAGE } from '../utils/local/en';
 import { ROUTES } from '../constants/routes';
 import '../styles/Navbar/Navbar.css';
@@ -42,6 +43,23 @@ const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
     }
     setIsMenuOpen(false);
   };
+
+  useEffect(() => {
+    // Listen for auth state changes to update navbar
+    const handleAuthChange = () => {
+      setIsAuthenticated(!!localStorage.getItem('access_token'));
+    };
+
+    window.addEventListener('storage', handleAuthChange);
+    
+    // Also listen for custom auth events
+    window.addEventListener('authStateChanged', handleAuthChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleAuthChange);
+      window.removeEventListener('authStateChanged', handleAuthChange);
+    };
+  }, []);
 
   const authButtonText = isAuthenticated ? 'Dashboard' : LANDING_PAGE.navLogin;
 
@@ -98,11 +116,15 @@ const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
         </button>
 
         <div className="desktop-auth">
-          <CustomButton
-            variant="primary"
-            text={authButtonText}
-            onClick={handleAuthAction}
-          />
+          {isAuthenticated ? (
+            <ProfileDropdown />
+          ) : (
+            <CustomButton
+              variant="primary"
+              text={authButtonText}
+              onClick={handleAuthAction}
+            />
+          )}
         </div>
       </div>
     </nav>

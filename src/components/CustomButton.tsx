@@ -35,26 +35,27 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 
   const variantStyles: Record<ButtonVariant, React.CSSProperties> = {
     primary: {
-      backgroundColor: colors.primary[600],
-      color: colors.neutral[0],
+      backgroundColor: colors.accent,
+      color: colors.white,
       boxShadow: colors.shadow.md,
     },
     secondary: {
       backgroundColor: 'transparent',
-      color: colors.primary[600],
-      border: `2px solid ${colors.primary[600]}`,
+      color: colors.accent,
+      border: `2px solid ${colors.accent}`,
     },
   };
 
   const hoverStyles: Record<ButtonVariant, React.CSSProperties> = {
     primary: {
-      backgroundColor: colors.primary[700],
+      backgroundColor: colors.accent,
       boxShadow: colors.shadow.lg,
       transform: 'translateY(-2px)',
+      opacity: 0.9,
     },
     secondary: {
-      backgroundColor: colors.primary[50],
-      color: colors.primary[700],
+      backgroundColor: colors.grey[900],
+      color: colors.accent,
     },
   };
 
