@@ -5,10 +5,9 @@ import { ROUTES } from '../constants/routes';
 
 interface MainLayoutProps {
   children: React.ReactNode;
-  onNavClick?: (section: 'home' | 'features' | 'pricing') => void;
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children, onNavClick }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
 
   // Routes where navbar should NOT be displayed
@@ -17,7 +16,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, onNavClick }) => {
 
   return (
     <div className="main-layout">
-      {shouldShowNavbar && <Navbar onNavClick={onNavClick} />}
+      {shouldShowNavbar && <Navbar/>}
       <main className={`layout-content ${shouldShowNavbar ? '' : 'no-navbar'}`}>
         {children}
       </main>

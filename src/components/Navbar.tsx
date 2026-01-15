@@ -7,12 +7,9 @@ import { LANDING_PAGE } from '../utils/local/en';
 import { ROUTES } from '../constants/routes';
 import '../styles/Navbar/Navbar.css';
 
-interface NavbarProps {
-  onNavClick?: (section: 'home' | 'features' | 'pricing') => void;
-}
 
-const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+const Navbar: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('access_token'));
   const navigate = useNavigate();
 
@@ -24,16 +21,10 @@ const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
     };
 
     window.addEventListener('storage', handleStorageChange);
-    
+
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  const handleNavClick = (section: 'home' | 'features' | 'pricing') => {
-    if (onNavClick) {
-      onNavClick(section);
-    }
-    setIsMenuOpen(false);
-  };
 
   const handleAuthAction = () => {
     if (isAuthenticated) {
@@ -41,7 +32,6 @@ const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
     } else {
       navigate(ROUTES.SIGNUP);
     }
-    setIsMenuOpen(false);
   };
 
   useEffect(() => {
@@ -51,10 +41,10 @@ const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
     };
 
     window.addEventListener('storage', handleAuthChange);
-    
+
     // Also listen for custom auth events
     window.addEventListener('authStateChanged', handleAuthChange);
-    
+
     return () => {
       window.removeEventListener('storage', handleAuthChange);
       window.removeEventListener('authStateChanged', handleAuthChange);
@@ -66,54 +56,11 @@ const Navbar: React.FC<NavbarProps> = ({ onNavClick }) => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <CustomText 
-          variant="h4" 
+        <CustomText
+          variant="h4"
           value={LANDING_PAGE.navLogo}
-          gradient={{
-            from: '#7C5CFF',
-            to: '#A795FF',
-            angle: 135
-          }}
           onClick={() => navigate(ROUTES.HOME)}
         />
-        
-        <div className={`navbar-links ${isMenuOpen ? 'active' : ''}`}>
-          <CustomText
-            variant="p"
-            value={LANDING_PAGE.navHome}
-            color="secondary"
-            onClick={() => handleNavClick('home')}
-          />
-          <CustomText
-            variant="p"
-            value={LANDING_PAGE.navFeatures}
-            color="secondary"
-            onClick={() => handleNavClick('features')}
-          />
-          <CustomText
-            variant="p"
-            value={LANDING_PAGE.navPricing}
-            color="secondary"
-            onClick={() => handleNavClick('pricing')}
-          />
-          <div className="mobile-auth">
-            <CustomButton
-              variant="primary"
-              text={authButtonText}
-              onClick={handleAuthAction}
-            />
-          </div>
-        </div>
-
-        <button 
-          className={`hamburger ${isMenuOpen ? 'active' : ''}`}
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
 
         <div className="desktop-auth">
           {isAuthenticated ? (
