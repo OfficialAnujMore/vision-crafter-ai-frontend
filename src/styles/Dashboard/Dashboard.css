@@ -1,0 +1,28 @@
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+}
+
+.create {
+    margin-bottom: 2rem;
+    align-self: flex-start;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .projects-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .dashboard-container {
+        padding: 1rem;
+    }
+}

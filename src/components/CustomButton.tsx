@@ -1,14 +1,14 @@
 import React from 'react';
 import { colors } from '../constants/colors';
 
-type ButtonVariant = 'primary' | 'secondary';
+type ButtonVariant = 'primary' | 'secondary' | 'icon' | 'ternary';
 
 interface CustomButtonProps {
   variant: ButtonVariant;
   disabled?: boolean;
   onClick?: () => void;
   icon?: React.ReactNode;
-  text: string;
+  text?: string;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -39,10 +39,24 @@ const CustomButton: React.FC<CustomButtonProps> = ({
       color: colors.white,
       boxShadow: colors.shadow.md,
     },
+
     secondary: {
       backgroundColor: 'transparent',
       color: colors.accent,
       border: `2px solid ${colors.accent}`,
+    },
+
+    icon: {
+      padding: '0.5rem',
+      minWidth: 'auto',
+      backgroundColor: 'transparent',
+      color: colors.accent,
+    },
+
+    ternary: {
+      backgroundColor: colors.grey[700],
+      color: colors.white,
+      boxShadow: colors.shadow.sm,
     },
   };
 
@@ -56,6 +70,15 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     secondary: {
       backgroundColor: colors.grey[900],
       color: colors.accent,
+    },
+    icon: {
+      // backgroundColor: colors.grey[900],
+      transform: 'scale(1.1)',
+    },
+    ternary: {
+      backgroundColor: colors.grey[700],
+      boxShadow: colors.shadow.md,
+      transform: 'translateY(-1px)',
     },
   };
 

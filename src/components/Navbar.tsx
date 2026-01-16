@@ -64,7 +64,12 @@ const Navbar: React.FC = () => {
 
         <div className="desktop-auth">
           {isAuthenticated ? (
-            <ProfileDropdown />
+            <div className="auth-section">
+              <CustomButton variant='primary' text='Dashboard' onClick={() => {
+                navigate(ROUTES.DASHBOARD)
+              }} />
+              <ProfileDropdown />
+            </div>
           ) : (
             <CustomButton
               variant="primary"

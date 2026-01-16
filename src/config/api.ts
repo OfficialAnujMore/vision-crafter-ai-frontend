@@ -8,5 +8,12 @@ export const API_CONFIG = {
       PROFILE: '/user/profile',
       UPDATE: '/user/update',
     },
+    IMAGEKIT:{
+      AUTH:"/api/imagekit/auth",
+    },
+    PROJECT:{
+      CREATE:"/api/projects/create",
+      USER_PROJECTS: "/api/projects/user/"
+    }
   },
 } as const;
