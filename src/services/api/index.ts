@@ -1,15 +1,9 @@
 import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import { API_CONFIG } from '../../config/api.ts';
-
-class APIError extends Error {
-  response?: AxiosResponse;
-
-  constructor(message: string) {
-    super(message);
-    this.name = 'APIError';
-  }
-}
+import { ApiError } from '../../interface/api';
+import type { ApiResponse, ApiErrorResponse } from '../../interface/api';
+import { showErrorToast, showWarningToast } from '../../utils/toast';
 
 const axiosInstance = axios.create({
   baseURL: API_CONFIG.BASE_URL,
@@ -18,6 +12,7 @@ const axiosInstance = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
 // Request interceptor - add auth token
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -28,13 +23,30 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
+    showErrorToast(error);
     return Promise.reject(error);
   }
 );
 
-// Response interceptor - handle errors
+// Response interceptor - handle errors and standardized responses
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response: AxiosResponse<ApiResponse<unknown> | ApiErrorResponse>) => {
+    // Check if response has the expected structure
+    if (response.data && typeof response.data === 'object') {
+      // If success is explicitly false, treat as error
+      if ('success' in response.data && !(response.data as ApiResponse<unknown> | ApiErrorResponse & { success: boolean }).success) {
+        const errorData = response.data as ApiErrorResponse;
+        const error = new ApiError(
+          errorData.message,
+          errorData.statusCode || response.status
+        );
+        showErrorToast(error);
+        return Promise.reject(error);
+      }
+    }
+
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
     const isAuthEndpoint = originalRequest.url?.includes('/auth/');
@@ -45,19 +57,36 @@ axiosInstance.interceptors.response.use(
       localStorage.removeItem('access_token');
       localStorage.removeItem('user');
 
+      // Show warning toast for session expiry
+      showWarningToast('Session expired', 'Please sign in again.');
+
       // Dispatch custom event to update UI
       window.dispatchEvent(new Event('authStateChanged'));
 
       // Redirect to signup
       window.location.href = '/signup';
 
-      return Promise.reject(new APIError('Session expired. Please sign in again.'));
+      return Promise.reject(new ApiError('Session expired. Please sign in again.', 401));
     }
 
-    // Create a custom error object with the detail message from backend
-    const errorMessage = error.response?.data?.detail || error.message || 'An error occurred';
-    const customError = new APIError(errorMessage);
-    customError.response = error.response;
+    // Handle network errors
+    if (!error.response) {
+      showErrorToast(new Error('Network error. Please check your connection.'));
+      return Promise.reject(new ApiError('Network error. Please check your connection.'));
+    }
+
+    // Extract error from standardized ApiErrorResponse
+    const errorResponse = error.response?.data as ApiErrorResponse;
+    const errorMessage = errorResponse?.message || error.message || 'An error occurred';
+    const errorCode = errorResponse?.error;
+    const statusCode = errorResponse?.statusCode || error.response?.status;
+
+    const customError = new ApiError(errorMessage, statusCode, errorCode);
+
+    // Don't show toast for auth endpoints (handled in authService)
+    if (!isAuthEndpoint) {
+      showErrorToast(customError);
+    }
 
     return Promise.reject(customError);
   }

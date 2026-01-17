@@ -9,6 +9,8 @@ import { injectCSSVariables } from './utils/injectColors';
 import { ROUTES } from './constants/routes';
 import { LoaderProvider } from './components/LoaderContext';
 import GlobalLoader from './components/Loader';
+import { Toaster } from 'sonner';
+import './styles/Toast.css' 
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -29,6 +31,20 @@ function App() {
   return (
     <LoaderProvider>
       <GlobalLoader />
+      <Toaster
+        position="top-right"
+        expand={false}
+        richColors
+        closeButton
+        toastOptions={{
+          style: {
+            background: 'white',
+            border: '1px solid #e5e7eb',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+            padding: '16px',
+          },
+        }}
+      />
       <BrowserRouter>
         <MainLayout>
           <Routes>

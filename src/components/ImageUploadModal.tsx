@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { X, Upload } from 'lucide-react';
-import '../styles/ImageUploadModal.css';
-import { saveCreatedImage, uploadImagetoImageKit } from '../services/api/imageKitService';
-import { authService } from '../services/api/authService';
 import CustomText from './CustomText';
 import CustomButton from './CustomButton';
 import { useLoader } from './LoaderContext';
+import { authService } from '../services/api/authService';
+import { uploadFileToImageKit } from '../services/api/imageKitService';
+import { projectService } from '../services/api/projectService';
+import '../styles/ImageUploadModal.css';
 
 interface ImageUploadModalProps {
     isOpen: boolean;
@@ -48,7 +49,7 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
         setLoading(true);
 
         try {
-            const response = await uploadImagetoImageKit(selectedFile);
+            const response = await uploadFileToImageKit(selectedFile);
             const currentUser = authService.getCurrentUser();
 
             if (!currentUser?.id) {
@@ -56,12 +57,7 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
             }
 
             const imageData = { ...response, user_id: currentUser.id };
-
-            // TODO: Send imageData to your backend API
-            const saveImageResponse = await saveCreatedImage(imageData);
-
-
-            console.log('Image uploaded:', saveImageResponse);
+            await projectService.saveCreatedFile(imageData);
             handleClose();
         } catch (err) {
             console.error('Upload failed:', err);

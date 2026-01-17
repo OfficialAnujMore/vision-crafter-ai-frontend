@@ -1,7 +1,7 @@
 export const API_CONFIG = {
   
   BASE_URL: import.meta.env.VITE_API_URL,
-  IMAGEKIT_UPLOAD_URL: import.meta.env.IMAGEKIT_UPLOAD_URL,
+  IMAGEKIT_UPLOAD_URL: import.meta.env.VITE_IMAGEKIT_UPLOAD_URL,
   ENDPOINTS: {
     AUTH: {
       GOOGLE: '/auth/google',

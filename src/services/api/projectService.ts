@@ -1,15 +1,33 @@
 import axiosInstance from ".";
 import { API_CONFIG } from "../../config/api";
-import type { SaveImageResponse } from "./imageKitService";
+import type { ApiResponse } from "../../interface/api";
+import type { SaveFileResponse, SaveFile } from "../../interface/project";
+import { showSuccessToast } from "../../utils/toast";
 
 
-export const getUserProjects = async (userid: number): Promise<Array<SaveImageResponse>> => {
+export const projectService = {
 
+    saveCreatedFile: async (data: SaveFile): Promise<SaveFileResponse> => {
+        const response = await axiosInstance.post<ApiResponse<SaveFileResponse>>(
+            API_CONFIG.ENDPOINTS.PROJECT.CREATE,
+            data
+        );
 
-    const response = await axiosInstance.get<Array<SaveImageResponse>>(
-        API_CONFIG.ENDPOINTS.PROJECT.USER_PROJECTS + userid
-    )
-    console.log(response);
+        showSuccessToast(
+            response.data.message || 'Project saved successfully',
+            'Your work has been saved to the cloud'
+        );
 
-    return response.data
+        return response.data.data;
+    },
+
+    getUserProjects: async (userid: number): Promise<Array<SaveFileResponse>> => {
+        const response = await axiosInstance.get<ApiResponse<Array<SaveFileResponse>>>(
+            `${API_CONFIG.ENDPOINTS.PROJECT.USER_PROJECTS}${userid}`
+        );
+        
+        return response.data.data;
+    }
 }
+
+

@@ -3,14 +3,14 @@ import CustomButton from '../components/CustomButton';
 import ProjectCard from '../components/ProjectsCard';
 import { ImageUploadModal } from '../components/ImageUploadModal';
 import '../styles/Dashboard.css';
-import { getUserProjects } from '../services/api/projectService';
 import { authService } from '../services/api/authService';
-import type { SaveImageResponse } from '../services/api/imageKitService';
 import { useLoader } from '../components/LoaderContext';
+import type { SaveFileResponse } from '../interface/project';
+import { projectService } from '../services/api/projectService';
 
 
 const Dashboard = () => {
-  const [projects, setProjects] = useState<Array<SaveImageResponse>>([]);
+  const [projects, setProjects] = useState<Array<SaveFileResponse>>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { setLoading } = useLoader();
 
@@ -18,18 +18,26 @@ const Dashboard = () => {
     const load = async () => {
       try {
         setLoading(true);
-        const { id } = await authService.getCurrentUser();
-        const response = await getUserProjects(id);
-        setProjects(response);
+        const user = authService.getCurrentUser();
+        
+        if (!user || !user.id) {
+          console.error('No user found');
+          return;
+        }
+        
+        const response = await projectService.getUserProjects(user.id);
+        setProjects(response || []);
       } catch (error) {
         console.error('Failed to load projects:', error);
+        setProjects([]);
       } finally {
         setLoading(false);
       }
     };
     
     load();
-  }, [setLoading]);
+  }, []);
+
   return (
     <div className='dashboard-container'>
       <ImageUploadModal isOpen={isModalOpen}
@@ -40,17 +48,20 @@ const Dashboard = () => {
       </section>
       <section>
         <section className='projects-grid'>
-          {projects.map((project) => (
-            <ProjectCard
-              key={project.id}
-              thumbnailUrl={project.thumbnail_url}
-              title={project.title}
-              projectUrl={project.project_url}
-            />
-          ))}
+          {projects.length > 0 ? (
+            projects.map((project) => (
+              <ProjectCard
+                key={project.id}
+                thumbnailUrl={project.thumbnail_url}
+                title={project.title}
+                projectUrl={project.project_url}
+              />
+            ))
+          ) : (
+            <p className='no-projects'>No projects yet. Create your first project!</p>
+          )}
         </section>
       </section>
-
     </div>
   )
 }
