@@ -19,12 +19,12 @@ const Dashboard = () => {
       try {
         setLoading(true);
         const user = authService.getCurrentUser();
-        
+
         if (!user || !user.id) {
           console.error('No user found');
           return;
         }
-        
+
         const response = await projectService.getUserProjects(user.id);
         setProjects(response || []);
       } catch (error) {
@@ -34,7 +34,7 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
-    
+
     load();
   }, []);
 
@@ -51,6 +51,7 @@ const Dashboard = () => {
           {projects.length > 0 ? (
             projects.map((project) => (
               <ProjectCard
+                fileId={project.file_id}
                 key={project.id}
                 thumbnailUrl={project.thumbnail_url}
                 title={project.title}

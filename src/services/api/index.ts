@@ -34,7 +34,8 @@ axiosInstance.interceptors.response.use(
     // Check if response has the expected structure
     if (response.data && typeof response.data === 'object') {
       // If success is explicitly false, treat as error
-      if ('success' in response.data && !(response.data as ApiResponse<unknown> | ApiErrorResponse & { success: boolean }).success) {
+      const data = response.data as ApiResponse<unknown> | ApiErrorResponse & { success?: boolean };
+      if ('success' in data && !data.success) {
         const errorData = response.data as ApiErrorResponse;
         const error = new ApiError(
           errorData.message,
@@ -49,10 +50,11 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-    const isAuthEndpoint = originalRequest.url?.includes('/auth/');
+    const isAuthEndpoint = originalRequest?.url?.includes('/auth/');
 
     // Handle 401 - token expired (but not for auth endpoints like login/register)
     if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
+      originalRequest._retry = true;
       // Clear authentication and redirect to signup
       localStorage.removeItem('access_token');
       localStorage.removeItem('user');

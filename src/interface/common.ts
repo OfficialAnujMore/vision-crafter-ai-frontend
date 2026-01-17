@@ -1,4 +1,5 @@
 export interface BaseFileResponse {
+    file_id: string;
     title: string;
     project_url: string;
     thumbnail_url: string;

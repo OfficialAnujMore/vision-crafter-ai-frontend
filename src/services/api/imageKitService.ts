@@ -3,7 +3,6 @@ import { API_CONFIG } from "../../config/api";
 import type { ApiResponse } from "../../interface/api";
 import type { BaseFileResponse } from "../../interface/common";
 import type { ImageKitAuthResponse } from "../../interface/imagekit";
-import { showSuccessToast } from "../../utils/toast";
 
 const authenticateImageKit = async (): Promise<ImageKitAuthResponse> => {
     const authResponse = await axiosInstance.get<ApiResponse<ImageKitAuthResponse>>(
@@ -47,9 +46,9 @@ export const uploadFileToImageKit = async (file: File): Promise<BaseFileResponse
 
     const uploadData = await uploadResponse.json();
     
-    showSuccessToast('File uploaded successfully!');
     
     return {
+        file_id: uploadData.fileId,
         title: uploadData.name,
         project_url: uploadData.url,
         thumbnail_url: uploadData.thumbnailUrl,

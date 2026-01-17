@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import '../styles/ProjectsCards.css';
+import CustomText from './CustomText';
+import CustomButton from './CustomButton';
+import { projectService } from '../services/api/projectService';
 
 interface ProjectCardProps {
-
+    fileId:string;
     thumbnailUrl: string;
     title: string;
     projectUrl: string;
@@ -10,9 +13,9 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
+    fileId,
     thumbnailUrl,
     title,
-    projectUrl,
 
 }) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -21,6 +24,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     }
     const onDelete = async () => {
         console.log("On Delete Clicked")
+
+        await projectService.deleteProjectByFileId(fileId)
     }
 
     return (
@@ -36,32 +41,23 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             />
 
             <div className="project-card__content">
-                <h3 className="project-card__title">{title}</h3>
-                <a
-                    href={projectUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="project-card__link"
-                >
-                    View Project
-                </a>
+                <CustomText variant="h6" value={title} />
             </div>
 
             {isHovered && (
                 <div className="project-card__overlay">
-                    <button
+                    <CustomButton
                         onClick={onEdit}
-                        className="project-card__button project-card__button--edit"
-                    >
-                        Edit
-                    </button>
-
-                    <button
+                        variant='primary'
+                        text="Edit"
+                    />
+                    <CustomButton
+                        variant='primary'
+                        text="Delete"
                         onClick={onDelete}
-                        className="project-card__button project-card__button--delete"
-                    >
-                        Delete
-                    </button>
+
+                    />
+
 
                 </div>
             )}

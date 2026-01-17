@@ -25,9 +25,21 @@ export const projectService = {
         const response = await axiosInstance.get<ApiResponse<Array<SaveFileResponse>>>(
             `${API_CONFIG.ENDPOINTS.PROJECT.USER_PROJECTS}${userid}`
         );
-        
+
         return response.data.data;
+    },
+
+    deleteProjectByFileId: async (fileId: string): Promise<void> => {
+
+        await axiosInstance.delete<ApiResponse<null>>(
+            `${API_CONFIG.ENDPOINTS.PROJECT.DELETE_BY_FILE_ID}${fileId}`
+        );
+        showSuccessToast(
+            'Project deleted successfully',
+            'The selected project has been removed.'
+        );
     }
+
 }
 
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useDropzone, type FileRejection } from 'react-dropzone';
 import { X, Upload } from 'lucide-react';
 import CustomText from './CustomText';
 import CustomButton from './CustomButton';
@@ -8,6 +8,7 @@ import { authService } from '../services/api/authService';
 import { uploadFileToImageKit } from '../services/api/imageKitService';
 import { projectService } from '../services/api/projectService';
 import '../styles/ImageUploadModal.css';
+import { showWarningToast } from '../utils/toast';
 
 interface ImageUploadModalProps {
     isOpen: boolean;
@@ -34,12 +35,46 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
         }
     }, []);
 
+    const onDropRejected = useCallback(
+        (fileRejections: FileRejection[]) => {
+            const rejection = fileRejections[0];
+            if (!rejection) return;
+
+            const { errors } = rejection;
+
+            if (errors.some(e => e.code === 'file-too-large')) {
+                showWarningToast('File size exceeds 5MB. Please upload a smaller image.');
+                return;
+            }
+
+            if (errors.some(e => e.code === 'file-too-small')) {
+                showWarningToast('File is too small.');
+                return;
+            }
+
+            if (errors.some(e => e.code === 'file-invalid-type')) {
+                showWarningToast('Invalid file type. Please upload an image.');
+                return;
+            }
+
+            if (errors.some(e => e.code === 'too-many-files')) {
+                showWarningToast('Please upload only one image.');
+                return;
+            }
+
+            showWarningToast('File rejected. Please try another file.');
+        },
+        []
+    );
+
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDropRejected,
         onDrop,
         accept: {
-            'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
+            "image/*": [".png", ".jpg", ".jpeg", ".webp", ".gif"],
         },
-        multiple: false,
+        maxFiles: 1,
+        maxSize: 5 * 1024 * 1024,
     });
 
 
@@ -132,6 +167,13 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                         </div>
                     )}
                 </div>
+                <div className='image-upload-modal__description'>
+                    <CustomText
+                        variant='caption'
+                        value="Supports PNG, JPG, WEBP up to 5MB"
+                    />
+                </div>
+
 
                 <div className="image-upload-modal__footer">
                     <CustomButton
