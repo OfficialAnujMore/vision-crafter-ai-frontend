@@ -5,7 +5,7 @@ import CustomButton from '../components/CustomButton';
 import CustomText from '../components/CustomText';
 import { ROUTES } from '../constants/routes';
 import { authService } from '../services/api/authService';
-import '../styles/SignUp/SignUp.css';
+import '../styles/SignUp.css';
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();

@@ -5,7 +5,7 @@ import CustomText from './CustomText';
 import ProfileDropdown from './ProfileDropdown';
 import { LANDING_PAGE } from '../utils/local/en';
 import { ROUTES } from '../constants/routes';
-import '../styles/Navbar/Navbar.css';
+import '../styles/Navbar.css';
 
 
 

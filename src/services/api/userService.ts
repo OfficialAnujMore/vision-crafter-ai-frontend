@@ -6,12 +6,4 @@ export const userService = {
     const response = await axiosInstance.get(API_CONFIG.ENDPOINTS.USER.PROFILE);
     return response.data;
   },
-
-  // updateProfile: async (data: any) => {
-  //   const response = await axiosInstance.put(
-  //     API_CONFIG.ENDPOINTS.USER.UPDATE,
-  //     data
-  //   );
-  //   return response.data;
-  // },
 };

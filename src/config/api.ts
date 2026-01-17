@@ -1,5 +1,7 @@
 export const API_CONFIG = {
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
+  
+  BASE_URL: import.meta.env.VITE_API_URL,
+  IMAGEKIT_UPLOAD_URL: import.meta.env.IMAGEKIT_UPLOAD_URL,
   ENDPOINTS: {
     AUTH: {
       GOOGLE: '/auth/google',

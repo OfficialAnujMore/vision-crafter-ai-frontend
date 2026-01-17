@@ -1,10 +1,9 @@
 import React, { useRef } from 'react';
 import CustomText from '../components/CustomText';
 import { LANDING_PAGE } from '../utils/local/en';
-import '../styles/LandingPage/LandingPage.css';
+import '../styles/LandingPage.css';
 
 const LandingPage: React.FC = () => {
-  // const navigate = useNavigate();
   const homeRef = useRef<HTMLDivElement>(null);
 
   return (

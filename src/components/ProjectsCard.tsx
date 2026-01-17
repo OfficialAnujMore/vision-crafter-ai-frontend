@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/ProjectsCards/ProjectsCards.css';
+import '../styles/ProjectsCards.css';
 
 interface ProjectCardProps {
 

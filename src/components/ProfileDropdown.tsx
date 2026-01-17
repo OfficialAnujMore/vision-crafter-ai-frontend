@@ -4,7 +4,7 @@ import { authService } from '../services/api/authService';
 import { ROUTES } from '../constants/routes';
 import CustomButton from './CustomButton';
 import CustomText from './CustomText';
-import '../styles/ProfileDropdown/ProfileDropdown.css';
+import '../styles/ProfileDropdown.css';
 
 interface User {
   id: number;

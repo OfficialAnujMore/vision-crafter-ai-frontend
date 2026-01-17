@@ -6,7 +6,8 @@ interface ImageKitAuthResponse {
     expire: number;
     signature: string;
 }
-interface UploadResponse {
+
+interface BaseResponse {
     title: string;
     project_url: string;
     thumbnail_url: string;
@@ -15,20 +16,18 @@ interface UploadResponse {
     file_type: string;
 }
 
-interface SaveImage extends UploadResponse {
+interface SaveImage extends BaseResponse {
     user_id: number;
 }
 
-export interface SaveImageResponse extends UploadResponse {
+export interface SaveImageResponse extends BaseResponse {
     id: number;
     user_id: number;
     created_at: string;
     updated_at: string;
-
-
 }
 
-export const uploadImagetoImageKit = async (file: File): Promise<UploadResponse> => {
+export const uploadImagetoImageKit = async (file: File): Promise<BaseResponse> => {
     try {
 
         const authResponse = await axiosInstance.get<ImageKitAuthResponse>(
@@ -46,8 +45,6 @@ export const uploadImagetoImageKit = async (file: File): Promise<UploadResponse>
         }
         const { token, signature, expire } = authResponse.data;
 
-        console.log('Auth successful:', { token, expire });
-
         const formData = new FormData();
         formData.append('file', file);
         formData.append('publicKey', import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY);
@@ -57,7 +54,7 @@ export const uploadImagetoImageKit = async (file: File): Promise<UploadResponse>
         formData.append('fileName', file.name);
 
 
-        const uploadResponse = await fetch('https://upload.imagekit.io/api/v1/files/upload', {
+        const uploadResponse = await fetch(API_CONFIG.IMAGEKIT_UPLOAD_URL, {
             method: 'POST',
             body: formData,
 
@@ -65,12 +62,10 @@ export const uploadImagetoImageKit = async (file: File): Promise<UploadResponse>
 
         if (!uploadResponse.ok) {
             const errorText = await uploadResponse.text();
-            console.error('ImageKit error response:', errorText);
             throw new Error(`ImageKit upload failed: ${errorText}`);
         }
 
         const uploadData = await uploadResponse.json();
-
 
         return {
             title: uploadData.name,
@@ -81,10 +76,9 @@ export const uploadImagetoImageKit = async (file: File): Promise<UploadResponse>
             file_type: uploadData.fileType
         };
 
-
     } catch (err) {
         console.error('Upload error:', err);
-        throw err; // Re-throw so the calling component can handle it
+        throw err;
     }
 
 

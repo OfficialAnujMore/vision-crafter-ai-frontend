@@ -59,11 +59,11 @@ const CustomInput: React.FC<CustomInputProps> = ({
     width: '100%',
     padding: isSecure ? '10px 40px 10px 12px' : '10px 12px',
     fontSize: '1rem',
-    border: `1.5px solid ${colors.border.light}`,
+    border: `1.5px solid ${colors.border.accent}`,
     borderRadius: 8,
     outline: 'none',
     color: colors.text.inverse,
-    backgroundColor: disabled ? colors.neutral[100] : colors.neutral[0],
+    backgroundColor: disabled ? colors.background.primary : colors.background.primary,
     transition: 'border-color 0.2s',
   };
 
@@ -96,8 +96,8 @@ const CustomInput: React.FC<CustomInputProps> = ({
           disabled={disabled}
           style={inputStyle}
           onChange={(e) => onChange?.(e.target.value)}
-          onFocus={(e) => (e.currentTarget.style.borderColor = colors.primary[600])}
-          onBlur={(e) => (e.currentTarget.style.borderColor = colors.border.light)}
+          onFocus={(e) => (e.currentTarget.style.borderColor = colors.accent)}
+          onBlur={(e) => (e.currentTarget.style.borderColor = colors.border.primary)}
         />
         {isSecure && (
           <button

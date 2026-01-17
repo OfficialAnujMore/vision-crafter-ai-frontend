@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import CustomButton from '../components/CustomButton';
 import ProjectCard from '../components/ProjectsCard';
 import { ImageUploadModal } from '../components/ImageUploadModal';
-import '../styles/Dashboard/Dashboard.css';
+import '../styles/Dashboard.css';
 import { getUserProjects } from '../services/api/projectService';
 import { authService } from '../services/api/authService';
 import type { SaveImageResponse } from '../services/api/imageKitService';
