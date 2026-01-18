@@ -38,6 +38,12 @@ export const projectService = {
             'Project deleted successfully',
             'The selected project has been removed.'
         );
+    },
+    getProjectById: async (projectId: number): Promise<SaveFileResponse> => {
+        const response = await axiosInstance.get<ApiResponse<SaveFileResponse>>(
+            `${API_CONFIG.ENDPOINTS.PROJECT.GET_PROJECT}${projectId}`
+        )
+        return response.data.data
     }
 
 }

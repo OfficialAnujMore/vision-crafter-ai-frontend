@@ -3,28 +3,30 @@ import '../styles/ProjectsCards.css';
 import CustomText from './CustomText';
 import CustomButton from './CustomButton';
 import { projectService } from '../services/api/projectService';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../constants/routes';
 
 interface ProjectCardProps {
-    fileId:string;
+    fileId: string;
+    projectId: number
     thumbnailUrl: string;
     title: string;
     projectUrl: string;
-
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
     fileId,
+    projectId,
     thumbnailUrl,
     title,
 
 }) => {
     const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate()
     const onEdit = async () => {
-        console.log("On Edit Clicked")
+        navigate(ROUTES.EDITOR.replace(':projectId', `${projectId}`));
     }
     const onDelete = async () => {
-        console.log("On Delete Clicked")
-
         await projectService.deleteProjectByFileId(fileId)
     }
 

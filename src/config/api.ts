@@ -15,6 +15,7 @@ export const API_CONFIG = {
     },
     PROJECT:{
       CREATE:"/api/projects/create",
+      GET_PROJECT: "/api/projects/",
       USER_PROJECTS: "/api/projects/user/",
       DELETE_BY_FILE_ID: "/api/projects/"
     }

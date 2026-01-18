@@ -8,7 +8,6 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="landing-page">
-      {/* Home Section */}
       <section ref={homeRef} className="hero-section">
         <div className="hero-content">
           <CustomText

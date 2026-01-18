@@ -10,7 +10,8 @@ import { ROUTES } from './constants/routes';
 import { LoaderProvider } from './components/LoaderContext';
 import GlobalLoader from './components/Loader';
 import { Toaster } from 'sonner';
-import './styles/Toast.css' 
+import './styles/Toast.css'
+import Editor from './pages/Editor';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -55,6 +56,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.EDITOR}
+              element={
+                <ProtectedRoute>
+                  <Editor />
                 </ProtectedRoute>
               }
             />

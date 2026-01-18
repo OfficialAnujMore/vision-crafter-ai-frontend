@@ -52,7 +52,7 @@ const Dashboard = () => {
             projects.map((project) => (
               <ProjectCard
                 fileId={project.file_id}
-                key={project.id}
+                projectId={project.id}
                 thumbnailUrl={project.thumbnail_url}
                 title={project.title}
                 projectUrl={project.project_url}
