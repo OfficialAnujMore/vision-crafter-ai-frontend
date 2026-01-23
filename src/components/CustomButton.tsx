@@ -7,7 +7,7 @@ interface CustomButtonProps {
   variant: ButtonVariant;
   disabled?: boolean;
   onClick?: () => void;
-  icon?: React.ReactNode;
+  icon?: React.ReactElement;
   text?: string;
 }
 

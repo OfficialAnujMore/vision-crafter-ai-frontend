@@ -6,7 +6,7 @@ type TextColor = 'primary' | 'secondary' | 'black' | 'white' | 'success' | 'erro
 
 interface CustomTextProps {
   variant: TextVariant;
-  value: string | React.ReactNode;
+  value: string | React.ReactNode ;
   color?: TextColor;
   fontSize?: string | number;
   lineHeight?: number;

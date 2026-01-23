@@ -1,5 +1,13 @@
 .editor-container {
     display: flex;
+    flex-direction: column;
+    flex: 1;
+    /* background-color: purple; */
     justify-content: center;
     margin-top: 2rem;
 }
+
+.topbar-container{
+flex: 1;
+}
+.editor-panel {}
