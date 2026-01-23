@@ -10,8 +10,9 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
 
-  const noNavbarRoutes = [ROUTES.SIGNUP, ROUTES.EDITOR];
-  const shouldShowNavbar = !noNavbarRoutes.includes(location.pathname as typeof noNavbarRoutes[number]);
+  const noNavbarRoutes = [ROUTES.SIGNUP];
+  const isEditorRoute = location.pathname.startsWith('/editor');
+  const shouldShowNavbar = !noNavbarRoutes.includes(location.pathname as typeof noNavbarRoutes[number]) && !isEditorRoute;
 
   return (
     <div className="main-layout">
