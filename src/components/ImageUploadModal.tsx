@@ -10,6 +10,8 @@ import { projectService } from '../services/api/projectService';
 import '../styles/ImageUploadModal.css';
 import { showWarningToast } from '../utils/toast';
 import { textVariant } from '../constants/textVarients';
+import { colors } from '../constants/colors';
+import { buttonVarients } from '../constants/buttonVarients';
 
 interface ImageUploadModalProps {
     isOpen: boolean;
@@ -120,7 +122,7 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                         text="Upload Image"
                     />
                     <CustomButton
-                        variant='icon'
+                        variant={buttonVarients.icon}
                         icon={<X size={24} />}
                         onClick={handleClose}
                     />
@@ -134,7 +136,7 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                                 }`}
                         >
                             <input {...getInputProps()} />
-                            <Upload className="image-upload-modal__upload-icon" size={48} />
+                            <Upload className="image-upload-modal__upload-icon" size={48} color={colors.accent} />
                             <CustomText
                                 variant={textVariant.h4}
                                 text={isDragActive
@@ -156,7 +158,7 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                                 />
                             </div>
                             <CustomButton
-                                variant='primary'
+                                variant={buttonVarients.primary}
                                 text="Choose a different image"
                                 onClick={() => {
                                     setPreview(null);
@@ -178,13 +180,13 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
 
                 <div className="image-upload-modal__footer">
                     <CustomButton
-                        variant='ternary'
+                        variant={buttonVarients.secondary}
                         text="Cancel"
                         onClick={handleClose}
 
                     />
                     <CustomButton
-                        variant='primary'
+                        variant={buttonVarients.primary}
                         text="Upload"
                         disabled={!selectedFile}
                         onClick={handleUpload}

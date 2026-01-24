@@ -7,6 +7,10 @@ import { authService } from '../services/api/authService';
 import { useLoader } from '../components/LoaderContext';
 import type { SaveFileResponse } from '../interface/project';
 import { projectService } from '../services/api/projectService';
+import { Plus } from 'lucide-react';
+import CustomText from '../components/CustomText';
+import { textVariant } from '../constants/textVarients';
+import { buttonVarients } from '../constants/buttonVarients';
 
 
 const Dashboard = () => {
@@ -40,11 +44,17 @@ const Dashboard = () => {
 
   return (
     <div className='dashboard-container'>
+
+
       <ImageUploadModal isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
       <section className='create'>
-        <CustomButton variant='primary' text='Create' onClick={() => setIsModalOpen(true)} />
+        <CustomButton
+          variant={buttonVarients.primary}
+          text='Create'
+          icon={<Plus />}
+          onClick={() => setIsModalOpen(true)} />
       </section>
       <section>
         <section className='projects-grid'>
@@ -59,7 +69,10 @@ const Dashboard = () => {
               />
             ))
           ) : (
-            <p className='no-projects'>No projects yet. Create your first project!</p>
+            <CustomText
+              variant={textVariant.p}
+              text={"No projects yet. Create your first project!"}
+            />
           )}
         </section>
       </section>

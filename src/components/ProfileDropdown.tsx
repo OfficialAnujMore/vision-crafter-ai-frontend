@@ -6,6 +6,7 @@ import CustomButton from './CustomButton';
 import CustomText from './CustomText';
 import '../styles/ProfileDropdown.css';
 import { textVariant } from '../constants/textVarients';
+import { buttonVarients } from '../constants/buttonVarients';
 
 interface User {
   id: number;
@@ -109,7 +110,7 @@ const ProfileDropdown: React.FC = () => {
 
           <div className="profile-dropdown-actions">
             <CustomButton
-              variant="primary"
+              variant={buttonVarients.primary}
               text="Logout"
               onClick={handleLogout}
             />

@@ -7,6 +7,8 @@ import { ROUTES } from '../constants/routes';
 import { authService } from '../services/api/authService';
 import '../styles/SignUp.css';
 import { textVariant } from '../constants/textVarients';
+import { buttonVarients } from '../constants/buttonVarients';
+import { ArrowLeft } from 'lucide-react';
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
@@ -47,15 +49,15 @@ const SignUp: React.FC = () => {
       {/* Left Side - Branding */}
       <div className="signup-left">
         <div className="signup-left-content">
+          <CustomButton
+            variant={buttonVarients.icon}
+            icon={<ArrowLeft />}
+            onClick={() => navigate(ROUTES.HOME)}
+          />
           <CustomText
             variant={textVariant.h3}
             text="Vision Crafter AI"
-         
-            />
-          <CustomButton
-            variant="secondary"
-            text="Back to website →"
-            onClick={() => navigate(ROUTES.HOME)}
+
           />
         </div>
         <div className="signup-slogan">

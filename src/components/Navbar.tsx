@@ -7,6 +7,9 @@ import { LANDING_PAGE } from '../utils/local/en';
 import { ROUTES } from '../constants/routes';
 import '../styles/Navbar.css';
 import { textVariant } from '../constants/textVarients';
+import Dashboard from '../pages/Dashboard';
+import { LayoutDashboard } from 'lucide-react';
+import { buttonVarients } from '../constants/buttonVarients';
 
 
 
@@ -66,14 +69,18 @@ const Navbar: React.FC = () => {
         <div className="desktop-auth">
           {isAuthenticated ? (
             <div className="auth-section">
-              <CustomButton variant='primary' text='Dashboard' onClick={() => {
-                navigate(ROUTES.DASHBOARD)
-              }} />
+              <CustomButton
+                variant={buttonVarients.primary}
+                text='Dashboard'
+                icon={<LayoutDashboard />}
+                onClick={() => {
+                  navigate(ROUTES.DASHBOARD)
+                }} />
               <ProfileDropdown />
             </div>
           ) : (
             <CustomButton
-              variant="primary"
+              variant={buttonVarients.primary}
               text={authButtonText}
               onClick={handleAuthAction}
             />

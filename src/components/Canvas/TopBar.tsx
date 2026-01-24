@@ -1,10 +1,11 @@
 import React, { useContext } from 'react'
 import CustomButton from '../CustomButton'
 import { PanelContext } from '../../context/panelContext'
-import { ArrowLeft, Crop, Ratio, Scaling, Type, Wand2, Images, Eye, RotateCcw, Download, Save } from 'lucide-react'
+import { ArrowLeft, Crop, Ratio, Scaling, Type, Wand2, Images, Eye, RotateCcw, Download, Save, Undo, Redo } from 'lucide-react'
 import CustomText from '../CustomText'
 import "../../styles/EditorTopBar.css"
 import { textVariant } from '../../constants/textVarients'
+import { buttonVarients } from '../../constants/buttonVarients'
 
 interface feature {
   icon: React.ElementType
@@ -56,9 +57,9 @@ const TopBar: React.FC<{ title: string }> = (props) => {
   ]
 
   const actionButtons = [
-    { icon: RotateCcw, name: "Reset", variant: 'secondary' as const },
-    { icon: Save, name: "Save", variant: 'secondary' as const },
-    { icon: Download, name: "Export", variant: 'secondary' as const }
+    { icon: RotateCcw, name: "Reset", variant: buttonVarients.secondary },
+    { icon: Save, name: "Save", variant: buttonVarients.secondary },
+    { icon: Download, name: "Export", variant: buttonVarients.secondary }
   ]
 
   return (
@@ -66,7 +67,9 @@ const TopBar: React.FC<{ title: string }> = (props) => {
     <section className='topbar-content'>
 
       <div className='topbar-one'>
-        <CustomButton icon={<ArrowLeft />} variant='icon' />
+        <CustomButton
+          variant={buttonVarients.icon}
+          icon={<ArrowLeft />} />
         <CustomText
           variant={textVariant.h4}
           text={title} />
@@ -93,7 +96,7 @@ const TopBar: React.FC<{ title: string }> = (props) => {
           return (
             <CustomButton
               key={feature.name}
-              variant={isActive ? 'primary' : 'secondary'}
+              variant={isActive ? buttonVarients.primary : buttonVarients.secondary}
               icon={<Icon size={18} />}
               text={feature.name}
               onClick={feature.onClick}
