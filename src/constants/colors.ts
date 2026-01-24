@@ -15,29 +15,6 @@ export const colors = {
     700: '#404040',
     800: '#262626',
   },
-
-  // Text Colors
-  text: {
-    primary: '#FFFFFF',
-    secondary: '#A3A3A3',
-    tertiary: '#737373',
-    inverse: '#000000',
-  },
-
-  // Background Colors
-  background: {
-    primary: '#000000',
-    secondary: '#171717',
-    tertiary: '#262626',
-  },
-
-  // Border Colors
-  border: {
-    primary: '#404040',
-    secondary: '#262626',
-    accent: '#7C5CFF',
-  },
-
   // Shadows
   shadow: {
     sm: '0 2px 6px rgba(0, 0, 0, 0.25)',

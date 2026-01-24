@@ -7,7 +7,6 @@ import { LANDING_PAGE } from '../utils/local/en';
 import { ROUTES } from '../constants/routes';
 import '../styles/Navbar.css';
 import { textVariant } from '../constants/textVarients';
-import Dashboard from '../pages/Dashboard';
 import { LayoutDashboard } from 'lucide-react';
 import { buttonVarients } from '../constants/buttonVarients';
 

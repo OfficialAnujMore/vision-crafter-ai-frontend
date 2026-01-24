@@ -20,7 +20,7 @@ const toolConfigMap: Record<string, ToolConfig> = {
 
 const SideBar = () => {
   const panelContext = useContext(PanelContext)
-  const activeTool = panelContext?.activeTool || 'adjust'
+  const activeTool = panelContext?.activeTool || 'resize'
   const toolConfig = toolConfigMap[activeTool]
   const IconComponent = toolConfig?.icon || Ratio
 

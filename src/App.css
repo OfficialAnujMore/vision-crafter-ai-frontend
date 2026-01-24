@@ -1,5 +1,6 @@
 .app {
   text-align: center;
+  background-color: var(--color-black);
 }
 
 .main-layout {
