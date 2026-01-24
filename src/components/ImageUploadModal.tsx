@@ -9,6 +9,7 @@ import { uploadFileToImageKit } from '../services/api/imageKitService';
 import { projectService } from '../services/api/projectService';
 import '../styles/ImageUploadModal.css';
 import { showWarningToast } from '../utils/toast';
+import { textVariant } from '../constants/textVarients';
 
 interface ImageUploadModalProps {
     isOpen: boolean;
@@ -115,8 +116,8 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
             <div className="image-upload-modal__container">
                 <div className="image-upload-modal__header">
                     <CustomText
-                        variant='h5'
-                        value="Upload Image"
+                        variant={textVariant.h4}
+                        text="Upload Image"
                     />
                     <CustomButton
                         variant='icon'
@@ -135,14 +136,14 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                             <input {...getInputProps()} />
                             <Upload className="image-upload-modal__upload-icon" size={48} />
                             <CustomText
-                                variant='h5'
-                                value={isDragActive
+                                variant={textVariant.h4}
+                                text={isDragActive
                                     ? 'Drop the image here'
                                     : 'Drag & drop an image here'}
                             />
                             <CustomText
-                                variant='p'
-                                value="or click to select a file"
+                                variant={textVariant.p}
+                                text="or click to select a file"
                             />
                         </div>
                     ) : (
@@ -169,8 +170,8 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                 </div>
                 <div className='image-upload-modal__description'>
                     <CustomText
-                        variant='caption'
-                        value="Supports PNG, JPG, WEBP up to 5MB"
+                        variant={textVariant.p}
+                        text="Supports PNG, JPG, WEBP up to 5MB"
                     />
                 </div>
 

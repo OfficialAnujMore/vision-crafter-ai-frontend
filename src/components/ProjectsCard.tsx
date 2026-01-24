@@ -5,6 +5,7 @@ import CustomButton from './CustomButton';
 import { projectService } from '../services/api/projectService';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
+import { textVariant } from '../constants/textVarients';
 
 interface ProjectCardProps {
     fileId: string;
@@ -43,7 +44,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             />
 
             <div className="project-card__content">
-                <CustomText variant="h6" value={title} />
+                <CustomText
+                    variant={textVariant.h4}
+                    text={title} />
             </div>
 
             {isHovered && (

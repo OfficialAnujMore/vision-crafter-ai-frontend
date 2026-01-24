@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import CustomText from '../components/CustomText';
 import { LANDING_PAGE } from '../utils/local/en';
 import '../styles/LandingPage.css';
+import { textVariant } from '../constants/textVarients';
 
 const LandingPage: React.FC = () => {
   const homeRef = useRef<HTMLDivElement>(null);
@@ -11,9 +12,8 @@ const LandingPage: React.FC = () => {
       <section ref={homeRef} className="hero-section">
         <div className="hero-content">
           <CustomText
-            variant="h3"
-            value={LANDING_PAGE.homeTitle}
-            color="white"
+            variant={textVariant.h1}
+            text={LANDING_PAGE.homeTitle}
           />
         </div>
 

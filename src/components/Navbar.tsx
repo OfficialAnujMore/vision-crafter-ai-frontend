@@ -6,6 +6,7 @@ import ProfileDropdown from './ProfileDropdown';
 import { LANDING_PAGE } from '../utils/local/en';
 import { ROUTES } from '../constants/routes';
 import '../styles/Navbar.css';
+import { textVariant } from '../constants/textVarients';
 
 
 
@@ -57,8 +58,8 @@ const Navbar: React.FC = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <CustomText
-          variant="h4"
-          value={LANDING_PAGE.navLogo}
+          variant={textVariant.h4}
+          text={LANDING_PAGE.navLogo}
           onClick={() => navigate(ROUTES.HOME)}
         />
 

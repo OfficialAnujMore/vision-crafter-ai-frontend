@@ -4,6 +4,7 @@ import { PanelContext } from '../../context/panelContext'
 import { ArrowLeft, Crop, Ratio, Scaling, Type, Wand2, Images, Eye, RotateCcw, Download, Save } from 'lucide-react'
 import CustomText from '../CustomText'
 import "../../styles/EditorTopBar.css"
+import { textVariant } from '../../constants/textVarients'
 
 interface feature {
   icon: React.ElementType
@@ -66,7 +67,9 @@ const TopBar: React.FC<{ title: string }> = (props) => {
 
       <div className='topbar-one'>
         <CustomButton icon={<ArrowLeft />} variant='icon' />
-        <CustomText value={title} variant='h4' />
+        <CustomText
+          variant={textVariant.h4}
+          text={title} />
         <div className='topbar-action'>
           {actionButtons.map((item) => {
             const Icon = item.icon
