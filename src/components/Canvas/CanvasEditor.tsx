@@ -13,18 +13,12 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ projectUrl, width, height }
         if (!fabricCanvasRef.current || !projectUrl) return;
 
         try {
-            // Create a Fabric image from the URL
             const imgElement = await FabricImage.fromURL(projectUrl, {
                 crossOrigin: 'anonymous',
             });
-
-            // Clear any existing objects on canvas
-            fabricCanvasRef.current.clear();
-
-            // Add the image to the canvas
+            fabricCanvasRef.current.clear();            
             fabricCanvasRef.current.add(imgElement);
 
-            // Scale image to fit canvas while maintaining aspect ratio
             const canvas = fabricCanvasRef.current;
             const maxWidth = canvas.width! * 0.9;
             const maxHeight = canvas.height! * 0.9;
@@ -42,8 +36,6 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ projectUrl, width, height }
                 selectable: true,
                 evented: true,
             });
-
-            // Render the canvas
             canvas.renderAll();
         } catch (error) {
             console.error('Failed to load image:', error);

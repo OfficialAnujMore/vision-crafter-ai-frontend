@@ -12,12 +12,12 @@ import GlobalLoader from './components/Loader';
 import { Toaster } from 'sonner';
 import './styles/Toast.css'
 import Editor from './pages/Editor';
+import { authService } from './services/api/authService';
 
-// Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const accessToken = localStorage.getItem('access_token');
+  const isAuthenticated = authService.isAuthenticated();
 
-  if (!accessToken) {
+  if (!isAuthenticated) {
     return <Navigate to={ROUTES.SIGNUP} replace />;
   }
 

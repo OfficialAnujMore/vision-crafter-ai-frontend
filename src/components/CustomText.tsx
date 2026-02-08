@@ -72,7 +72,6 @@ const CustomText: React.FC<CustomTextProps> = ({ variant, text, fontSize, lineHe
     },
   };
 
-  // Apply custom fontSize and lineHeight if provided
   const style = { ...styles[variant] };
   if (fontSize) style.fontSize = fontSize;
   if (lineHeight) style.lineHeight = lineHeight;

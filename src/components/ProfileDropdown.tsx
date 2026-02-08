@@ -50,11 +50,11 @@ const ProfileDropdown: React.FC = () => {
     };
   }, [isOpen]);
 
-  const handleLogout = () => {
-    authService.logout();
+  const handleLogout = async () => {
+    await authService.logout();
     setIsOpen(false);
     navigate(ROUTES.HOME);
-    // Force a page reload to clear any cached state
+    
     window.location.href = ROUTES.HOME;
   };
 

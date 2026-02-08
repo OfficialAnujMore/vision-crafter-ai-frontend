@@ -5,6 +5,8 @@ export const API_CONFIG = {
   ENDPOINTS: {
     AUTH: {
       GOOGLE: '/auth/google',
+      LOGOUT: '/auth/logout',
+      REFRESH: '/auth/refresh',
     },
     USER: {
       PROFILE: '/user/profile',

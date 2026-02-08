@@ -6,22 +6,34 @@ import { showSuccessToast } from '../../utils/toast';
 
 export const authService = {
   googleAuth: async (googleToken: string): Promise<GoogleAuthResponse> => {
-    const response = await axiosInstance.post<ApiResponse<GoogleAuthResponse>>(
-      API_CONFIG.ENDPOINTS.AUTH.GOOGLE,
-      { token: googleToken }
-    );
-
-    if (response.data.data.access_token) {
-      localStorage.setItem('access_token', response.data.data.access_token);
-      localStorage.setItem('user', JSON.stringify(response.data.data.user));
-      showSuccessToast('Successfully logged in!');
+    try {      
+      const response = await axiosInstance.post<ApiResponse<GoogleAuthResponse>>(
+        API_CONFIG.ENDPOINTS.AUTH.GOOGLE,
+        { token: googleToken }
+      );
+      if (response.data.data?.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+        showSuccessToast('Successfully logged in!');
+        return response.data.data;
+      } else {
+        throw new Error('No user data received from backend');
+      }
+    } catch (error) {
+      console.error('❌ Google auth error:', error);
+      throw error;
     }
-
-    return response.data.data;
   },
 
-  logout: () => {
-    localStorage.removeItem('access_token');
+  logout: async () => {
+    try {
+      
+      await axiosInstance.post(API_CONFIG.ENDPOINTS.AUTH.LOGOUT);
+    } catch (error) {
+      
+      console.error('Logout API error:', error);
+    }
+    
+    
     localStorage.removeItem('user');
     showSuccessToast('Successfully logged out!');
   },
@@ -31,7 +43,8 @@ export const authService = {
     return userStr ? JSON.parse(userStr) : null;
   },
 
+
   isAuthenticated: () => {
-    return !!localStorage.getItem('access_token');
+    return !!localStorage.getItem('user');
   }
 };

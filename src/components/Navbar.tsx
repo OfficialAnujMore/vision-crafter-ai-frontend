@@ -9,18 +9,17 @@ import '../styles/Navbar.css';
 import { textVariant } from '../constants/textVarients';
 import { LayoutDashboard } from 'lucide-react';
 import { buttonVarients } from '../constants/buttonVarients';
+import { authService } from '../services/api/authService';
 
 
 
 const Navbar: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('access_token'));
+  const [isAuthenticated, setIsAuthenticated] = useState(() => authService.isAuthenticated());
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Listen for storage changes (e.g., when logging in from another tab)
     const handleStorageChange = () => {
-      const token = localStorage.getItem('access_token');
-      setIsAuthenticated(!!token);
+      setIsAuthenticated(authService.isAuthenticated());
     };
 
     window.addEventListener('storage', handleStorageChange);
@@ -38,14 +37,12 @@ const Navbar: React.FC = () => {
   };
 
   useEffect(() => {
-    // Listen for auth state changes to update navbar
     const handleAuthChange = () => {
-      setIsAuthenticated(!!localStorage.getItem('access_token'));
+      setIsAuthenticated(authService.isAuthenticated());
     };
 
     window.addEventListener('storage', handleAuthChange);
 
-    // Also listen for custom auth events
     window.addEventListener('authStateChanged', handleAuthChange);
 
     return () => {

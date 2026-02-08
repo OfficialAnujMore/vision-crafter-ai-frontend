@@ -22,10 +22,10 @@ const SignUp: React.FC = () => {
         throw new Error('No credential received from Google');
       }
 
-      // Send the Google ID token to backend
+      
       await authService.googleAuth(credentialResponse.credential);
 
-      // Redirect to dashboard on success
+      
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
       console.error('Google sign-in error:', err);

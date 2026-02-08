@@ -44,7 +44,7 @@ export const showWarningToast = (message: string, description?: string) => {
     });
 };
 
-// Type guard for ApiError
+
 const isApiError = (error: unknown): error is ApiError => {
     return (
         typeof error === 'object' &&

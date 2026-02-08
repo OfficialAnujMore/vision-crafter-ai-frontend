@@ -25,10 +25,6 @@ const Editor: React.FC = () => {
         setLoading(true)
         const data = await projectService.getProjectById(Number(projectId));
         setProjectData(data)
-        // showSuccessToast(
-        //     'Project Fetch Successfully',
-        //     'Succesful'
-        // );
         setLoading(false)
     }
     useEffect(() => {
