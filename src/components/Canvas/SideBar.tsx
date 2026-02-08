@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { PanelContext } from '../../context/panelContext'
 import { Crop, Ratio, Scaling, Type, Wand2, Images, Eye } from 'lucide-react'
-import '../../styles/SideBar.css'
+import '../../styles/Editor.css'
 
 interface ToolConfig {
   icon: React.ElementType

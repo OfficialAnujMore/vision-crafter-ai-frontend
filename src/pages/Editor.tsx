@@ -38,9 +38,7 @@ const Editor: React.FC = () => {
             {projectData ? (
                 <PanelContext.Provider value={{ activeTool, setActiveTool }}>
                     <div className='editor-container'>
-                        <section className='topbar-container'>
-                            <TopBar title={projectData?.title} />
-                        </section>
+                        <TopBar title={projectData?.title} />
                         <section className='editor-panel'>
                             <SideBar />
                             <CanvasEditor projectUrl={projectData?.project_url} width={projectData?.width} height={projectData?.height} />

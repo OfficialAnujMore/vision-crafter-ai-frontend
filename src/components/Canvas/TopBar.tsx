@@ -3,7 +3,7 @@ import CustomButton from '../CustomButton'
 import { PanelContext } from '../../context/panelContext'
 import { ArrowLeft, Crop, Ratio, Scaling, Type, Wand2, Images, Eye, RotateCcw, Download, Save, Undo, Redo } from 'lucide-react'
 import CustomText from '../CustomText'
-import "../../styles/EditorTopBar.css"
+import '../../styles/Editor.css'
 import { textVariant } from '../../constants/textVarients'
 import { buttonVarients } from '../../constants/buttonVarients'
 
