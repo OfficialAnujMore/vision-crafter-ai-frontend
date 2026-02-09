@@ -26,11 +26,6 @@ const Toolbar = () => {
             onClick: () => panelContext?.setActiveTool("crop")
         },
         {
-            icon: Ratio,
-            name: "Adjust",
-            onClick: () => panelContext?.setActiveTool("adjust")
-        },
-        {
             icon: Type,
             name: "Text",
             onClick: () => panelContext?.setActiveTool("text")
@@ -43,13 +38,8 @@ const Toolbar = () => {
         {
             icon: Images,
             name: "AI Image Extender",
-            onClick: () => PanelContext?.setActiveTool("extend")
+            onClick: () => panelContext?.setActiveTool("extend")
         },
-        {
-            icon: Eye,
-            name: "AI Editing",
-            onClick: () => panelContext?.setActiveTool("editing")
-        }
     ]
     return (
 
