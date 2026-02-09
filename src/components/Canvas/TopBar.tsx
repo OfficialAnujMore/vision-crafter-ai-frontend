@@ -1,109 +1,55 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import CustomButton from '../CustomButton'
-import { PanelContext } from '../../context/panelContext'
-import { ArrowLeft, Crop, Ratio, Scaling, Type, Wand2, Images, Eye, RotateCcw, Download, Save, Undo, Redo } from 'lucide-react'
+import { ArrowLeft, RotateCcw, Download, Save, Undo, Redo } from 'lucide-react'
 import CustomText from '../CustomText'
 import '../../styles/Editor.css'
 import { textVariant } from '../../constants/textVarients'
 import { buttonVarients } from '../../constants/buttonVarients'
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../constants/routes'
 
-interface feature {
-  icon: React.ElementType
-  name: string
-  onClick: () => void
-}
 
 const TopBar: React.FC<{ title: string }> = (props) => {
   const { title } = props
 
-  const panelContext = useContext(PanelContext);
-
-  const features: Array<feature> = [
-    {
-      icon: Scaling,
-      name: "Resize",
-      onClick: () => panelContext?.setActiveTool("resize")
-    },
-    {
-      icon: Crop,
-      name: "Crop",
-      onClick: () => panelContext?.setActiveTool("crop")
-    },
-    {
-      icon: Ratio,
-      name: "Adjust",
-      onClick: () => panelContext?.setActiveTool("adjust")
-    },
-    {
-      icon: Type,
-      name: "Text",
-      onClick: () => panelContext?.setActiveTool("text")
-    },
-    {
-      icon: Wand2,
-      name: "AI Background",
-      onClick: () => panelContext?.setActiveTool("background")
-    },
-    {
-      icon: Images,
-      name: "AI Image Extender",
-      onClick: () => panelContext?.setActiveTool("extend")
-    },
-    {
-      icon: Eye,
-      name: "AI Editing",
-      onClick: () => panelContext?.setActiveTool("editing")
-    }
-  ]
+  const navigate = useNavigate();
 
   const actionButtons = [
-    { icon: RotateCcw, name: "Reset", variant: buttonVarients.secondary },
-    { icon: Save, name: "Save", variant: buttonVarients.secondary },
-    { icon: Download, name: "Export", variant: buttonVarients.secondary }
+    { icon: RotateCcw, name: "Reset", variant: buttonVarients.icon },
+    { icon: Undo, name: "Undo", variant: buttonVarients.icon },
+    { icon: Redo, name: "Redo", variant: buttonVarients.icon },
+    { icon: Save, name: "Save", variant: buttonVarients.icon },
+    { icon: Download, name: "Export", variant: buttonVarients.icon }
   ]
 
   return (
 
-    <section className='topbar-content'>
+    <section className='topbar-container'>
+      <CustomButton
+        onClick={() => {
+          navigate(ROUTES.DASHBOARD)
+        }}
+        variant={buttonVarients.icon}
+        icon={<ArrowLeft />} />
 
-      <div className='topbar-one'>
-        <CustomButton
-          variant={buttonVarients.icon}
-          icon={<ArrowLeft />} />
-        <CustomText
-          variant={textVariant.h4}
-          text={title} />
-        <div className='topbar-action'>
-          {actionButtons.map((item) => {
-            const Icon = item.icon
-            return (
-              <CustomButton
-                key={item.name}
-                variant={item.variant}
-                icon={<Icon size={18} />}
-                text={item.name}
-              />
-            )
-          }
-          )}
-        </div>
-      </div>
-
-      <div className='topbar-two'>
-        {features.map((feature) => {
-          const Icon = feature.icon
-          const isActive = panelContext?.activeTool === feature.name.toLowerCase().replace(' ', '')
+      <CustomText
+        variant={textVariant.h4}
+        text={title} />
+      <div className='topbar-action'>
+        {actionButtons.map((item) => {
+          const Icon = item.icon
           return (
             <CustomButton
-              key={feature.name}
-              variant={isActive ? buttonVarients.primary : buttonVarients.secondary}
-              icon={<Icon size={18} />}
-              text={feature.name}
-              onClick={feature.onClick}
+              key={item.name}
+              variant={item.variant}
+              icon={<Icon size={20} />}
             />
           )
-        })}
+        }
+        )}
       </div>
+
+
     </section>
 
   )

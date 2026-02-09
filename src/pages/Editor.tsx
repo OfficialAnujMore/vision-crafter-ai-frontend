@@ -6,8 +6,9 @@ import CanvasEditor from '../components/Canvas/CanvasEditor';
 import TopBar from '../components/Canvas/TopBar';
 import '../styles/Editor.css'
 import { PanelContext } from '../context/panelContext';
-import SideBar from '../components/Canvas/SideBar';
 import type { SaveFileResponse } from '../interface/project';
+import Toolbar from '../components/Canvas/Toolbar';
+import FeatureBar from '../components/Canvas/FeatureBar';
 
 
 export type ToolType = 'adjust' | 'crop' | 'resize' | 'text' | "background" | "extend" | "editing";
@@ -40,7 +41,8 @@ const Editor: React.FC = () => {
                     <div className='editor-container'>
                         <TopBar title={projectData?.title} />
                         <section className='editor-panel'>
-                            <SideBar />
+                            <Toolbar/>
+                            <FeatureBar />
                             <CanvasEditor projectUrl={projectData?.project_url} width={projectData?.width} height={projectData?.height} />
                         </section>
                     </div>
