@@ -1,5 +1,5 @@
 import axiosInstance from './index';
-import { API_CONFIG } from '../../config/api';
+import { API_CONFIG } from '../config/api';
 import type { ApiResponse } from '../../interface/api';
 import type { GoogleAuthResponse } from '../../interface/auth';
 import { showSuccessToast } from '../../utils/toast';

@@ -19,7 +19,8 @@ export const API_CONFIG = {
       CREATE:"/api/projects/create",
       GET_PROJECT: "/api/projects/",
       USER_PROJECTS: "/api/projects/user/",
-      DELETE_BY_FILE_ID: "/api/projects/"
+      DELETE_BY_FILE_ID: "/api/projects/",
+      UPDATE: "/api/projects/",
     }
   },
 } as const;

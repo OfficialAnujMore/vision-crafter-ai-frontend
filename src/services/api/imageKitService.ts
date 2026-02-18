@@ -1,5 +1,5 @@
 import axiosInstance from ".";
-import { API_CONFIG } from "../../config/api";
+import { API_CONFIG } from "../config/api";
 import type { ApiResponse } from "../../interface/api";
 import type { BaseFileResponse } from "../../interface/common";
 import type { ImageKitAuthResponse } from "../../interface/imagekit";

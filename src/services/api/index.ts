@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { AxiosResponse } from 'axios';
-import { API_CONFIG } from '../../config/api.ts';
+import { API_CONFIG } from '../config/api.ts';
 import { ApiError } from '../../interface/api';
 import type { ApiResponse, ApiErrorResponse } from '../../interface/api';
 import { showErrorToast, showWarningToast } from '../../utils/toast';

@@ -1,16 +1,16 @@
 import { useContext } from 'react'
-import { PanelContext } from '../../context/panelContext'
 import '../../styles/Editor.css'
 import CropComponent from '../FeatureComponents/CropComponent'
 import ResizeComponent from '../FeatureComponents/ResizeComponent'
 import TextComponent from '../FeatureComponents/TextComponent'
 import BackgroundRemover from '../FeatureComponents/BackgroundRemover'
 import ImageExtender from '../FeatureComponents/ImageExtender'
+import { CanvasContext } from '../../context/canvasContext'
 
 
 const FeatureBar = () => {
-  const panelContext = useContext(PanelContext)
-  const activeTool = panelContext?.activeTool || 'resize'
+  const canvasContext = useContext(CanvasContext)
+  const activeTool = canvasContext?.activeTool || 'resize'
 
   const renderActiveTool = () => {
 

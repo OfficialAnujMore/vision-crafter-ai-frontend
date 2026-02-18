@@ -1,12 +1,12 @@
 
-import { Crop, Ratio, Scaling, Type, Wand2, Images, Eye } from 'lucide-react'
+import { Crop, Scaling, Type, Wand2, Images } from 'lucide-react'
 import React, { useContext } from 'react'
 import CustomButton from '../CustomButton'
-import { PanelContext } from '../../context/panelContext';
 import { buttonVarients } from '../../constants/buttonVarients';
+import { CanvasContext } from '../../context/canvasContext';
 
 const Toolbar = () => {
-    const panelContext = useContext(PanelContext);
+    const canvasContext = useContext(CanvasContext);
 
     interface feature {
         icon: React.ElementType
@@ -18,27 +18,27 @@ const Toolbar = () => {
         {
             icon: Scaling,
             name: "Resize",
-            onClick: () => panelContext?.setActiveTool("resize")
+            onClick: () => canvasContext?.setActiveTool("resize")
         },
         {
             icon: Crop,
             name: "Crop",
-            onClick: () => panelContext?.setActiveTool("crop")
+            onClick: () => canvasContext?.setActiveTool("crop")
         },
         {
             icon: Type,
             name: "Text",
-            onClick: () => panelContext?.setActiveTool("text")
+            onClick: () => canvasContext?.setActiveTool("text")
         },
         {
             icon: Wand2,
             name: "AI Background",
-            onClick: () => panelContext?.setActiveTool("background")
+            onClick: () => canvasContext?.setActiveTool("background")
         },
         {
             icon: Images,
             name: "AI Image Extender",
-            onClick: () => panelContext?.setActiveTool("extend")
+            onClick: () => canvasContext?.setActiveTool("extend")
         },
     ]
     return (

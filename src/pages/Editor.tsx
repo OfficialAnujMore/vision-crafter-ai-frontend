@@ -5,10 +5,13 @@ import { useParams } from 'react-router-dom';
 import CanvasEditor from '../components/Canvas/CanvasEditor';
 import TopBar from '../components/Canvas/TopBar';
 import '../styles/Editor.css'
-import { PanelContext } from '../context/panelContext';
+// import { PanelContext } from '../context/panelContext';
+// import { CanvasProvider } from '../context/CanvasProvider';
 import type { SaveFileResponse } from '../interface/project';
 import Toolbar from '../components/Canvas/Toolbar';
 import FeatureBar from '../components/Canvas/FeatureBar';
+import type { Canvas } from 'fabric';
+import { CanvasContext } from '../context/canvasContext';
 
 
 export type ToolType = 'adjust' | 'crop' | 'resize' | 'text' | "background" | "extend" | "editing";
@@ -19,35 +22,48 @@ const Editor: React.FC = () => {
     const { projectId } = useParams();
 
 
-    const [activeTool, setActiveTool] = useState<ToolType>('adjust')
+    // const [activeTool, setActiveTool] = useState<ToolType>('adjust')
     const [projectData, setProjectData] = useState<SaveFileResponse | null>(null);
 
-    const loadProject = async () => {
-        setLoading(true)
-        const data = await projectService.getProjectById(Number(projectId));
-        setProjectData(data)
-        setLoading(false)
-    }
+    const [fabricCanvas, setFabricCanvas] = useState<Canvas | null>(null);
+    const [canvasEditor, setCanvasEditor] = useState<Canvas | null>(null);
+    const [activeTool, setActiveTool] = useState<ToolType>('adjust');
+
+
     useEffect(() => {
+        const loadProject = async () => {
+            if (!projectId) return;
+            setLoading(true)
+            const data = await projectService.getProjectById(Number(projectId));
+            setProjectData(data)
+            setLoading(false)
+        }
+
         loadProject();
-    }, [projectId])
-
-
+    }, [projectId, setLoading])
 
     return (
         <div>
             {projectData ? (
-                <PanelContext.Provider value={{ activeTool, setActiveTool }}>
+                <CanvasContext.Provider
+                    value={{
+                        fabricCanvas,
+                        setFabricCanvas,
+                        activeTool,
+                        setActiveTool,
+                    }}
+                >
+                    {/* <PanelContext.Provider value={{ activeTool, setActiveTool }}> */}
                     <div className='editor-container'>
                         <TopBar title={projectData?.title} />
                         <section className='editor-panel'>
-                            <Toolbar/>
+                            <Toolbar />
                             <FeatureBar />
-                            <CanvasEditor projectUrl={projectData?.project_url} width={projectData?.width} height={projectData?.height} />
+                            <CanvasEditor project={projectData} />
                         </section>
                     </div>
-
-                </PanelContext.Provider>
+                    {/* </PanelContext.Provider> */}
+                </CanvasContext.Provider>
             ) : (<div className='loading-placeholder'>Loading project...</div>)
             }
         </div>

@@ -1,5 +1,5 @@
 import axiosInstance from ".";
-import { API_CONFIG } from "../../config/api";
+import { API_CONFIG } from "../config/api";
 import type { ApiResponse } from "../../interface/api";
 import type { SaveFileResponse, SaveFile } from "../../interface/project";
 import { showSuccessToast } from "../../utils/toast";
@@ -44,6 +44,13 @@ export const projectService = {
             `${API_CONFIG.ENDPOINTS.PROJECT.GET_PROJECT}${projectId}`
         )
         return response.data.data
+    },
+    updateProject: async (projectId: number, updates: Record<string, unknown>): Promise<SaveFileResponse> => {
+        const response = await axiosInstance.patch<ApiResponse<SaveFileResponse>>(
+            `${API_CONFIG.ENDPOINTS.PROJECT.GET_PROJECT}${projectId}`,
+            updates
+        );
+        return response.data.data;
     }
 
 }

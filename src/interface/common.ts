@@ -1,3 +1,5 @@
+import type { Canvas } from "fabric";
+
 export interface BaseFileResponse {
     file_id: string;
     title: string;
@@ -6,4 +8,5 @@ export interface BaseFileResponse {
     width: number;
     height: number;
     file_type: string;
+    canvas_state?:Canvas;
 }

@@ -1,6 +1,9 @@
+import type { SaveFileResponse } from './project';
 
-export interface CanvasEditorProps{
-    projectUrl: string;
-    width: number;
-    height: number;
+export interface CanvasEditorProps {
+    project: SaveFileResponse & {
+        canvasState?: Record<string, unknown>;
+        currentImageUrl?: string;
+        originalImageUrl?: string;
+    };
 }
