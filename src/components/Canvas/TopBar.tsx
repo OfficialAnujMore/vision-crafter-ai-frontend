@@ -8,16 +8,29 @@ import { buttonVarients } from '../../constants/buttonVarients'
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes'
 
+declare global {
+  interface Window {
+    canvasUndo?: () => void;
+    canvasRedo?: () => void;
+  }
+}
 
 const TopBar: React.FC<{ title: string }> = (props) => {
   const { title } = props
 
   const navigate = useNavigate();
+  const handleUndoClick = () => {
+    window.canvasUndo?.();
+  };
+
+  const handleRedoClick = () => {
+    window.canvasRedo?.();
+  };
 
   const actionButtons = [
     { icon: RotateCcw, name: "Reset", variant: buttonVarients.icon },
-    { icon: Undo, name: "Undo", variant: buttonVarients.icon },
-    { icon: Redo, name: "Redo", variant: buttonVarients.icon },
+    { icon: Undo, name: "Undo", variant: buttonVarients.icon, onClick: handleUndoClick },
+    { icon: Redo, name: "Redo", variant: buttonVarients.icon, onClick: handleRedoClick },
     { icon: Save, name: "Save", variant: buttonVarients.icon },
     { icon: Download, name: "Export", variant: buttonVarients.icon }
   ]
@@ -42,6 +55,7 @@ const TopBar: React.FC<{ title: string }> = (props) => {
             <CustomButton
               key={item.name}
               variant={item.variant}
+              onClick={item.onClick}
               icon={<Icon size={20} />}
             />
           )

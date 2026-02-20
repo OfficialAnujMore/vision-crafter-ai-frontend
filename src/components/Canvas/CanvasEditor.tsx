@@ -4,14 +4,24 @@ import { Canvas, FabricImage } from 'fabric';
 import '../../styles/Editor.css'
 import { showInfoToast } from '../../utils/toast';
 import { saveCanvasState } from '../../services/api/canvasService';
+import { useCanvasHistory } from '../../hooks/useCanvasHistory';
+
+declare global {
+    interface Window {
+        canvasUndo?: () => void;
+        canvasRedo?: () => void;
+    }
+}
 
 const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const fabricCanvasRef = useRef<Canvas | null>(null);
+    const fabricCanvasRef = useRef<Canvas>(null!);
     const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isInitialLoadRef = useRef(true);
     const isRestoringRef = useRef(false);
+
+    const { addToHistory, handleUndo, handleRedo } = useCanvasHistory(fabricCanvasRef, isRestoringRef);
 
     const projectUrl = project?.project_url;
     const canvasState = project?.canvas_state;
@@ -32,17 +42,23 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
         })
     }, []);
 
+    useEffect(() => {
+        window.canvasUndo = handleUndo;
+        window.canvasRedo = handleRedo;
+
+        return () => {
+            delete window.canvasUndo;
+            delete window.canvasRedo;
+        };
+    }, [handleUndo, handleRedo]);
+
 
 
     const loadImage = async () => {
         if (!fabricCanvasRef.current || !projectUrl) return;
-
         isRestoringRef.current = true;
-
         try {
-            const imgElement = await FabricImage.fromURL(projectUrl, {
-                crossOrigin: 'anonymous',
-            });
+            const imgElement = await FabricImage.fromURL(projectUrl, { crossOrigin: 'anonymous' });
             const canvas = fabricCanvasRef.current;
             canvas!.clear();
             canvas!.add(imgElement);
@@ -110,11 +126,10 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
     useEffect(() => {
         if (!fabricCanvasRef.current || !project?.id) return;
 
-
         const debouncedSave = async () => {
-            
             if (isInitialLoadRef.current) return;
             if (isRestoringRef.current) return;
+
             if (saveTimeoutRef.current) {
                 clearTimeout(saveTimeoutRef.current);
             }
@@ -124,8 +139,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
                 try {
                     const canvasJSON = fabricCanvasRef.current!.toJSON();
                     await saveCanvasState(project.id, canvasJSON);
-                    showInfoToast("Auto saved");
-
+                    showInfoToast("Auto saved")
                 } catch (error) {
                     showInfoToast("Failed to auto save");
                     console.error('Failed to save canvas:', error);
@@ -133,23 +147,32 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
             }, 5000);
         };
 
-        fabricCanvasRef.current.on('object:added', debouncedSave);
-        fabricCanvasRef.current.on('object:modified', debouncedSave);
-        fabricCanvasRef.current.on('object:removed', debouncedSave);
-        fabricCanvasRef.current.on('path:created', debouncedSave);
+        const handleCanvasChange = () => {
+
+            // addToHistory(); // Add to history immediately
+            debouncedSave(); // Debounce DB save
+        };
+
+        fabricCanvasRef.current.on('object:added', handleCanvasChange);
+        fabricCanvasRef.current.on('object:modified', handleCanvasChange);
+        fabricCanvasRef.current.on('object:removed', handleCanvasChange);
+        fabricCanvasRef.current.on('path:created', handleCanvasChange);
 
         return () => {
             if (saveTimeoutRef.current) {
                 clearTimeout(saveTimeoutRef.current);
             }
             if (fabricCanvasRef.current) {
-                fabricCanvasRef.current.off('object:added', debouncedSave);
-                fabricCanvasRef.current.off('object:modified', debouncedSave);
-                fabricCanvasRef.current.off('object:removed', debouncedSave);
-                fabricCanvasRef.current.off('path:created', debouncedSave);
+                fabricCanvasRef.current.off('object:added', handleCanvasChange);
+                fabricCanvasRef.current.off('object:modified', handleCanvasChange);
+                fabricCanvasRef.current.off('object:removed', handleCanvasChange);
+                fabricCanvasRef.current.off('path:created', handleCanvasChange);
             }
         };
-    }, [project?.id]);
+    }, [project?.id, addToHistory]);
+
+
+
 
     return (
         <div className='canvas-wrapper' ref={wrapperRef}>

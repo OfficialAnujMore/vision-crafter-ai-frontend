@@ -5,8 +5,6 @@ import { useParams } from 'react-router-dom';
 import CanvasEditor from '../components/Canvas/CanvasEditor';
 import TopBar from '../components/Canvas/TopBar';
 import '../styles/Editor.css'
-// import { PanelContext } from '../context/panelContext';
-// import { CanvasProvider } from '../context/CanvasProvider';
 import type { SaveFileResponse } from '../interface/project';
 import Toolbar from '../components/Canvas/Toolbar';
 import FeatureBar from '../components/Canvas/FeatureBar';
@@ -20,13 +18,8 @@ const Editor: React.FC = () => {
 
     const { setLoading } = useLoader();
     const { projectId } = useParams();
-
-
-    // const [activeTool, setActiveTool] = useState<ToolType>('adjust')
     const [projectData, setProjectData] = useState<SaveFileResponse | null>(null);
-
     const [fabricCanvas, setFabricCanvas] = useState<Canvas | null>(null);
-    const [canvasEditor, setCanvasEditor] = useState<Canvas | null>(null);
     const [activeTool, setActiveTool] = useState<ToolType>('adjust');
 
 
@@ -51,9 +44,7 @@ const Editor: React.FC = () => {
                         setFabricCanvas,
                         activeTool,
                         setActiveTool,
-                    }}
-                >
-                    {/* <PanelContext.Provider value={{ activeTool, setActiveTool }}> */}
+                    }}>
                     <div className='editor-container'>
                         <TopBar title={projectData?.title} />
                         <section className='editor-panel'>
@@ -62,7 +53,6 @@ const Editor: React.FC = () => {
                             <CanvasEditor project={projectData} />
                         </section>
                     </div>
-                    {/* </PanelContext.Provider> */}
                 </CanvasContext.Provider>
             ) : (<div className='loading-placeholder'>Loading project...</div>)
             }
