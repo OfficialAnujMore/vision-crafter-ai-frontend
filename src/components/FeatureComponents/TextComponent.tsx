@@ -52,9 +52,6 @@ const TextComponent = () => {
     if (!fabricCanvas) return;
 
     const activeObject = fabricCanvas.getActiveObject();
-    console.log(activeObject?.type);
-
-
     if (activeObject && activeObject.type === "i-text") {
 
       const textObject = activeObject as IText;
@@ -82,7 +79,12 @@ const TextComponent = () => {
     fabricCanvas.on("selection:updated", handleSelectionUpdated)
     fabricCanvas.on("selection:cleared", handleSelectionCleared)
 
-
+  setTimeout(() => {
+    const activeObject = fabricCanvas.getActiveObject();
+    if (activeObject && activeObject.type === "i-text") {
+      updateSelectedText();
+    }
+  }, 100);
     return () => {
       fabricCanvas.off("selection:created", handleSelectionCreated)
       fabricCanvas.off("selection:updated", handleSelectionUpdated)
@@ -111,8 +113,6 @@ const TextComponent = () => {
     fabricCanvas.add(text);
     fabricCanvas.setActiveObject(text);
     fabricCanvas.requestRenderAll();
-
-    // canvasContext?.setFabricCanvas()
     setTimeout(() => {
       text.enterEditing()
       text.selectAll()
