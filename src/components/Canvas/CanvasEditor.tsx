@@ -5,6 +5,8 @@ import '../../styles/Editor.css'
 import { showInfoToast } from '../../utils/toast';
 import { saveCanvasState } from '../../services/api/canvasService';
 import { useCanvasHistory } from '../../hooks/useCanvasHistory';
+import { useCanvasContext } from '../../context/canvasContext';
+import { useLoader } from '../LoaderContext';
 
 declare global {
     interface Window {
@@ -20,6 +22,8 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
     const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isInitialLoadRef = useRef(true);
     const isRestoringRef = useRef(false);
+    const { fabricCanvas, setFabricCanvas, activeTool, setActiveTool } = useCanvasContext();
+    const { setLoading } = useLoader();
 
     const { addToHistory, handleUndo, handleRedo } = useCanvasHistory(fabricCanvasRef, isRestoringRef);
 
@@ -40,7 +44,8 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
             height: wrapperHeight,
             selection: true,
         })
-    }, []);
+        setFabricCanvas(fabricCanvasRef.current)
+    }, [setFabricCanvas]);
 
     useEffect(() => {
         window.canvasUndo = handleUndo;
@@ -172,7 +177,23 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
     }, [project?.id, addToHistory]);
 
 
+    useEffect(() => {
+        if (!fabricCanvas) return
 
+        const handleSelection = (e) => {
+            const selectedObject = e.selected?.[0];
+
+            if (selectedObject && selectedObject.type === "i-text") {
+                setActiveTool("text")
+            }
+        }
+        fabricCanvas.on("selection:created", handleSelection);
+        fabricCanvas.on("selection:updated", handleSelection)
+        return () => {
+            fabricCanvas.off("selection:created", handleSelection);
+            fabricCanvas.off("selection:updated", handleSelection)
+        }
+    }, [fabricCanvas, setActiveTool])
 
     return (
         <div className='canvas-wrapper' ref={wrapperRef}>

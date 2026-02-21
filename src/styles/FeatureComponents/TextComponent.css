@@ -1,0 +1,68 @@
+.text-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-text-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.text-customization {
+    display: flex;
+    flex-direction: column;
+}
+
+.fontfamily-component select {
+    width: 100%;
+    padding: 0.5rem 0.625rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.fontfamily-component select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
+
+.fontsize-component {
+    width: 100%;
+}
+
+.container-header {
+    display: flex;
+    flex-direction: column;
+}
+
+.container-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.text-formatting>div {
+    border-radius: 8px;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.text-formatting>div.active {
+    background-color: rgba(99, 102, 241, 0.12);
+}
+
+.text-formatting>div.active:hover {
+    transform: translateY(-1px);
+}
+
+.delete-text {
+    margin-top: 0.25rem;
+    display: flex;
+    justify-content: flex-end;
+}

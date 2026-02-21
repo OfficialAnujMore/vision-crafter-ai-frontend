@@ -1,12 +1,12 @@
 
 import { Crop, Scaling, Type, Wand2, Images } from 'lucide-react'
-import React, { useContext } from 'react'
+import React from 'react'
 import CustomButton from '../CustomButton'
 import { buttonVarients } from '../../constants/buttonVarients';
-import { CanvasContext } from '../../context/canvasContext';
+import { useCanvasContext } from '../../context/canvasContext';
 
 const Toolbar = () => {
-    const canvasContext = useContext(CanvasContext);
+    const canvasContext = useCanvasContext();
 
     interface feature {
         icon: React.ElementType
