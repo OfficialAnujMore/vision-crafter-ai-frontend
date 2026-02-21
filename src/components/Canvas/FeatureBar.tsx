@@ -6,6 +6,7 @@ import TextComponent from '../FeatureComponents/TextComponent'
 import BackgroundRemover from '../FeatureComponents/BackgroundRemover'
 import ImageExtender from '../FeatureComponents/ImageExtender'
 import { CanvasContext } from '../../context/canvasContext'
+import AdjustComponent from '../FeatureComponents/AdjustComponent'
 
 
 const FeatureBar = () => {
@@ -13,8 +14,9 @@ const FeatureBar = () => {
   const activeTool = canvasContext?.activeTool || 'resize'
 
   const renderActiveTool = () => {
-
     switch (activeTool) {
+      case "adjust":
+        return <AdjustComponent />
       case "resize":
         return <ResizeComponent />
       case "crop":

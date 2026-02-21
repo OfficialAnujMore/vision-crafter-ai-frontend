@@ -1,5 +1,5 @@
 
-import { Crop, Scaling, Type, Wand2, Images } from 'lucide-react'
+import { Crop, Scaling, Type, Wand2, Images, SlidersHorizontal } from 'lucide-react'
 import React from 'react'
 import CustomButton from '../CustomButton'
 import { buttonVarients } from '../../constants/buttonVarients';
@@ -15,6 +15,11 @@ const Toolbar = () => {
     }
 
     const features: Array<feature> = [
+        {
+            icon: SlidersHorizontal,
+            name: "Adjust",
+            onClick: () => canvasContext?.setActiveTool("adjust")
+        },
         {
             icon: Scaling,
             name: "Resize",
