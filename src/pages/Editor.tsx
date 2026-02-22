@@ -49,7 +49,7 @@ const Editor: React.FC = () => {
                         <TopBar title={projectData?.title} />
                         <section className='editor-panel'>
                             <Toolbar />
-                            <FeatureBar />
+                            <FeatureBar project={projectData}/>
                             <CanvasEditor project={projectData} />
                         </section>
                     </div>

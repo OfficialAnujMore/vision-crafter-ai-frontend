@@ -7,9 +7,10 @@ import BackgroundRemover from '../FeatureComponents/BackgroundRemover'
 import ImageExtender from '../FeatureComponents/ImageExtender'
 import { CanvasContext } from '../../context/canvasContext'
 import AdjustComponent from '../FeatureComponents/AdjustComponent'
+import type { CanvasEditorProps } from '../../interface/canvas'
 
 
-const FeatureBar = () => {
+const FeatureBar: React.FC<CanvasEditorProps> = ({ project }) => {
   const canvasContext = useContext(CanvasContext)
   const activeTool = canvasContext?.activeTool || 'resize'
 
@@ -18,7 +19,7 @@ const FeatureBar = () => {
       case "adjust":
         return <AdjustComponent />
       case "resize":
-        return <ResizeComponent />
+        return <ResizeComponent project={project} />
       case "crop":
         return <CropComponent />
       case "text":
