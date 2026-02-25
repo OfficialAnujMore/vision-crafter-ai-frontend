@@ -20,16 +20,16 @@ const Toolbar = () => {
             name: "Adjust",
             onClick: () => canvasContext?.setActiveTool("adjust")
         },
-        {
-            icon: Scaling,
-            name: "Resize",
-            onClick: () => canvasContext?.setActiveTool("resize")
-        },
-        {
-            icon: Crop,
-            name: "Crop",
-            onClick: () => canvasContext?.setActiveTool("crop")
-        },
+        // {
+        //     icon: Scaling,
+        //     name: "Resize",
+        //     onClick: () => canvasContext?.setActiveTool("resize")
+        // },
+        // {
+        //     icon: Crop,
+        //     name: "Crop",
+        //     onClick: () => canvasContext?.setActiveTool("crop")
+        // },
         {
             icon: Type,
             name: "Text",
