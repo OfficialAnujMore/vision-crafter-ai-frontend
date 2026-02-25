@@ -1,0 +1,259 @@
+.bg-remover-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.bg-remover-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bg-remover-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: white;
+}
+
+.bg-remover-description {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.bg-remover-warning {
+  font-size: 0.75rem;
+  color: #fbbf24;
+}
+
+.bg-remover-warning-box {
+  background-color: rgba(217, 119, 6, 0.1);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+
+.bg-remover-warning-box p {
+  font-size: 0.75rem;
+  color: #fcd34d;
+}
+
+/* Tabs */
+.bg-remover-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.bg-remover-tabs-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  background-color: rgba(51, 65, 85, 0.5);
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+}
+
+.bg-remover-tab-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+}
+
+.bg-remover-tab-trigger:hover {
+  background-color: rgba(51, 65, 85, 0.5);
+}
+
+.bg-remover-tab-trigger.active {
+  background-color: #06b6d4;
+  color: white;
+}
+
+.tab-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.bg-remover-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Section */
+.bg-remover-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bg-remover-subtitle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Color Section */
+.bg-remover-color-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bg-remover-color-picker-wrapper {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.bg-remover-color-picker-wrapper :global(.react-colorful) {
+  width: 100%;
+}
+
+.bg-remover-color-input-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.bg-remover-color-input-group > div:first-child {
+  flex: 1;
+}
+
+.bg-remover-color-preview {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Search */
+.bg-remover-search-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.bg-remover-search-group > div:first-child {
+  flex: 1;
+}
+
+/* Results */
+.bg-remover-results {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bg-remover-results-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+}
+
+.bg-remover-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  max-height: 24rem;
+  overflow-y: auto;
+}
+
+.bg-remover-image-card {
+  position: relative;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: border-color 0.2s;
+}
+
+.bg-remover-image-card:hover {
+  border-color: #06b6d4;
+}
+
+.bg-remover-image {
+  width: 100%;
+  height: 6rem;
+  object-fit: cover;
+  display: block;
+}
+
+.bg-remover-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-remover-overlay.loading {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.bg-remover-overlay.hover {
+  background-color: rgba(0, 0, 0, 0);
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.bg-remover-image-card:hover .bg-remover-overlay.hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  opacity: 1;
+}
+
+.bg-remover-overlay svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: white;
+}
+
+.bg-remover-attribution {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 0.25rem;
+}
+
+.bg-remover-attribution p {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Empty State */
+.bg-remover-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem 1rem;
+}
+
+.bg-remover-empty-state svg {
+  width: 3rem;
+  height: 3rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.bg-remover-empty-state p {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.bg-remover-empty-state span {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}

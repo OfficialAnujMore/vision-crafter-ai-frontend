@@ -40,8 +40,8 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
 
         const wrapperHeight = wrapperRef.current.offsetHeight;
         fabricCanvasRef.current = new Canvas(canvasRef.current, {
-            width: wrapperWidth,
-            height: wrapperHeight,
+            width: wrapperWidth*0.9,
+            height: wrapperHeight*0.9,
             selection: true,
         })
         setFabricCanvas(fabricCanvasRef.current)

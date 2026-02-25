@@ -25,7 +25,7 @@ const FeatureBar: React.FC<CanvasEditorProps> = ({ project }) => {
       case "text":
         return <TextComponent />
       case "background":
-        return <BackgroundRemover />
+        return <BackgroundRemover  project={project}  />
       case "extend":
         return <ImageExtender />
       default:
