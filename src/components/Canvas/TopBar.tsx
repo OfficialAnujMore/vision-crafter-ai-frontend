@@ -1,8 +1,8 @@
 import React from 'react'
-import CustomButton from '../CustomButton'
-import { ArrowLeft, Undo, Redo, Share2, Upload, User } from 'lucide-react'
-import CustomText from '../CustomText'
-import '../../styles/Editor.css'
+import CustomButton from '../CustomComponents/CustomButton'
+import { ArrowLeft, Undo, Redo, Share2,Download } from 'lucide-react'
+import CustomText from '../CustomComponents/CustomText'
+import '../../styles/Canvas/Topbar.css'
 import { textVariant } from '../../constants/textVarients'
 import { buttonVarients } from '../../constants/buttonVarients'
 import { useNavigate } from 'react-router-dom';
@@ -46,27 +46,22 @@ const TopBar: React.FC<{ title: string }> = ({ title }) => {
       <div className='topbar-action'>
         <CustomButton
           variant={buttonVarients.icon}
-          icon={<Undo size={18} />}
+          icon={<Undo size={20} />}
           onClick={handleUndoClick}
         />
         <CustomButton
           variant={buttonVarients.icon}
-          icon={<Redo size={18} />}
+          icon={<Redo size={20} />}
           onClick={handleRedoClick}
         />
         <CustomButton
-          variant={buttonVarients.ternary}
-          icon={<Share2 size={16} />}
-          text="Share"
+          variant={buttonVarients.icon}
+          icon={<Share2 size={20} />}
         />
         <CustomButton
-          variant={buttonVarients.primary}
-          icon={<Upload size={16} />}
-          text="Publish"
+          variant={buttonVarients.icon}
+          icon={<Download size={20} />}
         />
-        <div className='topbar-avatar' title="Profile">
-          <User size={18} />
-        </div>
       </div>
     </section>
   )

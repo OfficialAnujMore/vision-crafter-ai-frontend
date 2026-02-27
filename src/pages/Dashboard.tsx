@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import CustomButton from '../components/CustomButton';
+import CustomButton from '../components/CustomComponents/CustomButton';
 import ProjectCard from '../components/ProjectsCard';
 import { ImageUploadModal } from '../components/ImageUploadModal';
 import '../styles/Dashboard.css';
@@ -8,7 +8,7 @@ import { useLoader } from '../components/LoaderContext';
 import type { SaveFileResponse } from '../interface/project';
 import { projectService } from '../services/api/projectService';
 import { Plus } from 'lucide-react';
-import CustomText from '../components/CustomText';
+import CustomText from '../components/CustomComponents/CustomText';
 import { textVariant } from '../constants/textVarients';
 import { buttonVarients } from '../constants/buttonVarients';
 
@@ -51,7 +51,7 @@ const Dashboard = () => {
       />
       <section className='create'>
         <CustomButton
-          variant={buttonVarients.primary}
+          variant={buttonVarients.default}
           text='Create'
           icon={<Plus />}
           onClick={() => setIsModalOpen(true)} />

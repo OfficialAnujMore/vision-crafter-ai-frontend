@@ -1,0 +1,119 @@
+.custom-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+/* Label */
+.custom-input__label {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.custom-input__required {
+  color: #F87171;
+  margin-left: 2px;
+}
+
+/* Input wrapper */
+.custom-input__wrapper {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  border: 2px solid #525252;
+  background-color: #000000;
+  padding: 0 0.75rem;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.custom-input__wrapper:focus-within {
+  border-color: #ff9416;
+  box-shadow: 0 0 0 3px rgba(255, 148, 22, 0.1);
+}
+
+.custom-input__wrapper--error {
+  border-color: #F87171;
+}
+
+.custom-input__wrapper--error:focus-within {
+  border-color: #F87171;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.1);
+}
+
+.custom-input__wrapper--disabled {
+  background-color: #262626;
+}
+
+/* Input field */
+.custom-input__field {
+  flex: 1;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  font-family: inherit;
+  background: transparent;
+  color: #ffffff;
+  border: none;
+  outline: none;
+  transition: opacity 120ms ease;
+}
+
+.custom-input__field::placeholder {
+  color: #737373;
+}
+
+.custom-input__field:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Icon */
+.custom-input__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #737373;
+  padding: 0 0.5rem;
+  transition: color 120ms ease;
+}
+
+.custom-input__wrapper:focus-within .custom-input__icon {
+  color: #ff9416;
+}
+
+/* Password toggle */
+.custom-input__password-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  color: #737373;
+  cursor: pointer;
+  transition: color 120ms ease;
+}
+
+.custom-input__password-toggle:hover {
+  color: #ff9416;
+}
+
+/* Error message */
+.custom-input__error {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #F87171;
+  margin-top: 0.25rem;
+}
+
+/* Char count */
+.custom-input__char-count {
+  font-size: 0.75rem;
+  color: #737373;
+  margin-top: 0.25rem;
+  text-align: right;
+}

@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone, type FileRejection } from 'react-dropzone';
 import { X, Upload } from 'lucide-react';
-import CustomText from './CustomText';
-import CustomButton from './CustomButton';
+import CustomText from './CustomComponents/CustomText';
+import CustomButton from './CustomComponents/CustomButton';
 import { useLoader } from './LoaderContext';
 import { authService } from '../services/api/authService';
 import { uploadFileToImageKit } from '../services/api/imageKitService';
@@ -158,7 +158,7 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                                 />
                             </div>
                             <CustomButton
-                                variant={buttonVarients.primary}
+                                variant={buttonVarients.default}
                                 text="Choose a different image"
                                 onClick={() => {
                                     setPreview(null);
@@ -180,13 +180,13 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
 
                 <div className="image-upload-modal__footer">
                     <CustomButton
-                        variant={buttonVarients.secondary}
+                        variant={buttonVarients.outline}
                         text="Cancel"
                         onClick={handleClose}
 
                     />
                     <CustomButton
-                        variant={buttonVarients.primary}
+                        variant={buttonVarients.default}
                         text="Upload"
                         disabled={!selectedFile}
                         onClick={handleUpload}

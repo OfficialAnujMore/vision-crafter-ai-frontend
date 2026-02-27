@@ -1,5 +1,5 @@
 import React from 'react';
-import CustomText from '../CustomText';
+import CustomText from '../CustomComponents/CustomText';
 import { textVariant } from '../../constants/textVarients';
 
 interface PlaceholderPanelProps {

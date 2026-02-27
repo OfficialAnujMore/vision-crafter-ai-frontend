@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useCanvasContext } from '../../context/canvasContext';
 import type { ToolType } from '../../pages/Editor';
-import '../../styles/Editor.css';
+import '../../styles/Canvas/Bottombar.css';
 
 interface ToolItem {
   icon: React.ElementType;

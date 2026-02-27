@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
-import CustomButton from '../components/CustomButton';
-import CustomText from '../components/CustomText';
+import CustomButton from '../components/CustomComponents/CustomButton';
+import CustomText from '../components/CustomComponents/CustomText';
 import { ROUTES } from '../constants/routes';
 import { authService } from '../services/api/authService';
 import '../styles/SignUp.css';

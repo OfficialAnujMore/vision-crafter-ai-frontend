@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/ProjectsCards.css';
-import CustomText from './CustomText';
-import CustomButton from './CustomButton';
+import CustomText from './CustomComponents/CustomText';
+import CustomButton from './CustomComponents/CustomButton';
 import { projectService } from '../services/api/projectService';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
@@ -54,12 +54,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             {isHovered && (
                 <div className="project-card__overlay">
                     <CustomButton
-                        variant={buttonVarients.primary}
+                        variant={buttonVarients.default}
                         onClick={onEdit}
                         icon={<Edit />}
                     />
                     <CustomButton
-                        variant={buttonVarients.secondary}
+                        variant={buttonVarients.outline}
                         icon={<Trash2 />}
                         onClick={onDelete}
 

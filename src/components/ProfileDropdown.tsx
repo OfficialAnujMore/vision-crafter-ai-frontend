@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/api/authService';
 import { ROUTES } from '../constants/routes';
-import CustomButton from './CustomButton';
-import CustomText from './CustomText';
+import CustomButton from './CustomComponents/CustomButton';
+import CustomText from './CustomComponents/CustomText';
 import '../styles/ProfileDropdown.css';
 import { textVariant } from '../constants/textVarients';
 import { buttonVarients } from '../constants/buttonVarients';
@@ -110,7 +110,7 @@ const ProfileDropdown: React.FC = () => {
 
           <div className="profile-dropdown-actions">
             <CustomButton
-              variant={buttonVarients.primary}
+              variant={buttonVarients.default}
               text="Logout"
               onClick={handleLogout}
             />

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useCanvasContext } from '../../context/canvasContext';
-import CustomButton from '../CustomButton';
-import CustomInput from '../CustomInput';
-import CustomText from '../CustomText';
+import CustomButton from '../CustomComponents/CustomButton';
+import CustomInput from '../CustomComponents/CustomInput';
+import CustomText from '../CustomComponents/CustomText';
 import { Trash2, Palette, ImageIcon, Search, Download, Loader2 } from 'lucide-react';
 import { FabricImage } from 'fabric';
 import { showErrorToast } from '../../utils/toast';
@@ -176,7 +176,7 @@ const BackgroundRemover = ({ project }) => {
       <CustomButton
         onClick={handleBackgroundRemoval}
         disabled={!getMainImage()}
-        variant="primary"
+        variant="default"
         icon={<Trash2 />}
         text='Remove Image Background'
       />
@@ -242,7 +242,7 @@ const BackgroundRemover = ({ project }) => {
 
               <CustomButton
                 onClick={handleColorBackground}
-                variant="primary"
+                variant="default"
                 icon={<Palette />}
                 text="Apply Color"
               />
@@ -274,7 +274,7 @@ const BackgroundRemover = ({ project }) => {
               <CustomButton
                 onClick={searchUnsplashImages}
                 disabled={isSearching || !searchQuery.trim()}
-                variant="primary"
+                variant="default"
                 icon={isSearching ? <Loader2 className="animate-spin" /> : <Search />}
                 text={isSearching ? "Searching..." : "Search"}
               />
@@ -359,7 +359,7 @@ const BackgroundRemover = ({ project }) => {
       <div className="pt-4 border-t border-white/10 bottom-0 w-full">
         <CustomButton
           onClick={handleRemoveBackground}
-          variant="secondary"
+          variant="outline"
           text='Clear Canvas Background'
           icon={<Trash2 />}
         />

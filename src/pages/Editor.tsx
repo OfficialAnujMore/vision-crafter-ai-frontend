@@ -6,7 +6,7 @@ import CanvasEditor from '../components/Canvas/CanvasEditor';
 import TopBar from '../components/Canvas/TopBar';
 import BottomToolbar from '../components/Canvas/BottomToolbar';
 import FeatureBar from '../components/Canvas/FeatureBar';
-import '../styles/Editor.css'
+import '../styles/Canvas/Editor.css'
 import type { SaveFileResponse } from '../interface/project';
 import type { Canvas } from 'fabric';
 import { CanvasContext } from '../context/canvasContext';

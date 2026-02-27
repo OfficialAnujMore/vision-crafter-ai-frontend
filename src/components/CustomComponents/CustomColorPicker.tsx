@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/CustomColorPicker.css';
+import '../../styles/CustomComponent/CustomColorPicker.css';
 
 interface ColorPickerProps {
     label: string;

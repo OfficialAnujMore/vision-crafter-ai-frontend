@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CustomButton from './CustomButton';
-import CustomText from './CustomText';
+import CustomButton from './CustomComponents/CustomButton';
+import CustomText from './CustomComponents/CustomText';
 import ProfileDropdown from './ProfileDropdown';
 import { LANDING_PAGE } from '../utils/local/en';
 import { ROUTES } from '../constants/routes';
@@ -66,7 +66,7 @@ const Navbar: React.FC = () => {
           {isAuthenticated ? (
             <div className="auth-section">
               <CustomButton
-                variant={buttonVarients.primary}
+                variant={buttonVarients.default}
                 text='Dashboard'
                 icon={<LayoutDashboard />}
                 onClick={() => {
@@ -76,7 +76,7 @@ const Navbar: React.FC = () => {
             </div>
           ) : (
             <CustomButton
-              variant={buttonVarients.primary}
+              variant={buttonVarients.default}
               text={authButtonText}
               onClick={handleAuthAction}
             />

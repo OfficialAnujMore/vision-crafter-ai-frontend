@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useCanvasContext } from '../../context/canvasContext';
 import type { CanvasEditorProps } from '../../interface/canvas';
-import CustomText from '../CustomText';
-import CustomButton from '../CustomButton';
+import CustomText from '../CustomComponents/CustomText';
+import CustomButton from '../CustomComponents/CustomButton';
 import { Lock, LockOpen } from 'lucide-react';
-import CustomInput from '../CustomInput';
+import CustomInput from '../CustomComponents/CustomInput';
 import '../../styles/ResizeComponent.css';
 
 
@@ -191,7 +191,7 @@ const ResizeComponent: React.FC<CanvasEditorProps> = ({ project }) => {
             <div key={aspectRatio.name} className="resize-aspect-button-wrapper">
               <CustomButton
                 text={`${aspectRatio.name} (${aspectRatio.label}) ${dimensions.width}×${dimensions.height}`}
-                variant='secondary'
+                variant='outline'
                 onClick={() => applyAspectRatio(aspectRatio)}
               />
             </div>
@@ -201,7 +201,7 @@ const ResizeComponent: React.FC<CanvasEditorProps> = ({ project }) => {
 
       <div className="resize-apply-section">
         <CustomButton
-          variant='secondary'
+          variant='outline'
           disabled={!hasChanges}
           text={'Apply Resize'}
           onClick={handleApplyResize}

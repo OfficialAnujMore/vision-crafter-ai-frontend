@@ -1,10 +1,10 @@
 import  { useEffect, useState } from 'react'
-import CustomButton from '../CustomButton';
+import CustomButton from '../CustomComponents/CustomButton';
 import { RotateCcw } from 'lucide-react';
-import CustomText from '../CustomText';
+import CustomText from '../CustomComponents/CustomText';
 import { filters, FabricImage } from "fabric";
 import { useCanvasContext } from '../../context/canvasContext';
-import CustomSlider from '../CustomSlider';
+import CustomSlider from '../CustomComponents/CustomSlider';
 import { FabricObject } from 'fabric';
 import '../../styles/FeatureComponents/AdjustComponent.css';
 
@@ -211,7 +211,7 @@ const AdjustComponent = () => {
             <div className="adjust-content">
                 <div className="reset-button-wrapper">
                     <CustomButton
-                        variant='secondary'
+                        variant='outline'
                         text='Reset'
                         icon={<RotateCcw />}
                         onClick={onApplyReset}

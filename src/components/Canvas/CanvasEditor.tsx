@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import type { CanvasEditorProps } from '../../interface/canvas'
 import { Canvas, FabricImage } from 'fabric';
-import '../../styles/Editor.css'
+import '../../styles/Canvas/Editor.css'
 import { showInfoToast } from '../../utils/toast';
 import { saveCanvasState } from '../../services/api/canvasService';
 import { useCanvasHistory } from '../../hooks/useCanvasHistory';

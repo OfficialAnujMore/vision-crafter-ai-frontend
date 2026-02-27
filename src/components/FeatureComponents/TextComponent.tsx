@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import CustomText from '../CustomText';
-import CustomButton from '../CustomButton';
+import CustomText from '../CustomComponents/CustomText';
+import CustomButton from '../CustomComponents/CustomButton';
 import { useCanvasContext } from '../../context/canvasContext';
 import { IText } from 'fabric';
-import CustomSlider from '../CustomSlider';
+import CustomSlider from '../CustomComponents/CustomSlider';
 import { AlignCenter, AlignJustify, AlignLeft, AlignRight, BoldIcon, ItalicIcon, Trash2, UnderlineIcon } from 'lucide-react';
-import CustomColorPicker from '../CustomColorPicker';
+import CustomColorPicker from '../CustomComponents/CustomColorPicker';
 import "../../styles/FeatureComponents/TextComponent.css"
 import Divider from '../Divider';
 
@@ -209,7 +209,7 @@ const TextComponent = () => {
         <CustomText variant='p' text="Customize text" />
 
         <CustomButton
-          variant='primary'
+          variant='default'
           text='Add Text'
           onClick={onAddTextComponent}
         />
@@ -321,7 +321,7 @@ const TextComponent = () => {
             {/* Delete Text */}
             <div className="delete-text">
               <CustomButton
-                variant='secondary'
+                variant='outline'
                 text='Delete Text'
                 icon={<Trash2 />}
                 onClick={onDeleteText} />

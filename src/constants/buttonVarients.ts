@@ -1,8 +1,8 @@
 export const buttonVarients = {
-    primary: 'primary',
-    secondary: 'secondary',
+    default: 'default',
+    outline: 'outline',
     icon: 'icon',
-    ternary: 'ternary',
+    link: 'link',
 } as const;
 
 export type ButtonVariant = typeof buttonVarients[keyof typeof buttonVarients];

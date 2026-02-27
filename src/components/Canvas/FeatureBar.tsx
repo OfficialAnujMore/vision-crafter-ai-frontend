@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { PanelLeftClose,} from 'lucide-react'
+import { PanelLeftClose, } from 'lucide-react'
 import CropComponent from '../FeatureComponents/CropComponent'
 import ResizeComponent from '../FeatureComponents/ResizeComponent'
 import TextComponent from '../FeatureComponents/TextComponent'
@@ -9,7 +9,7 @@ import { CanvasContext } from '../../context/canvasContext'
 import AdjustComponent from '../FeatureComponents/AdjustComponent'
 import PlaceholderPanel from '../FeatureComponents/PlaceholderPanel'
 import type { CanvasEditorProps } from '../../interface/canvas'
-import '../../styles/Editor.css'
+import '../../styles/Canvas/SideBar.css'
 
 const FeatureBar: React.FC<CanvasEditorProps> = ({ project }) => {
   const canvasContext = useContext(CanvasContext)
