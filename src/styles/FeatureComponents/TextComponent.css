@@ -21,16 +21,23 @@
 .fontfamily-component select {
     width: 100%;
     padding: 0.5rem 0.625rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
     font-size: 0.9rem;
     outline: none;
+    cursor: pointer;
 }
 
 .fontfamily-component select:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+    border-color: #ff9416;
+    box-shadow: 0 0 0 2px rgba(255, 148, 22, 0.15);
+}
+
+.fontfamily-component select option {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
 }
 
 .fontsize-component {
@@ -54,7 +61,7 @@
 }
 
 .text-formatting>div.active {
-    background-color: rgba(99, 102, 241, 0.12);
+    background-color: rgba(255, 148, 22, 0.12);
 }
 
 .text-formatting>div.active:hover {

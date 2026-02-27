@@ -4,24 +4,21 @@ import { useLoader } from '../components/LoaderContext';
 import { useParams } from 'react-router-dom';
 import CanvasEditor from '../components/Canvas/CanvasEditor';
 import TopBar from '../components/Canvas/TopBar';
+import BottomToolbar from '../components/Canvas/BottomToolbar';
+import FeatureBar from '../components/Canvas/FeatureBar';
 import '../styles/Editor.css'
 import type { SaveFileResponse } from '../interface/project';
-import Toolbar from '../components/Canvas/Toolbar';
-import FeatureBar from '../components/Canvas/FeatureBar';
 import type { Canvas } from 'fabric';
 import { CanvasContext } from '../context/canvasContext';
 
-
-export type ToolType = 'adjust' | 'crop' | 'resize' | 'text' | "background" | "extend" | "editing";
+export type ToolType = 'adjust' | 'crop' | 'resize' | 'text' | 'background' | 'extend' | 'editing' | 'filters' | 'liquify' | 'draw' | 'layers' | 'tools';
 
 const Editor: React.FC = () => {
-
     const { setLoading } = useLoader();
     const { projectId } = useParams();
     const [projectData, setProjectData] = useState<SaveFileResponse | null>(null);
     const [fabricCanvas, setFabricCanvas] = useState<Canvas | null>(null);
     const [activeTool, setActiveTool] = useState<ToolType>('adjust');
-
 
     useEffect(() => {
         const loadProject = async () => {
@@ -31,7 +28,6 @@ const Editor: React.FC = () => {
             setProjectData(data)
             setLoading(false)
         }
-
         loadProject();
     }, [projectId, setLoading])
 
@@ -46,19 +42,17 @@ const Editor: React.FC = () => {
                         setActiveTool,
                     }}>
                     <div className='editor-container'>
+                        <CanvasEditor project={projectData} />
+                        {/* <div className='canvas-safe-area' /> */}
                         <TopBar title={projectData?.title} />
-                        <section className='editor-panel'>
-                            <Toolbar />
-                            <FeatureBar project={projectData}/>
-                            <CanvasEditor project={projectData} />
-                        </section>
+                        <FeatureBar project={projectData} />
+                        <BottomToolbar />
                     </div>
                 </CanvasContext.Provider>
-            ) : (<div className='loading-placeholder'>Loading project...</div>)
-            }
+            ) : (
+                <div className='loading-placeholder'>Loading project...</div>
+            )}
         </div>
-
-
     )
 }
 

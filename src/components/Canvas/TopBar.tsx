@@ -1,6 +1,6 @@
 import React from 'react'
 import CustomButton from '../CustomButton'
-import { ArrowLeft, RotateCcw, Download, Save, Undo, Redo } from 'lucide-react'
+import { ArrowLeft, Undo, Redo, Share2, Upload, User } from 'lucide-react'
 import CustomText from '../CustomText'
 import '../../styles/Editor.css'
 import { textVariant } from '../../constants/textVarients'
@@ -15,9 +15,7 @@ declare global {
   }
 }
 
-const TopBar: React.FC<{ title: string }> = (props) => {
-  const { title } = props
-
+const TopBar: React.FC<{ title: string }> = ({ title }) => {
   const navigate = useNavigate();
   const handleUndoClick = () => {
     window.canvasUndo?.();
@@ -27,45 +25,50 @@ const TopBar: React.FC<{ title: string }> = (props) => {
     window.canvasRedo?.();
   };
 
-  const actionButtons = [
-    { icon: RotateCcw, name: "Reset", variant: buttonVarients.icon },
-    { icon: Undo, name: "Undo", variant: buttonVarients.icon, onClick: handleUndoClick },
-    { icon: Redo, name: "Redo", variant: buttonVarients.icon, onClick: handleRedoClick },
-    { icon: Save, name: "Save", variant: buttonVarients.icon },
-    { icon: Download, name: "Export", variant: buttonVarients.icon }
-  ]
-
   return (
-
     <section className='topbar-container'>
-      <CustomButton
-        onClick={() => {
-          navigate(ROUTES.DASHBOARD)
-        }}
-        variant={buttonVarients.icon}
-        icon={<ArrowLeft />} />
-
-      <CustomText
-        variant={textVariant.h4}
-        text={title} />
-      <div className='topbar-action'>
-        {actionButtons.map((item) => {
-          const Icon = item.icon
-          return (
-            <CustomButton
-              key={item.name}
-              variant={item.variant}
-              onClick={item.onClick}
-              icon={<Icon size={20} />}
-            />
-          )
-        }
-        )}
+      <div className='topbar-left'>
+        <CustomButton
+          onClick={() => navigate(ROUTES.DASHBOARD)}
+          variant={buttonVarients.icon}
+          icon={<ArrowLeft size={20} />}
+        />
       </div>
 
+      <div className='topbar-title-group'>
+        <CustomText
+          variant={textVariant.h4}
+          text={title}
+          fontSize="0.95rem"
+        />
+      </div>
 
+      <div className='topbar-action'>
+        <CustomButton
+          variant={buttonVarients.icon}
+          icon={<Undo size={18} />}
+          onClick={handleUndoClick}
+        />
+        <CustomButton
+          variant={buttonVarients.icon}
+          icon={<Redo size={18} />}
+          onClick={handleRedoClick}
+        />
+        <CustomButton
+          variant={buttonVarients.ternary}
+          icon={<Share2 size={16} />}
+          text="Share"
+        />
+        <CustomButton
+          variant={buttonVarients.primary}
+          icon={<Upload size={16} />}
+          text="Publish"
+        />
+        <div className='topbar-avatar' title="Profile">
+          <User size={18} />
+        </div>
+      </div>
     </section>
-
   )
 }
 

@@ -22,7 +22,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
     const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isInitialLoadRef = useRef(true);
     const isRestoringRef = useRef(false);
-    const { fabricCanvas, setFabricCanvas, activeTool, setActiveTool } = useCanvasContext();
+    const { fabricCanvas, setFabricCanvas, setActiveTool } = useCanvasContext();
     const { setLoading } = useLoader();
 
     const { addToHistory, handleUndo, handleRedo } = useCanvasHistory(fabricCanvasRef, isRestoringRef);
@@ -40,8 +40,8 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
 
         const wrapperHeight = wrapperRef.current.offsetHeight;
         fabricCanvasRef.current = new Canvas(canvasRef.current, {
-            width: wrapperWidth*0.9,
-            height: wrapperHeight*0.9,
+            width: wrapperWidth,
+            height: wrapperHeight,
             selection: true,
         })
         setFabricCanvas(fabricCanvasRef.current)
@@ -68,8 +68,18 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
             canvas!.clear();
             canvas!.add(imgElement);
 
-            const maxWidth = canvas.width! * 0.9;
-            const maxHeight = canvas.height! * 0.9;
+            const SIDEBAR_INSET = 352;
+            const TOP_INSET = 80;
+            const BOTTOM_INSET = 94;
+            const RIGHT_INSET = 16;
+
+            const visibleWidth = canvas.width! - SIDEBAR_INSET - RIGHT_INSET;
+            const visibleHeight = canvas.height! - TOP_INSET - BOTTOM_INSET;
+            const visibleCenterX = SIDEBAR_INSET + visibleWidth / 2;
+            const visibleCenterY = TOP_INSET + visibleHeight / 2;
+
+            const maxWidth = visibleWidth * 0.9;
+            const maxHeight = visibleHeight * 0.9;
             const imgWidth = imgElement.width!;
             const imgHeight = imgElement.height!;
 
@@ -77,8 +87,8 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
             imgElement.set({
                 scaleX: scale,
                 scaleY: scale,
-                left: canvas.width! / 2,
-                top: canvas.height! / 2,
+                left: visibleCenterX,
+                top: visibleCenterY,
                 originX: 'center',
                 originY: 'center',
                 selectable: true,
@@ -155,7 +165,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
         const handleCanvasChange = () => {
 
             // addToHistory(); // Add to history immediately
-            debouncedSave(); // Debounce DB save
+            // debouncedSave(); // Debounce DB save
         };
 
         fabricCanvasRef.current.on('object:added', handleCanvasChange);

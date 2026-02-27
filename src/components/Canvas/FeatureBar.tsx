@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import '../../styles/Editor.css'
+import { PanelLeftClose,} from 'lucide-react'
 import CropComponent from '../FeatureComponents/CropComponent'
 import ResizeComponent from '../FeatureComponents/ResizeComponent'
 import TextComponent from '../FeatureComponents/TextComponent'
@@ -7,34 +7,44 @@ import BackgroundRemover from '../FeatureComponents/BackgroundRemover'
 import ImageExtender from '../FeatureComponents/ImageExtender'
 import { CanvasContext } from '../../context/canvasContext'
 import AdjustComponent from '../FeatureComponents/AdjustComponent'
+import PlaceholderPanel from '../FeatureComponents/PlaceholderPanel'
 import type { CanvasEditorProps } from '../../interface/canvas'
-
+import '../../styles/Editor.css'
 
 const FeatureBar: React.FC<CanvasEditorProps> = ({ project }) => {
   const canvasContext = useContext(CanvasContext)
-  const activeTool = canvasContext?.activeTool || 'resize'
+  const activeTool = canvasContext?.activeTool || 'adjust'
 
   const renderActiveTool = () => {
     switch (activeTool) {
-      case "adjust":
+      case 'adjust':
         return <AdjustComponent />
-      case "resize":
+      case 'resize':
         return <ResizeComponent project={project} />
-      case "crop":
+      case 'crop':
         return <CropComponent />
-      case "text":
+      case 'text':
         return <TextComponent />
-      case "background":
-        return <BackgroundRemover  project={project}  />
-      case "extend":
+      case 'background':
+        return <BackgroundRemover project={project} />
+      case 'extend':
         return <ImageExtender />
       default:
-        return <div> Select a tool</div>
+        return <PlaceholderPanel title="Select a Tool" description="Choose a tool from the bottom toolbar to begin editing." />
     }
   }
 
+  const shouldHide = activeTool === 'editing'
+
   return (
-    <div className='sidebar-container'>
+    <div className={`sidebar-container ${shouldHide ? 'hidden' : ''}`}>
+      <button
+        className="sidebar-close-btn"
+        onClick={() => canvasContext?.setActiveTool('editing')}
+        title="Close panel"
+      >
+        <PanelLeftClose size={16} />
+      </button>
       {renderActiveTool()}
     </div>
   )

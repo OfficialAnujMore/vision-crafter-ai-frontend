@@ -223,7 +223,7 @@ const TextComponent = () => {
             {/* Update font family */}
             <div className="fontfamily-component">
 
-              <div className='conatiner-header'>
+              <div className='container-header'>
                 <CustomText text={"Font Family"} variant='p' />
               </div>
 
@@ -263,7 +263,7 @@ const TextComponent = () => {
             {/* Text Alignment */}
             <div className="text-alignment">
 
-              <div className='conatiner-header'>
+              <div className='container-header'>
                 <CustomText text={"Text Alignment"} variant='p' />
               </div>
               <div className='container-body'>
@@ -293,7 +293,7 @@ const TextComponent = () => {
 
             {/* Text formatting */}
             <div className="text-formatting">
-              <div className='conatiner-header'>
+              <div className='container-header'>
                 <CustomText text={"Text Alignment"} variant='p' />
               </div>
               <div className='container-body'>
