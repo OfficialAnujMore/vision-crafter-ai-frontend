@@ -5,9 +5,9 @@ import CustomButton from './CustomComponents/CustomButton';
 import { projectService } from '../services/api/projectService';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
-import { textVariant } from '../constants/textVarients';
+import { textVariant } from '../constants/textVariants';
 import { Edit, Trash2 } from 'lucide-react';
-import { buttonVarients } from '../constants/buttonVarients';
+import { buttonVariants } from '../constants/buttonVariants';
 
 interface ProjectCardProps {
     fileId: string;
@@ -54,12 +54,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             {isHovered && (
                 <div className="project-card__overlay">
                     <CustomButton
-                        variant={buttonVarients.default}
+                        variant={buttonVariants.default}
                         onClick={onEdit}
                         icon={<Edit />}
                     />
                     <CustomButton
-                        variant={buttonVarients.outline}
+                        variant={buttonVariants.outline}
                         icon={<Trash2 />}
                         onClick={onDelete}
 

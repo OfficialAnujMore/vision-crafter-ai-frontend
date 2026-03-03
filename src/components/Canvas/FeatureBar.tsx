@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { PanelLeftClose } from 'lucide-react'
 import CustomButton from '../CustomComponents/CustomButton'
-import { buttonVarients } from '../../constants/buttonVarients'
+import { buttonVariants } from '../../constants/buttonVariants'
 import CropComponent from '../FeatureComponents/CropComponent'
 import ResizeComponent from '../FeatureComponents/ResizeComponent'
 import TextComponent from '../FeatureComponents/TextComponent'
@@ -47,7 +47,7 @@ const FeatureBar: React.FC<CanvasEditorProps> = ({ project }) => {
   return (
     <div className={`sidebar-container ${shouldHide ? 'hidden' : ''}`}>
       <CustomButton
-        variant={buttonVarients.icon}
+        variant={buttonVariants.icon}
         className="sidebar-close-btn"
         icon={<PanelLeftClose size={16} />}
         onClick={() => canvasContext?.setActiveTool('editing')}

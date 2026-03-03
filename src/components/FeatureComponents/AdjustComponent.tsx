@@ -8,7 +8,7 @@ import CustomSlider from '../CustomComponents/CustomSlider';
 import { FabricObject } from 'fabric';
 import Divider from '../Divider';
 import '../../styles/FeatureComponents/AdjustComponent.css';
-import { buttonVarients } from '../../constants/buttonVarients';
+import { buttonVariants } from '../../constants/buttonVariants';
 
 
 interface FilterConfig {
@@ -220,7 +220,7 @@ const AdjustComponent = () => {
                     <CustomText variant='h4' text="Adjust Image" />
                     {hasModifications && (
                         <CustomButton
-                            variant={buttonVarients.icon}
+                            variant={buttonVariants.icon}
                             // text='Reset'
                             icon={<RotateCcw size={18} />}
                             onClick={onApplyReset}

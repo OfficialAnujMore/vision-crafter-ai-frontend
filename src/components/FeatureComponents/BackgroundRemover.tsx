@@ -5,7 +5,7 @@ import CustomText from '../CustomComponents/CustomText';
 import { Trash2, Loader2, CheckCircle2, XCircle, Sparkles, Wand2, Image, ArrowRight } from 'lucide-react';
 import { FabricImage } from 'fabric';
 import { showErrorToast, showSuccessToast } from '../../utils/toast';
-import { buttonVarients } from '../../constants/buttonVarients';
+import { buttonVariants } from '../../constants/buttonVariants';
 import '../../styles/FeatureComponents/BackgroundRemover.css';
 
 const BackgroundRemover = ({ project }) => {
@@ -115,7 +115,7 @@ const BackgroundRemover = ({ project }) => {
         <CustomButton
           onClick={handleBackgroundRemoval}
           disabled={!hasImage || isRemoving}
-          variant={buttonVarients.default}
+          variant={buttonVariants.default}
           icon={isRemoving ? <Loader2 className="animate-spin" /> : <Wand2 size={18} />}
           text={isRemoving ? 'Processing...' : 'Remove Background'}
         />

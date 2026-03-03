@@ -6,7 +6,7 @@ import CustomButton from '../CustomComponents/CustomButton';
 import { Lock, LockOpen, Scaling } from 'lucide-react';
 import CustomInput from '../CustomComponents/CustomInput';
 import Divider from '../Divider';
-import { buttonVarients } from '../../constants/buttonVarients';
+import { buttonVariants } from '../../constants/buttonVariants';
 import '../../styles/ResizeComponent.css';
 
 
@@ -248,7 +248,7 @@ const ResizeComponent: React.FC<CanvasEditorProps> = ({ project }) => {
 
       <div className="resize-apply">
         <CustomButton
-          variant={hasChanges ? buttonVarients.default : buttonVarients.outline}
+          variant={hasChanges ? buttonVariants.default : buttonVariants.outline}
           disabled={!hasChanges}
           text={'Apply Resize'}
           onClick={handleApplyResize}

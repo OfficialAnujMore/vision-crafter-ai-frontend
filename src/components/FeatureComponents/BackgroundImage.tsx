@@ -7,7 +7,7 @@ import { ImageIcon, Search, Upload, Loader2, Trash2, ExternalLink } from 'lucide
 import { FabricImage } from 'fabric';
 import { showErrorToast, showSuccessToast } from '../../utils/toast';
 import { API_CONFIG } from '../../services/config/api';
-import { buttonVarients } from '../../constants/buttonVarients';
+import { buttonVariants } from '../../constants/buttonVariants';
 import '../../styles/FeatureComponents/BackgroundImage.css';
 
 type Tab = 'upload' | 'unsplash';
@@ -199,7 +199,7 @@ const BackgroundImage: React.FC = () => {
             <CustomButton
               onClick={searchUnsplashImages}
               disabled={isSearching || !searchQuery.trim()}
-              variant={buttonVarients.default}
+              variant={buttonVariants.default}
               icon={isSearching ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
               text={isSearching ? '' : 'Search'}
             />
@@ -278,7 +278,7 @@ const BackgroundImage: React.FC = () => {
       <div className="bg-image-footer">
         <CustomButton
           onClick={handleRemoveBackground}
-          variant={buttonVarients.outline}
+          variant={buttonVariants.outline}
           text="Clear Background"
           icon={<Trash2 size={16} />}
         />

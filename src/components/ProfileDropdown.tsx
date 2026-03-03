@@ -5,8 +5,8 @@ import { ROUTES } from '../constants/routes';
 import CustomButton from './CustomComponents/CustomButton';
 import CustomText from './CustomComponents/CustomText';
 import '../styles/ProfileDropdown.css';
-import { textVariant } from '../constants/textVarients';
-import { buttonVarients } from '../constants/buttonVarients';
+import { textVariant } from '../constants/textVariants';
+import { buttonVariants } from '../constants/buttonVariants';
 
 interface User {
   id: number;
@@ -110,7 +110,7 @@ const ProfileDropdown: React.FC = () => {
 
           <div className="profile-dropdown-actions">
             <CustomButton
-              variant={buttonVarients.default}
+              variant={buttonVariants.default}
               text="Logout"
               onClick={handleLogout}
             />

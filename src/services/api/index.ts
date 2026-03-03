@@ -4,6 +4,7 @@ import { API_CONFIG } from '../config/api.ts';
 import { ApiError } from '../../interface/api';
 import type { ApiResponse, ApiErrorResponse } from '../../interface/api';
 import { showErrorToast, showWarningToast } from '../../utils/toast';
+import { ROUTES } from '../../constants/routes';
 
 const axiosInstance = axios.create({
   baseURL: API_CONFIG.BASE_URL,
@@ -11,14 +12,11 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true,  
+  withCredentials: true,
 });
-
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    
-    
     return config;
   },
   (error) => {
@@ -28,9 +26,8 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-
 axiosInstance.interceptors.response.use(
-  (response: AxiosResponse<ApiResponse<unknown> | ApiErrorResponse>) => {    
+  (response: AxiosResponse<ApiResponse<unknown> | ApiErrorResponse>) => {
     if (response.data && typeof response.data === 'object') {
       const data = response.data as ApiResponse<unknown> | ApiErrorResponse & { success?: boolean };
       if ('success' in data && !data.success) {
@@ -51,47 +48,31 @@ axiosInstance.interceptors.response.use(
     const isAuthEndpoint = originalRequest?.url?.includes('/auth/');
     const isRefreshEndpoint = originalRequest?.url?.includes('/auth/refresh');
 
-
     if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       originalRequest._retry = true;
-      
+
       try {
-        
-        
         if (isRefreshEndpoint) {
           throw new Error('Refresh token also expired');
         }
-        
-        
+
         await axiosInstance.post(API_CONFIG.ENDPOINTS.AUTH.REFRESH);
-                
-        
         return axiosInstance(originalRequest);
       } catch {
-        
-        
         localStorage.removeItem('user');
-        
-        
         showWarningToast('Session expired', 'Please sign in again.');
-        
-        
         window.dispatchEvent(new Event('authStateChanged'));
-        
-        
-        window.location.href = '/signup';
-        
+        window.location.href = ROUTES.SIGNUP;
+
         return Promise.reject(new ApiError('Session expired. Please sign in again.', 401));
       }
     }
 
-    
     if (!error.response) {
       showErrorToast(new Error('Network error. Please check your connection.'));
       return Promise.reject(new ApiError('Network error. Please check your connection.'));
     }
 
-    
     const errorResponse = error.response?.data as ApiErrorResponse;
     const errorMessage = errorResponse?.message || error.message || 'An error occurred';
     const errorCode = errorResponse?.error;
@@ -99,7 +80,6 @@ axiosInstance.interceptors.response.use(
 
     const customError = new ApiError(errorMessage, statusCode, errorCode);
 
-    
     if (!isAuthEndpoint) {
       showErrorToast(customError);
     }

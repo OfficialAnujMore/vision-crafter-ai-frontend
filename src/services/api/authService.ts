@@ -6,7 +6,7 @@ import { showSuccessToast } from '../../utils/toast';
 
 export const authService = {
   googleAuth: async (googleToken: string): Promise<GoogleAuthResponse> => {
-    try {      
+    try {
       const response = await axiosInstance.post<ApiResponse<GoogleAuthResponse>>(
         API_CONFIG.ENDPOINTS.AUTH.GOOGLE,
         { token: googleToken }
@@ -19,30 +19,31 @@ export const authService = {
         throw new Error('No user data received from backend');
       }
     } catch (error) {
-      console.error('❌ Google auth error:', error);
+      console.error('Google auth error:', error);
       throw error;
     }
   },
 
   logout: async () => {
     try {
-      
       await axiosInstance.post(API_CONFIG.ENDPOINTS.AUTH.LOGOUT);
     } catch (error) {
-      
       console.error('Logout API error:', error);
     }
-    
-    
     localStorage.removeItem('user');
     showSuccessToast('Successfully logged out!');
   },
 
   getCurrentUser: () => {
     const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+    if (!userStr) return null;
+    try {
+      return JSON.parse(userStr);
+    } catch {
+      localStorage.removeItem('user');
+      return null;
+    }
   },
-
 
   isAuthenticated: () => {
     return !!localStorage.getItem('user');

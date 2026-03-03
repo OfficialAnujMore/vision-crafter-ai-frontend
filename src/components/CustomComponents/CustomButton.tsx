@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ButtonVariant } from '../../constants/buttonVarients';
+import type { ButtonVariant } from '../../constants/buttonVariants';
 import '../../styles/CustomComponent/CustomButton.css';
 
 interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

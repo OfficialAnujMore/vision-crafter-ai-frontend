@@ -9,9 +9,9 @@ import { uploadFileToImageKit } from '../services/api/imageKitService';
 import { projectService } from '../services/api/projectService';
 import '../styles/ImageUploadModal.css';
 import { showWarningToast } from '../utils/toast';
-import { textVariant } from '../constants/textVarients';
+import { textVariant } from '../constants/textVariants';
 import { colors } from '../constants/colors';
-import { buttonVarients } from '../constants/buttonVarients';
+import { buttonVariants } from '../constants/buttonVariants';
 
 interface ImageUploadModalProps {
     isOpen: boolean;
@@ -122,7 +122,7 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                         text="Upload Image"
                     />
                     <CustomButton
-                        variant={buttonVarients.icon}
+                        variant={buttonVariants.icon}
                         icon={<X size={24} />}
                         onClick={handleClose}
                     />
@@ -158,7 +158,7 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                                 />
                             </div>
                             <CustomButton
-                                variant={buttonVarients.default}
+                                variant={buttonVariants.default}
                                 text="Choose a different image"
                                 onClick={() => {
                                     setPreview(null);
@@ -180,13 +180,13 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
 
                 <div className="image-upload-modal__footer">
                     <CustomButton
-                        variant={buttonVarients.outline}
+                        variant={buttonVariants.outline}
                         text="Cancel"
                         onClick={handleClose}
 
                     />
                     <CustomButton
-                        variant={buttonVarients.default}
+                        variant={buttonVariants.default}
                         text="Upload"
                         disabled={!selectedFile}
                         onClick={handleUpload}

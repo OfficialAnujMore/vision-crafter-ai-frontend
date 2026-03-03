@@ -1,36 +1,41 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 import CustomButton from '../components/CustomComponents/CustomButton';
 import CustomText from '../components/CustomComponents/CustomText';
 import { ROUTES } from '../constants/routes';
 import { authService } from '../services/api/authService';
 import '../styles/SignUp.css';
-import { textVariant } from '../constants/textVarients';
-import { buttonVarients } from '../constants/buttonVarients';
+import { textVariant } from '../constants/textVariants';
+import { buttonVariants } from '../constants/buttonVariants';
 import { ArrowLeft } from 'lucide-react';
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  if (authService.isAuthenticated()) {
+    return <Navigate to={ROUTES.DASHBOARD} replace />;
+  }
 
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     setError('');
+    setIsLoading(true);
 
     try {
       if (!credentialResponse.credential) {
         throw new Error('No credential received from Google');
       }
 
-      
       await authService.googleAuth(credentialResponse.credential);
-
-      
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
       console.error('Google sign-in error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to sign in with Google. Please try again.';
       setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -50,14 +55,13 @@ const SignUp: React.FC = () => {
       <div className="signup-left">
         <div className="signup-left-content">
           <CustomButton
-            variant={buttonVarients.icon}
+            variant={buttonVariants.icon}
             icon={<ArrowLeft />}
             onClick={() => navigate(ROUTES.HOME)}
           />
           <CustomText
             variant={textVariant.h3}
             text="Vision Crafter AI"
-
           />
         </div>
         <div className="signup-slogan">
@@ -67,7 +71,8 @@ const SignUp: React.FC = () => {
           />
           <CustomText
             variant={textVariant.h2}
-            text="The future of editing with AI" />
+            text="The future of editing with AI"
+          />
         </div>
       </div>
 
@@ -77,7 +82,8 @@ const SignUp: React.FC = () => {
           <div className="signup-header">
             <CustomText
               variant={textVariant.h1}
-              text="Get Started" />
+              text="Get Started"
+            />
             <CustomText
               variant={textVariant.p}
               text="Sign up to start creating with AI-powered tools"
@@ -91,17 +97,27 @@ const SignUp: React.FC = () => {
           )}
 
           <div className="signup-google-container">
-            <div className="google-login-wrapper">
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={handleGoogleError}
-                theme="outline"
-                size="large"
-                text="continue_with"
-                width="400"
-                logo_alignment="left"
-              />
-            </div>
+            {isLoading ? (
+              <div className="signup-loading-overlay">
+                <div className="signup-spinner" />
+                <CustomText
+                  variant={textVariant.p}
+                  text="Signing you in..."
+                />
+              </div>
+            ) : (
+              <div className="google-login-wrapper">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                  theme="outline"
+                  size="large"
+                  text="continue_with"
+                  width="400"
+                  logo_alignment="left"
+                />
+              </div>
+            )}
           </div>
 
           <div className="signup-divider">
@@ -117,7 +133,8 @@ const SignUp: React.FC = () => {
                 <span className="feature-icon">{feature.icon}</span>
                 <CustomText
                   variant={textVariant.p}
-                  text={feature.text} />
+                  text={feature.text}
+                />
               </div>
             ))}
           </div>

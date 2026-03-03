@@ -3,8 +3,8 @@ import CustomButton from '../CustomComponents/CustomButton'
 import { ArrowLeft, Undo, Redo, Share2,Download } from 'lucide-react'
 import CustomText from '../CustomComponents/CustomText'
 import '../../styles/Canvas/Topbar.css'
-import { textVariant } from '../../constants/textVarients'
-import { buttonVarients } from '../../constants/buttonVarients'
+import { textVariant } from '../../constants/textVariants'
+import { buttonVariants } from '../../constants/buttonVariants'
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes'
 
@@ -30,7 +30,7 @@ const TopBar: React.FC<{ title: string }> = ({ title }) => {
       <div className='topbar-left'>
         <CustomButton
           onClick={() => navigate(ROUTES.DASHBOARD)}
-          variant={buttonVarients.icon}
+          variant={buttonVariants.icon}
           icon={<ArrowLeft size={20} />}
         />
       </div>
@@ -45,21 +45,21 @@ const TopBar: React.FC<{ title: string }> = ({ title }) => {
 
       <div className='topbar-action'>
         <CustomButton
-          variant={buttonVarients.icon}
+          variant={buttonVariants.icon}
           icon={<Undo size={20} />}
           onClick={handleUndoClick}
         />
         <CustomButton
-          variant={buttonVarients.icon}
+          variant={buttonVariants.icon}
           icon={<Redo size={20} />}
           onClick={handleRedoClick}
         />
         <CustomButton
-          variant={buttonVarients.icon}
+          variant={buttonVariants.icon}
           icon={<Share2 size={20} />}
         />
         <CustomButton
-          variant={buttonVarients.icon}
+          variant={buttonVariants.icon}
           icon={<Download size={20} />}
         />
       </div>

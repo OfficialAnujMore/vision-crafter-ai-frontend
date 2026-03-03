@@ -9,8 +9,8 @@ import type { SaveFileResponse } from '../interface/project';
 import { projectService } from '../services/api/projectService';
 import { Plus } from 'lucide-react';
 import CustomText from '../components/CustomComponents/CustomText';
-import { textVariant } from '../constants/textVarients';
-import { buttonVarients } from '../constants/buttonVarients';
+import { textVariant } from '../constants/textVariants';
+import { buttonVariants } from '../constants/buttonVariants';
 
 
 const Dashboard = () => {
@@ -51,7 +51,7 @@ const Dashboard = () => {
       />
       <section className='create'>
         <CustomButton
-          variant={buttonVarients.default}
+          variant={buttonVariants.default}
           text='Create'
           icon={<Plus />}
           onClick={() => setIsModalOpen(true)} />

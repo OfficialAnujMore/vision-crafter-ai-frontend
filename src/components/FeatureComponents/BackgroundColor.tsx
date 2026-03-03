@@ -5,7 +5,7 @@ import CustomText from '../CustomComponents/CustomText';
 import CustomInput from '../CustomComponents/CustomInput';
 import { Palette, Trash2, Check } from 'lucide-react';
 import { HexColorPicker } from 'react-colorful';
-import { buttonVarients } from '../../constants/buttonVarients';
+import { buttonVariants } from '../../constants/buttonVariants';
 import '../../styles/FeatureComponents/BackgroundColor.css';
 
 const PRESET_COLORS = [
@@ -95,7 +95,7 @@ const BackgroundColor: React.FC = () => {
           </div>
           <CustomButton
             onClick={handleApplyColor}
-            variant={buttonVarients.default}
+            variant={buttonVariants.default}
             icon={<Palette size={16} />}
             text="Apply"
           />
@@ -105,7 +105,7 @@ const BackgroundColor: React.FC = () => {
       <div className="bg-color-footer">
         <CustomButton
           onClick={handleRemoveBackground}
-          variant={buttonVarients.outline}
+          variant={buttonVariants.outline}
           text="Clear Background"
           icon={<Trash2 size={16} />}
         />

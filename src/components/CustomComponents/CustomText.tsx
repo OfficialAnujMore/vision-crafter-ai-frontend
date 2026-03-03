@@ -1,5 +1,5 @@
 import React from 'react';
-import type { TextColor, TextVariant } from '../../constants/textVarients';
+import type { TextColor, TextVariant } from '../../constants/textVariants';
 import '../../styles/CustomComponent/CustomText.css';
 
 interface CustomTextProps {

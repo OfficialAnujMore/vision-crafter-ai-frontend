@@ -10,7 +10,7 @@ import FontPicker from '../CustomComponents/FontPicker';
 import { loadGoogleFont } from '../../utils/googleFonts';
 import "../../styles/FeatureComponents/TextComponent.css"
 import Divider from '../Divider';
-import { buttonVarients } from '../../constants/buttonVarients';
+import { buttonVariants } from '../../constants/buttonVariants';
 
 const FONT_SIZES = { min: 10, max: 120, default: 20 };
 
@@ -179,7 +179,7 @@ const TextComponent = () => {
 
       <div className='text-comp-add'>
         <CustomButton
-          variant={buttonVarients.default}
+          variant={buttonVariants.default}
           text='Add Text'
           icon={<Plus size={16} />}
           onClick={onAddTextComponent}
@@ -262,7 +262,7 @@ const TextComponent = () => {
             </div>
             <div className="text-comp-delete">
               <CustomButton
-                variant={buttonVarients.outline}
+                variant={buttonVariants.outline}
                 text='Delete'
                 icon={<Trash2 size={16} />}
                 onClick={onDeleteText}
