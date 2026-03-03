@@ -4,41 +4,32 @@ import CustomButton from '../CustomComponents/CustomButton';
 import { useCanvasContext } from '../../context/canvasContext';
 import { IText } from 'fabric';
 import CustomSlider from '../CustomComponents/CustomSlider';
-import { AlignCenter, AlignJustify, AlignLeft, AlignRight, BoldIcon, ItalicIcon, Trash2, UnderlineIcon } from 'lucide-react';
+import { AlignCenter, AlignJustify, AlignLeft, AlignRight, BoldIcon, ItalicIcon, Plus, Trash2, UnderlineIcon } from 'lucide-react';
 import CustomColorPicker from '../CustomComponents/CustomColorPicker';
+import FontPicker from '../CustomComponents/FontPicker';
+import { loadGoogleFont } from '../../utils/googleFonts';
 import "../../styles/FeatureComponents/TextComponent.css"
 import Divider from '../Divider';
+import { buttonVarients } from '../../constants/buttonVarients';
+
+const FONT_SIZES = { min: 10, max: 120, default: 20 };
+
+const TEXT_ALIGNMENT = {
+  "left": AlignLeft,
+  "center": AlignCenter,
+  "right": AlignRight,
+  "justify": AlignJustify,
+}
+
+const TEXT_FORMATTING = {
+  "bold": BoldIcon,
+  "italic": ItalicIcon,
+  "underline": UnderlineIcon,
+}
 
 const TextComponent = () => {
-
-  const FONT_FAMILIES = [
-    "Arial",
-    "Arial Black",
-    "Helvetica",
-    "Times New Roman",
-    "Courier New",
-    "Georgia",
-    "Verdana",
-    "Comic Sans MS",
-    "Impact",
-  ];
-
-  const FONT_SIZES = { min: 10, max: 120, default: 20 };
-
-  const TEXT_ALIGNMENT = {
-    "left": AlignLeft,
-    "center": AlignCenter,
-    "right": AlignRight,
-    "justify": AlignJustify,
-  }
-
-  const TEXT_FORMATTING = {
-    "bold": BoldIcon,
-    "italic": ItalicIcon,
-    "underline": UnderlineIcon,
-  }
   const [selectedText, setSelectedText] = useState<IText | null>(null);
-  const [fontFamily, setFontFamily] = useState(FONT_FAMILIES[0]);
+  const [fontFamily, setFontFamily] = useState("Arial");
   const [fontSize, setFontSize] = useState(FONT_SIZES.default);
   const [textColor, setTextColor] = useState("#000000");
   const [textAlign, setTextAlign] = useState("left");
@@ -47,13 +38,11 @@ const TextComponent = () => {
   const [isUnderline, setIsUnderline] = useState(false);
   const { fabricCanvas } = useCanvasContext();
 
-
   const updateSelectedText = () => {
     if (!fabricCanvas) return;
 
     const activeObject = fabricCanvas.getActiveObject();
     if (activeObject && activeObject.type === "i-text") {
-
       const textObject = activeObject as IText;
       setSelectedText(textObject);
       setFontFamily(textObject.fontFamily || "Arial")
@@ -63,11 +52,10 @@ const TextComponent = () => {
       setIsBold(textObject.fontWeight === "bold" || textObject.fontWeight === 700);
       setIsItalic(textObject.fontStyle === "italic");
       setIsUnderline(textObject.underline || false);
-
     }
     else { setSelectedText(null) }
-
   }
+
   useEffect(() => {
     if (!fabricCanvas) return;
 
@@ -79,12 +67,13 @@ const TextComponent = () => {
     fabricCanvas.on("selection:updated", handleSelectionUpdated)
     fabricCanvas.on("selection:cleared", handleSelectionCleared)
 
-  setTimeout(() => {
-    const activeObject = fabricCanvas.getActiveObject();
-    if (activeObject && activeObject.type === "i-text") {
-      updateSelectedText();
-    }
-  }, 100);
+    setTimeout(() => {
+      const activeObject = fabricCanvas.getActiveObject();
+      if (activeObject && activeObject.type === "i-text") {
+        updateSelectedText();
+      }
+    }, 100);
+
     return () => {
       fabricCanvas.off("selection:created", handleSelectionCreated)
       fabricCanvas.off("selection:updated", handleSelectionUpdated)
@@ -93,8 +82,6 @@ const TextComponent = () => {
   }, [fabricCanvas])
 
   const onAddTextComponent = () => {
-    console.log(fabricCanvas);
-
     if (!fabricCanvas) return;
 
     const text = new IText("Add text here", {
@@ -117,34 +104,25 @@ const TextComponent = () => {
       text.enterEditing()
       text.selectAll()
     }, 100)
-
-
   }
 
-  const onApplyFontFamily = (fontFamily: string) => {
-
+  const onApplyFontFamily = async (fontFamily: string) => {
     if (!selectedText) return;
-
+    await loadGoogleFont(fontFamily);
     setFontFamily(fontFamily)
     selectedText.set("fontFamily", fontFamily);
     fabricCanvas?.requestRenderAll();
-
   }
 
   const onApplyFontSize = (fontSize: number) => {
-
     if (!selectedText) return;
-
     setFontSize(fontSize)
     selectedText.set("fontSize", fontSize);
     fabricCanvas?.requestRenderAll();
-
   }
 
   const onApplyTextAlignment = (textAlignment: string) => {
-
     if (!selectedText) return;
-
     setTextAlign(textAlignment);
     selectedText.set("textAlign", textAlignment)
     fabricCanvas?.requestRenderAll();
@@ -152,7 +130,6 @@ const TextComponent = () => {
 
   const onApplyTextColor = (color: string) => {
     if (!selectedText) return;
-
     setTextColor(color);
     selectedText.set("fill", color);
     fabricCanvas?.requestRenderAll();
@@ -183,153 +160,117 @@ const TextComponent = () => {
     }
     fabricCanvas?.requestRenderAll();
   };
+
   const onDeleteText = () => {
     if (!selectedText) return
     fabricCanvas?.remove(selectedText);
     fabricCanvas?.requestRenderAll()
     setSelectedText(null);
   }
-  return (
-    <div className='text-container'>
-      {/* Section one */}
-      <div className='header'>
 
-        <CustomText variant='h4' text="Add text" />
-        <CustomText variant='p' text="Customize text" />
+  return (
+    <div className='text-comp'>
+      <div className='text-comp-header'>
+        <CustomText variant='h4' text="Text" />
+        <CustomText variant='p' text="Add and style text on your canvas" fontSize="0.85rem" />
       </div>
 
       <Divider />
 
-      {/* Section two */}
-
-
-      <div className='add-text-container'>
-        <CustomText variant='h2' text="Customize text" />
-
-        <CustomText variant='p' text="Customize text" />
-
+      <div className='text-comp-add'>
         <CustomButton
-          variant='default'
+          variant={buttonVarients.default}
           text='Add Text'
+          icon={<Plus size={16} />}
           onClick={onAddTextComponent}
         />
       </div>
 
-      <Divider />
-      {
-        selectedText && (
-          <div className="text-customization">
+      {selectedText && (
+        <>
+          <Divider />
 
-            {/* Update font family */}
-            <div className="fontfamily-component">
-
-              <div className='container-header'>
-                <CustomText text={"Font Family"} variant='p' />
+          <div className="text-comp-controls">
+            {/* Font Family */}
+            <div className="text-comp-card">
+              <div className="text-comp-card-label">
+                <CustomText text="Font Family" variant='p' fontSize="0.85rem" />
               </div>
-
-              <div className='container-body'>
-
-                <select
-                  className=''
-                  value={fontFamily}
-                  onChange={(e) =>
-                    onApplyFontFamily(e.target.value)
-
-                  }
-                >
-                  {FONT_FAMILIES.map(
-                    (font) => (
-                      <option key={font} value={font}> {font}</option>
-                    )
-                  )}
-                </select>
-              </div>
+              <FontPicker
+                value={fontFamily}
+                onChange={onApplyFontFamily}
+              />
             </div>
 
-            {/* Update font size */}
-            <div className="fontsize-component">
+            <div className="text-comp-card">
               <CustomSlider
-                label='Font size'
+                label='Font Size'
                 min={FONT_SIZES.min}
                 max={FONT_SIZES.max}
                 value={fontSize}
                 onChange={onApplyFontSize}
                 step={1}
-
               />
-
             </div>
 
-            {/* Text Alignment */}
-            <div className="text-alignment">
-
-              <div className='container-header'>
-                <CustomText text={"Text Alignment"} variant='p' />
+            <div className="text-comp-card">
+              <div className="text-comp-card-label">
+                <CustomText text="Alignment" variant='p' fontSize="0.85rem" />
               </div>
-              <div className='container-body'>
+              <div className='text-comp-toggle-group'>
+                {Object.entries(TEXT_ALIGNMENT).map(([align, IconComponent]) => (
+                  <button
+                    key={align}
+                    className={`text-comp-toggle-btn${textAlign === align ? ' text-comp-toggle-btn--active' : ''}`}
+                    onClick={() => onApplyTextAlignment(align)}
+                  >
+                    <IconComponent size={16} />
+                  </button>
+                ))}
+              </div>
+            </div>
 
-                {Object.entries(TEXT_ALIGNMENT).map(([align, IconComponent]) => {
+            <div className="text-comp-card">
+              <div className="text-comp-card-label">
+                <CustomText text="Formatting" variant='p' fontSize="0.85rem" />
+              </div>
+              <div className='text-comp-toggle-group'>
+                {Object.entries(TEXT_FORMATTING).map(([format, IconComponent]) => {
+                  const isActive =
+                    (format === "bold" && isBold) ||
+                    (format === "italic" && isItalic) ||
+                    (format === "underline" && isUnderline);
                   return (
-                    <CustomButton
-                      key={align}
-                      variant='icon'
-                      icon={<IconComponent />}
-                      onClick={() => onApplyTextAlignment(align)}
-                    />
-                  )
-
+                    <button
+                      key={format}
+                      className={`text-comp-toggle-btn${isActive ? ' text-comp-toggle-btn--active' : ''}`}
+                      onClick={() => onApplyTextFormatting(format)}
+                    >
+                      <IconComponent size={16} />
+                    </button>
+                  );
                 })}
               </div>
             </div>
 
-            {/* Color Picker */}
-            <div className='add-text-container'>
+            <div className="text-comp-card">
               <CustomColorPicker
                 label="Text Color"
                 color={textColor}
                 onChange={onApplyTextColor}
               />
             </div>
-
-            {/* Text formatting */}
-            <div className="text-formatting">
-              <div className='container-header'>
-                <CustomText text={"Text Alignment"} variant='p' />
-              </div>
-              <div className='container-body'>
-                {Object.entries(TEXT_FORMATTING).map(([format, IconComponent]) => (
-                  <div
-                    key={format}
-                    className={
-                      (format === "bold" && isBold) ||
-                        (format === "italic" && isItalic) ||
-                        (format === "underline" && isUnderline)
-                        ? "active"
-                        : ""
-                    }
-                  >
-                    <CustomButton
-                      variant='icon'
-                      icon={<IconComponent />}
-                      onClick={() => onApplyTextFormatting(format)}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Delete Text */}
-            <div className="delete-text">
+            <div className="text-comp-delete">
               <CustomButton
-                variant='outline'
-                text='Delete Text'
-                icon={<Trash2 />}
-                onClick={onDeleteText} />
+                variant={buttonVarients.outline}
+                text='Delete'
+                icon={<Trash2 size={16} />}
+                onClick={onDeleteText}
+              />
             </div>
           </div>
-        )
-      }
-
+        </>
+      )}
     </div>
   )
 }
