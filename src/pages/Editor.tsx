@@ -11,7 +11,7 @@ import type { SaveFileResponse } from '../interface/project';
 import type { Canvas } from 'fabric';
 import { CanvasContext } from '../context/canvasContext';
 
-export type ToolType = 'adjust' | 'crop' | 'resize' | 'text' | 'background' | 'extend' | 'editing' | 'filters' | 'liquify' | 'draw' | 'layers' | 'tools';
+export type ToolType = 'adjust' | 'crop' | 'resize' | 'text' | 'bg-remove' | 'bg-color' | 'bg-image' | 'extend' | 'editing' | 'filters' | 'liquify' | 'draw' | 'layers' | 'tools';
 
 const Editor: React.FC = () => {
     const { setLoading } = useLoader();
@@ -43,7 +43,6 @@ const Editor: React.FC = () => {
                     }}>
                     <div className='editor-container'>
                         <CanvasEditor project={projectData} />
-                        {/* <div className='canvas-safe-area' /> */}
                         <TopBar title={projectData?.title} />
                         <FeatureBar project={projectData} />
                         <BottomToolbar />

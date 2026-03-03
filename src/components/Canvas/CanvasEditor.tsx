@@ -23,7 +23,6 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
     const isInitialLoadRef = useRef(true);
     const isRestoringRef = useRef(false);
     const { fabricCanvas, setFabricCanvas, setActiveTool } = useCanvasContext();
-    const { setLoading } = useLoader();
 
     const { addToHistory, handleUndo, handleRedo } = useCanvasHistory(fabricCanvasRef, isRestoringRef);
 
@@ -68,18 +67,8 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
             canvas!.clear();
             canvas!.add(imgElement);
 
-            const SIDEBAR_INSET = 352;
-            const TOP_INSET = 80;
-            const BOTTOM_INSET = 94;
-            const RIGHT_INSET = 16;
-
-            const visibleWidth = canvas.width! - SIDEBAR_INSET - RIGHT_INSET;
-            const visibleHeight = canvas.height! - TOP_INSET - BOTTOM_INSET;
-            const visibleCenterX = SIDEBAR_INSET + visibleWidth / 2;
-            const visibleCenterY = TOP_INSET + visibleHeight / 2;
-
-            const maxWidth = visibleWidth * 0.9;
-            const maxHeight = visibleHeight * 0.9;
+            const maxWidth = canvas.width! * 0.9;
+            const maxHeight = canvas.height! * 0.9;
             const imgWidth = imgElement.width!;
             const imgHeight = imgElement.height!;
 
@@ -87,15 +76,14 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
             imgElement.set({
                 scaleX: scale,
                 scaleY: scale,
-                left: visibleCenterX,
-                top: visibleCenterY,
+                left: canvas.width! / 2,
+                top: canvas.height! / 2,
                 originX: 'center',
                 originY: 'center',
                 selectable: true,
                 evented: true,
             });
 
-            // Ensure render happens after all properties are set
             canvas!.requestRenderAll();
             console.log('Image loaded and rendered successfully');
         } catch (error) {
@@ -116,10 +104,29 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
         const loadSavedState = async () => {
             try {
                 if (canvasState) {
-                    console.log('Canvas state found, rendering...');
-                    fabricCanvasRef.current!.clear();
-                    fabricCanvasRef.current!.loadFromJSON(canvasState, () => {
-                        fabricCanvasRef.current!.requestRenderAll();
+                    const canvas = fabricCanvasRef.current!;
+                    canvas.clear();
+
+                    const savedWidth = canvasState.canvasWidth;
+                    const savedHeight = canvasState.canvasHeight;
+                    if (savedWidth && savedHeight) {
+                        const wrapper = wrapperRef.current;
+                        const PADDING = 40;
+                        const availW = wrapper ? wrapper.clientWidth - PADDING : savedWidth;
+                        const availH = wrapper ? wrapper.clientHeight - PADDING : savedHeight;
+                        const viewportScale = Math.min(availW / savedWidth, availH / savedHeight, 1);
+
+                        canvas.setDimensions({ width: savedWidth, height: savedHeight });
+                        canvas.setDimensions(
+                            { width: savedWidth * viewportScale, height: savedHeight * viewportScale },
+                            { cssOnly: true }
+                        );
+                        canvas.setZoom(viewportScale);
+                    }
+
+                    canvas.loadFromJSON(canvasState, () => {
+                        canvas.calcOffset();
+                        canvas.requestRenderAll();
                         isRestoringRef.current = false;
                     });
                 }
@@ -153,6 +160,8 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
                 console.log('Saving canvas state to DB...');
                 try {
                     const canvasJSON = fabricCanvasRef.current!.toJSON();
+                    canvasJSON.canvasWidth = fabricCanvasRef.current!.width;
+                    canvasJSON.canvasHeight = fabricCanvasRef.current!.height;
                     await saveCanvasState(project.id, canvasJSON);
                     showInfoToast("Auto saved")
                 } catch (error) {
@@ -165,7 +174,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
         const handleCanvasChange = () => {
 
             // addToHistory(); // Add to history immediately
-            // debouncedSave(); // Debounce DB save
+            debouncedSave(); // Debounce DB save
         };
 
         fabricCanvasRef.current.on('object:added', handleCanvasChange);

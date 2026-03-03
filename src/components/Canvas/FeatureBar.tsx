@@ -1,9 +1,13 @@
 import { useContext } from 'react'
-import { PanelLeftClose, } from 'lucide-react'
+import { PanelLeftClose } from 'lucide-react'
+import CustomButton from '../CustomComponents/CustomButton'
+import { buttonVarients } from '../../constants/buttonVarients'
 import CropComponent from '../FeatureComponents/CropComponent'
 import ResizeComponent from '../FeatureComponents/ResizeComponent'
 import TextComponent from '../FeatureComponents/TextComponent'
 import BackgroundRemover from '../FeatureComponents/BackgroundRemover'
+import BackgroundColor from '../FeatureComponents/BackgroundColor'
+import BackgroundImage from '../FeatureComponents/BackgroundImage'
 import ImageExtender from '../FeatureComponents/ImageExtender'
 import { CanvasContext } from '../../context/canvasContext'
 import AdjustComponent from '../FeatureComponents/AdjustComponent'
@@ -22,10 +26,14 @@ const FeatureBar: React.FC<CanvasEditorProps> = ({ project }) => {
       case 'resize':
         return <ResizeComponent project={project} />
       case 'crop':
-        return <CropComponent />
+        return <CropComponent project={project} />
       case 'text':
         return <TextComponent />
-      case 'background':
+      case 'bg-color':
+        return <BackgroundColor />
+      case 'bg-image':
+        return <BackgroundImage />
+      case 'bg-remove':
         return <BackgroundRemover project={project} />
       case 'extend':
         return <ImageExtender />
@@ -38,13 +46,13 @@ const FeatureBar: React.FC<CanvasEditorProps> = ({ project }) => {
 
   return (
     <div className={`sidebar-container ${shouldHide ? 'hidden' : ''}`}>
-      <button
+      <CustomButton
+        variant={buttonVarients.icon}
         className="sidebar-close-btn"
+        icon={<PanelLeftClose size={16} />}
         onClick={() => canvasContext?.setActiveTool('editing')}
-        title="Close panel"
-      >
-        <PanelLeftClose size={16} />
-      </button>
+        aria-label="Close panel"
+      />
       {renderActiveTool()}
     </div>
   )

@@ -18,7 +18,7 @@ const Divider: React.FC<DividerProps> = ({
   label,
   className = "",
   orientation = "horizontal",
-  spacing = "md",
+  spacing = "sm",
   color = "rgba(148, 163, 184, 0.35)",
 }) => {
   const margin = spacingMap[spacing];

@@ -6,6 +6,8 @@ import {
   Wand2,
   Images,
   Scaling,
+  Palette,
+  ImageIcon,
 } from 'lucide-react';
 import { useCanvasContext } from '../../context/canvasContext';
 import type { ToolType } from '../../pages/Editor';
@@ -22,7 +24,9 @@ const tools: ToolItem[] = [
   { icon: Crop, label: 'Crop', tool: 'crop' },
   { icon: Scaling, label: 'Resize', tool: 'resize' },
   { icon: Type, label: 'Text', tool: 'text' },
-  { icon: Wand2, label: 'AI BG', tool: 'background' },
+  { icon: Wand2, label: 'AI BG', tool: 'bg-remove' },
+  { icon: Palette, label: 'BG Color', tool: 'bg-color' },
+  { icon: ImageIcon, label: 'BG Image', tool: 'bg-image' },
   { icon: Images, label: 'Extend', tool: 'extend' },
 ];
 
