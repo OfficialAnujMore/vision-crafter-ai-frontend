@@ -2,40 +2,61 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin: 12px 0;
+  gap: 0.5rem;
 }
 
 .color-picker-container label {
   font-weight: 500;
-  font-size: 14px;
+  font-size: 0.85rem;
+  color: #a3a3a3;
 }
 
 .color-picker-wrapper {
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 }
 
 .native-color-input {
-  width: 50px;
-  height: 40px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  width: 40px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
   cursor: pointer;
+  background: transparent;
+  padding: 2px;
+}
+
+.native-color-input::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.native-color-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 4px;
+}
+
+.native-color-input::-moz-color-swatch {
+  border: none;
+  border-radius: 4px;
 }
 
 .color-input {
   flex: 1;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary, #ffffff);
+  font-size: 0.85rem;
   font-family: monospace;
+  outline: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
 }
 
 .color-input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  border-color: #ff9416;
+  box-shadow: 0 0 0 2px rgba(255, 148, 22, 0.15);
 }
