@@ -3,8 +3,10 @@ import { useCanvasContext } from '../../context/canvasContext';
 import type { CanvasEditorProps } from '../../interface/canvas';
 import CustomText from '../CustomComponents/CustomText';
 import CustomButton from '../CustomComponents/CustomButton';
-import { Lock, LockOpen } from 'lucide-react';
+import { Lock, LockOpen, Scaling } from 'lucide-react';
 import CustomInput from '../CustomComponents/CustomInput';
+import Divider from '../Divider';
+import { buttonVarients } from '../../constants/buttonVarients';
 import '../../styles/ResizeComponent.css';
 
 
@@ -16,40 +18,36 @@ const ASPECT_RATIOS: Array<{ name: string; ratio: [number, number]; label: strin
   { name: "Facebook Cover", ratio: [851, 315], label: "2.7:1" },
   { name: "Twitter Header", ratio: [3, 1], label: "3:1" },
 ];
+
 const ResizeComponent: React.FC<CanvasEditorProps> = ({ project }) => {
 
   const { fabricCanvas } = useCanvasContext();
   const [newWidth, setNewWidth] = useState(project?.width || 800);
   const [newHeight, setNewHeight] = useState(project?.height || 600);
   const [lockAspectRatio, setLockAspectRatio] = useState(true);
+  const [activePreset, setActivePreset] = useState<string | null>(null);
 
-
-
-    useEffect(()=>{
-      
-      setTimeout(()=>{
-        console.log("Resize called");
-        window.dispatchEvent(new Event("resize"))
-      }, 500)
-    }, [fabricCanvas])
+  useEffect(() => {
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"))
+    }, 500)
+  }, [fabricCanvas])
 
   if (!fabricCanvas || !project) {
     return (
-      <div className='resize-loading'>Loading canvas</div>
+      <div className='resize-empty'>
+        <Scaling size={40} className="resize-empty-icon" />
+        <CustomText variant="p" text="Loading canvas..." />
+      </div>
     )
   }
 
-
-
-
-  // Calculate dimensions for aspect ratio based on original canvas size
   const calculateAspectRatioDimensions = (ratio: [number, number]) => {
     if (!project) return { width: 800, height: 600 };
 
     const [ratioW, ratioH] = ratio;
     const originalArea = project.width * project.height;
 
-    // Calculate new dimensions maintaining the same area approximately
     const aspectRatio = ratioW / ratioH;
     const newHeight = Math.sqrt(originalArea / aspectRatio);
     const newWidth = newHeight * aspectRatio;
@@ -64,11 +62,13 @@ const ResizeComponent: React.FC<CanvasEditorProps> = ({ project }) => {
     const dimensions = calculateAspectRatioDimensions(aspectRatio.ratio);
     setNewWidth(dimensions.width);
     setNewHeight(dimensions.height);
+    setActivePreset(aspectRatio.name);
   };
-  // Handle width change with aspect ratio lock
+
   const handleWidthChange = (value: string | number) => {
     const width = parseInt(String(value)) || 0;
     setNewWidth(width);
+    setActivePreset(null);
 
     if (lockAspectRatio && project) {
       const ratio = project.height / project.width;
@@ -76,10 +76,10 @@ const ResizeComponent: React.FC<CanvasEditorProps> = ({ project }) => {
     }
   };
 
-  // Handle height change with aspect ratio lock
   const handleHeightChange = (value: string | number) => {
     const height = parseInt(String(value)) || 0;
     setNewHeight(height);
+    setActivePreset(null);
 
     if (lockAspectRatio && project) {
       const ratio = project.width / project.height;
@@ -87,18 +87,28 @@ const ResizeComponent: React.FC<CanvasEditorProps> = ({ project }) => {
     }
   };
 
+  const getAvailableViewport = () => {
+    const canvasEl = fabricCanvas.getElement();
+    const wrapper = canvasEl.closest('.canvas-wrapper') as HTMLElement;
+    if (!wrapper) return { width: 800, height: 600 };
 
+    const PADDING = 40;
 
-  // Calculate viewport scale to fit canvas in container
-  const calculateViewportScale = () => {
-    const container = fabricCanvas.getElement().parentNode as HTMLElement;
-    if (!container) return 1;
-    const containerWidth = container.clientWidth - 40;
-    const containerHeight = container.clientHeight - 40;
-    const scaleX = containerWidth / newWidth;
-    const scaleY = containerHeight / newHeight;
+    return {
+      width: wrapper.clientWidth - PADDING,
+      height: wrapper.clientHeight - PADDING,
+    };
+  };
+
+  const calculateViewportScale = (targetWidth: number, targetHeight: number) => {
+    const available = getAvailableViewport();
+    if (available.width <= 0 || available.height <= 0) return 1;
+
+    const scaleX = available.width / targetWidth;
+    const scaleY = available.height / targetHeight;
     return Math.min(scaleX, scaleY, 1);
   };
+
   const handleApplyResize = async () => {
     if (
       !fabricCanvas ||
@@ -108,60 +118,68 @@ const ResizeComponent: React.FC<CanvasEditorProps> = ({ project }) => {
       return;
     }
 
-    // setProcessingMessage("Resizing canvas...");
-
     try {
+      fabricCanvas.setDimensions({ width: newWidth, height: newHeight });
 
-      fabricCanvas.setDimensions({ width: newWidth, height: newHeight })
+      fabricCanvas.getObjects().forEach((obj) => {
+        const naturalW = obj.width || 1;
+        const naturalH = obj.height || 1;
 
-      // Calculate and apply viewport scale
-      const viewportScale = calculateViewportScale();
+        const fitScale = Math.min(
+          (newWidth * 0.9) / naturalW,
+          (newHeight * 0.9) / naturalH
+        );
+
+        obj.set({
+          left: newWidth / 2,
+          top: newHeight / 2,
+          originX: 'center',
+          originY: 'center',
+          scaleX: fitScale,
+          scaleY: fitScale,
+        });
+        obj.setCoords();
+      });
+
+      const viewportScale = calculateViewportScale(newWidth, newHeight);
 
       fabricCanvas.setDimensions(
         {
           width: newWidth * viewportScale,
           height: newHeight * viewportScale,
         },
-        { backstoreOnly: false }
+        { cssOnly: true }
       );
 
       fabricCanvas.setZoom(viewportScale);
       fabricCanvas.calcOffset();
       fabricCanvas.requestRenderAll();
+
+      fabricCanvas.fire('object:modified');
     } catch (error) {
       console.error("Error resizing canvas:", error);
       alert("Failed to resize canvas. Please try again.");
-    } finally {
-      // setProcessingMessage(null);
     }
   };
 
   const hasChanges = newWidth !== project.width || newHeight !== project.height;
+
   return (
-    <div className='resize-component'>
-      <div className="resize-section-one">
-        <CustomText
-          text={"Current size"}
-          variant='p'
-        />
-        <div className="resize-current-size">{project.width} × {project.height} px</div>
+    <div className='resize-container'>
+      <div className="resize-header">
+        <CustomText variant='h4' text="Resize Image" />
+        <CustomText variant='p' text="Change dimensions or pick a preset" fontSize="0.85rem" />
       </div>
 
-      <div className="resize-section-two">
-        <CustomText
-          text={"Custom size"}
-          variant='p'
-        />
-        <div className="resize-lock-button">
-          <CustomButton
-            icon={lockAspectRatio ? <Lock size={20} /> : <LockOpen size={20} />}
-            variant='icon'
-            onClick={() => setLockAspectRatio(!lockAspectRatio)}
-          />
-        </div>
+      <Divider />
+
+      <div className="resize-current">
+        <CustomText variant='p' text="Current size" fontSize="0.8rem" />
+        <span className="resize-current-value">{project.width} × {project.height} px</span>
       </div>
-      <div className="resize-input-section">
-        <div>
+
+      <div className="resize-dimensions">
+        <div className="resize-dimension-field">
           <CustomInput
             label='Width'
             type='number'
@@ -170,7 +188,17 @@ const ResizeComponent: React.FC<CanvasEditorProps> = ({ project }) => {
             onChange={(value) => handleWidthChange(value)}
           />
         </div>
-        <div>
+
+        <button
+          type="button"
+          className={`resize-lock-toggle ${lockAspectRatio ? 'resize-lock-toggle--locked' : ''}`}
+          onClick={() => setLockAspectRatio(!lockAspectRatio)}
+          aria-label={lockAspectRatio ? 'Unlock aspect ratio' : 'Lock aspect ratio'}
+        >
+          {lockAspectRatio ? <Lock size={16} /> : <LockOpen size={16} />}
+        </button>
+
+        <div className="resize-dimension-field">
           <CustomInput
             label='Height'
             type='number'
@@ -179,29 +207,48 @@ const ResizeComponent: React.FC<CanvasEditorProps> = ({ project }) => {
             onChange={(value) => handleHeightChange(value)}
           />
         </div>
-        <div className="resize-aspect-status">
-          {lockAspectRatio ? '🔒 Aspect ratio locked' : '🔓 Free size'}
-        </div>
       </div>
 
-      <div className="resize-aspect-ratios">
+      <div className="resize-lock-status">
+        {lockAspectRatio ? <Lock size={12} /> : <LockOpen size={12} />}
+        <span>{lockAspectRatio ? 'Aspect ratio locked' : 'Free size'}</span>
+      </div>
+
+      <Divider label="Presets" />
+
+      <div className="resize-presets">
         {ASPECT_RATIOS.map((aspectRatio) => {
-          const dimensions = calculateAspectRatioDimensions(aspectRatio.ratio)
+          const dimensions = calculateAspectRatioDimensions(aspectRatio.ratio);
+          const isActive = activePreset === aspectRatio.name;
+          const [rW, rH] = aspectRatio.ratio;
+          const maxDim = 28;
+          const scale = maxDim / Math.max(rW, rH);
+          const previewW = Math.round(rW * scale);
+          const previewH = Math.round(rH * scale);
+
           return (
-            <div key={aspectRatio.name} className="resize-aspect-button-wrapper">
-              <CustomButton
-                text={`${aspectRatio.name} (${aspectRatio.label}) ${dimensions.width}×${dimensions.height}`}
-                variant='outline'
-                onClick={() => applyAspectRatio(aspectRatio)}
+            <button
+              key={aspectRatio.name}
+              type="button"
+              className={`resize-preset-card ${isActive ? 'resize-preset-card--active' : ''}`}
+              onClick={() => applyAspectRatio(aspectRatio)}
+            >
+              <div
+                className="resize-preset-preview"
+                style={{ width: previewW, height: previewH }}
               />
-            </div>
+              <div className="resize-preset-info">
+                <span className="resize-preset-name">{aspectRatio.name}</span>
+                <span className="resize-preset-dims">{aspectRatio.label} &middot; {dimensions.width}×{dimensions.height}</span>
+              </div>
+            </button>
           )
         })}
       </div>
 
-      <div className="resize-apply-section">
+      <div className="resize-apply">
         <CustomButton
-          variant='outline'
+          variant={hasChanges ? buttonVarients.default : buttonVarients.outline}
           disabled={!hasChanges}
           text={'Apply Resize'}
           onClick={handleApplyResize}

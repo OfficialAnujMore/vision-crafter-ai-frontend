@@ -8,7 +8,10 @@
 
 .canvas-wrapper {
     position: absolute;
-    inset: 0;
+    top: 80px;
+    left: 352px;
+    right: 16px;
+    bottom: 94px;
     display: flex;
     align-items: center;
     justify-content: center;
