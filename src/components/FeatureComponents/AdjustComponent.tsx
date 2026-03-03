@@ -1,12 +1,14 @@
-import  { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import CustomButton from '../CustomComponents/CustomButton';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, Sun, Contrast, Droplets, Sparkles, CloudFog, Palette, ImageOff } from 'lucide-react';
 import CustomText from '../CustomComponents/CustomText';
 import { filters, FabricImage } from "fabric";
 import { useCanvasContext } from '../../context/canvasContext';
 import CustomSlider from '../CustomComponents/CustomSlider';
 import { FabricObject } from 'fabric';
+import Divider from '../Divider';
 import '../../styles/FeatureComponents/AdjustComponent.css';
+import { buttonVarients } from '../../constants/buttonVarients';
 
 
 interface FilterConfig {
@@ -20,6 +22,7 @@ interface FilterConfig {
     valueKey: string;
     transform: (value: number) => number;
     suffix?: string;
+    icon: React.ReactNode;
 }
 
 const FILTER_CONFIGS: FilterConfig[] = [
@@ -33,6 +36,7 @@ const FILTER_CONFIGS: FilterConfig[] = [
         filterClass: filters.Brightness,
         valueKey: "brightness",
         transform: (value) => value / 100,
+        icon: <Sun size={16} />,
     },
     {
         key: "contrast",
@@ -44,6 +48,7 @@ const FILTER_CONFIGS: FilterConfig[] = [
         filterClass: filters.Contrast,
         valueKey: "contrast",
         transform: (value) => value / 100,
+        icon: <Contrast size={16} />,
     },
     {
         key: "saturation",
@@ -55,6 +60,7 @@ const FILTER_CONFIGS: FilterConfig[] = [
         filterClass: filters.Saturation,
         valueKey: "saturation",
         transform: (value) => value / 100,
+        icon: <Droplets size={16} />,
     },
     {
         key: "vibrance",
@@ -66,6 +72,7 @@ const FILTER_CONFIGS: FilterConfig[] = [
         filterClass: filters.Vibrance,
         valueKey: "vibrance",
         transform: (value) => value / 100,
+        icon: <Sparkles size={16} />,
     },
     {
         key: "blur",
@@ -77,6 +84,7 @@ const FILTER_CONFIGS: FilterConfig[] = [
         filterClass: filters.Blur,
         valueKey: "blur",
         transform: (value) => value / 100,
+        icon: <CloudFog size={16} />,
     },
     {
         key: "hue",
@@ -89,8 +97,10 @@ const FILTER_CONFIGS: FilterConfig[] = [
         valueKey: "rotation",
         transform: (value) => value * (Math.PI / 180),
         suffix: "°",
+        icon: <Palette size={16} />,
     },
 ];
+
 const DEFAULT_VALUES = FILTER_CONFIGS.reduce((acc, config) => {
     acc[config.key] = config.defaultValue;
     return acc;
@@ -149,38 +159,37 @@ const AdjustComponent = () => {
         }
     };
 
-      const extractFilterValues = (imageObject: FabricObject | null) => {
+    const extractFilterValues = (imageObject: FabricObject | null) => {
         if (!imageObject || !(imageObject as FabricImage)?.filters?.length) return DEFAULT_VALUES;
 
-    const extractedValues = { ...DEFAULT_VALUES };
+        const extractedValues = { ...DEFAULT_VALUES };
 
-    (imageObject as FabricImage).filters!.forEach((filter: filters.BaseFilter<string>) => {
-      const config = FILTER_CONFIGS.find(
-        (c) => c.filterClass.name === filter.constructor.name
-      );
-      if (config) {
-        const filterValue = (filter as unknown as Record<string, number>)[config.valueKey];
-        if (config.key === "hue") {
-          extractedValues[config.key] = Math.round(
-            filterValue * (180 / Math.PI)
-          );
-        } else {
-          extractedValues[config.key] = Math.round(filterValue * 100);
+        (imageObject as FabricImage).filters!.forEach((filter: filters.BaseFilter<string>) => {
+            const config = FILTER_CONFIGS.find(
+                (c) => c.filterClass.name === filter.constructor.name
+            );
+            if (config) {
+                const filterValue = (filter as unknown as Record<string, number>)[config.valueKey];
+                if (config.key === "hue") {
+                    extractedValues[config.key] = Math.round(
+                        filterValue * (180 / Math.PI)
+                    );
+                } else {
+                    extractedValues[config.key] = Math.round(filterValue * 100);
+                }
+            }
+        });
+
+        return extractedValues;
+    };
+
+    useEffect(() => {
+        const imageObject = getActiveImage();
+        if (imageObject && (imageObject as FabricImage).filters) {
+            const existingValues = extractFilterValues(imageObject);
+            setFilterValues(existingValues);
         }
-      }
-    });
-
-    return extractedValues;
-  };
-
-  useEffect(() => {
-    const imageObject = getActiveImage();
-    if (imageObject && (imageObject as FabricImage).filters) {
-      const existingValues = extractFilterValues(imageObject);
-      setFilterValues(existingValues);
-    }
-  }, [fabricCanvas]);
-
+    }, [fabricCanvas]);
 
     const handleValueChange = (filterKey: string, value: number | number[]) => {
         const newValues = {
@@ -193,47 +202,63 @@ const AdjustComponent = () => {
 
     if (!fabricCanvas) {
         return (
-            <div>Load an image</div>
+            <div className="adjust-empty">
+                <ImageOff size={40} className="adjust-empty-icon" />
+                <CustomText variant="p" text="Load an image to adjust" />
+            </div>
         )
     }
 
-
+    const hasModifications = Object.entries(filterValues).some(
+        ([key, val]) => val !== DEFAULT_VALUES[key]
+    );
 
     return (
         <div className='adjust-container'>
-            {/* Section One - Header */}
             <div className="adjust-header">
-                <CustomText variant='h4' text="Adjust Image" />
-                <CustomText variant='p' text="Customize Image" />
+                <div className="adjust-header-actions">
+                    <CustomText variant='h4' text="Adjust Image" />
+                    {hasModifications && (
+                        <CustomButton
+                            variant={buttonVarients.icon}
+                            // text='Reset'
+                            icon={<RotateCcw size={18} />}
+                            onClick={onApplyReset}
+                        />
+                    )}
+                </div>
+                <CustomText variant='p' text="Fine-tune brightness, contrast, and more" fontSize="0.85rem" />
             </div>
 
-            {/* Section Two - Filter Controls */}
-            <div className="adjust-content">
-                <div className="reset-button-wrapper">
-                    <CustomButton
-                        variant='outline'
-                        text='Reset'
-                        icon={<RotateCcw />}
-                        onClick={onApplyReset}
-                    />
-                </div>
+            <Divider />
 
-                <div className="filters-grid">
-                    {FILTER_CONFIGS.map((config) => (
-                        <div key={config.key} className="filter-item">
+            <div className="adjust-filters">
+                {FILTER_CONFIGS.map((config) => {
+                    const isModified = filterValues[config.key] !== config.defaultValue;
+                    return (
+                        <div
+                            key={config.key}
+                            className={`adjust-filter-card${isModified ? ' adjust-filter-card--modified' : ''}`}
+                        >
+                            <div className="adjust-filter-label">
+                                <span className="adjust-filter-icon">{config.icon}</span>
+                                <CustomText
+                                    variant="p"
+                                    text={`${config.label}${config.suffix ? ` ${config.suffix}` : ''}`}
+                                    fontSize="0.85rem"
+                                />
+                            </div>
                             <CustomSlider
-                                label={`${config.label}${config.suffix ? ` ${config.suffix}` : ''}`}
+                                label=""
                                 min={config.min}
                                 max={config.max}
                                 value={filterValues[config.key]}
-                                onChange={(value) => {
-                                    handleValueChange(config.key, value)
-                                }}
+                                onChange={(value) => handleValueChange(config.key, value)}
                                 step={config.step}
                             />
                         </div>
-                    ))}
-                </div>
+                    );
+                })}
             </div>
         </div>
     )
