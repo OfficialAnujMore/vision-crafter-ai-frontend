@@ -1,0 +1,104 @@
+.cm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: cm-overlay-in 0.2s ease;
+}
+
+@keyframes cm-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.cm-card {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 1rem;
+  background: rgba(20, 20, 20, 0.96);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow:
+    0 16px 56px rgba(0, 0, 0, 0.6),
+    0 0 0 0.5px rgba(255, 255, 255, 0.05) inset;
+  animation: cm-card-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center;
+}
+
+@keyframes cm-card-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.cm-body {
+  padding: 1.5rem 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cm-body .custom-text--h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  -webkit-text-fill-color: unset;
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  line-height: 1.4;
+}
+
+.cm-body .custom-text--p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.cm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.625rem;
+  padding: 1rem 1.5rem 1.25rem;
+}
+
+.cm-btn.custom-btn {
+  font-size: 0.835rem;
+  padding: 0.45rem 1.1rem;
+  border-radius: 9px;
+}
+
+.cm-btn.custom-btn--outline {
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--text-secondary);
+}
+
+.cm-btn.custom-btn--outline:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cm-btn--danger.custom-btn--default {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  box-shadow: 0 2px 10px rgba(220, 38, 38, 0.25);
+}
+
+.cm-btn--danger.custom-btn--default:hover {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+  box-shadow: 0 4px 18px rgba(220, 38, 38, 0.35);
+}

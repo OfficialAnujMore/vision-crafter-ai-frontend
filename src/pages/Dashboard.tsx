@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import CustomButton from '../components/CustomComponents/CustomButton';
 import ProjectCard from '../components/ProjectsCard';
 import { ImageUploadModal } from '../components/ImageUploadModal';
@@ -18,36 +18,55 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { setLoading } = useLoader();
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        setLoading(true);
-        const user = authService.getCurrentUser();
+  const loadProjects = useCallback(async () => {
+    try {
+      setLoading(true);
+      const user = authService.getCurrentUser();
 
-        if (!user || !user.id) {
-          console.error('No user found');
-          return;
-        }
-
-        const response = await projectService.getUserProjects(user.id);
-        setProjects(response || []);
-      } catch (error) {
-        console.error('Failed to load projects:', error);
-        setProjects([]);
-      } finally {
-        setLoading(false);
+      if (!user || !user.id) {
+        console.error('No user found');
+        return;
       }
-    };
 
-    load();
+      const response = await projectService.getUserProjects(user.id);
+      setProjects(response || []);
+    } catch (error) {
+      console.error('Failed to load projects:', error);
+      setProjects([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadProjects();
+  }, [loadProjects]);
+
+  const handleDelete = useCallback(async (fileId: string) => {
+    try {
+      await projectService.deleteProjectByFileId(fileId);
+      setProjects((prev) => prev.filter((p) => p.file_id !== fileId));
+    } catch (error) {
+      console.error('Failed to delete project:', error);
+    }
+  }, []);
+
+  const handleRename = useCallback(async (projectId: number, newTitle: string) => {
+    try {
+      await projectService.updateProject(projectId, { title: newTitle });
+      setProjects((prev) =>
+        prev.map((p) => (p.id === projectId ? { ...p, title: newTitle } : p))
+      );
+    } catch (error) {
+      console.error('Failed to rename project:', error);
+    }
   }, []);
 
   return (
     <div className='dashboard-container'>
-
-
       <ImageUploadModal isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        onUploadSuccess={loadProjects}
       />
       <section className='create'>
         <CustomButton
@@ -61,11 +80,10 @@ const Dashboard = () => {
           {projects.length > 0 ? (
             projects.map((project) => (
               <ProjectCard
-                fileId={project.file_id}
-                projectId={project.id}
-                thumbnailUrl={project.thumbnail_url}
-                title={project.title}
-                projectUrl={project.project_url}
+                key={project.id}
+                project={project}
+                onDelete={handleDelete}
+                onRename={handleRename}
               />
             ))
           ) : (

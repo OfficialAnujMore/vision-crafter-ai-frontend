@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone, type FileRejection } from 'react-dropzone';
 import { X, Upload } from 'lucide-react';
 import CustomText from './CustomComponents/CustomText';
@@ -10,26 +10,53 @@ import { projectService } from '../services/api/projectService';
 import '../styles/ImageUploadModal.css';
 import { showWarningToast } from '../utils/toast';
 import { textVariant } from '../constants/textVariants';
-import { colors } from '../constants/colors';
 import { buttonVariants } from '../constants/buttonVariants';
 
 interface ImageUploadModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onUploadSuccess?: () => void;
 }
 
 export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
     isOpen,
     onClose,
+    onUploadSuccess,
 }) => {
     const [preview, setPreview] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [fileName, setFileName] = useState('');
     const { setLoading } = useLoader();
+
+    const handleClose = useCallback(() => {
+        setPreview(null);
+        setSelectedFile(null);
+        setFileName('');
+        onClose();
+    }, [onClose]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') handleClose();
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = '';
+        };
+    }, [isOpen, handleClose]);
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
         if (file) {
             setSelectedFile(file);
+            const nameWithoutExt = file.name.replace(/\.[^/.]+$/, '');
+            setFileName(nameWithoutExt);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreview(reader.result as string);
@@ -80,8 +107,6 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
         maxSize: 5 * 1024 * 1024,
     });
 
-
-
     const handleUpload = async () => {
         if (!selectedFile) return;
         setLoading(true);
@@ -94,49 +119,43 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                 throw new Error('User not authenticated');
             }
 
-            const imageData = { ...response, user_id: currentUser.id };
+            const imageData = { ...response, user_id: currentUser.id, title: fileName.trim() || response.title };
             await projectService.saveCreatedFile(imageData);
+            onUploadSuccess?.();
             handleClose();
         } catch (err) {
             console.error('Upload failed:', err);
         } finally {
             setLoading(false);
         }
-    }
-
-
-    const handleClose = () => {
-        setPreview(null);
-        setSelectedFile(null);
-        onClose();
     };
 
     if (!isOpen) return null;
 
     return (
-        <div className="image-upload-modal">
-            <div className="image-upload-modal__container">
-                <div className="image-upload-modal__header">
+        <div className="ium-overlay" onClick={handleClose}>
+            <div className="ium-card" onClick={(e) => e.stopPropagation()}>
+                <div className="ium-header">
                     <CustomText
                         variant={textVariant.h4}
                         text="Upload Image"
                     />
                     <CustomButton
                         variant={buttonVariants.icon}
-                        icon={<X size={24} />}
+                        icon={<X size={20} />}
                         onClick={handleClose}
+                        className="ium-close-btn"
                     />
                 </div>
 
-                <div className="image-upload-modal__content">
+                <div className="ium-content">
                     {!preview ? (
                         <div
                             {...getRootProps()}
-                            className={`image-upload-modal__dropzone ${isDragActive ? 'image-upload-modal__dropzone--active' : ''
-                                }`}
+                            className={`ium-dropzone ${isDragActive ? 'ium-dropzone--active' : ''}`}
                         >
                             <input {...getInputProps()} />
-                            <Upload className="image-upload-modal__upload-icon" size={48} color={colors.accent} />
+                            <Upload className="ium-upload-icon" size={40} />
                             <CustomText
                                 variant={textVariant.h4}
                                 text={isDragActive
@@ -149,48 +168,61 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                             />
                         </div>
                     ) : (
-                        <div className="image-upload-modal__preview-container">
-                            <div className="image-upload-modal__preview-wrapper">
+                        <div className="ium-preview">
+                            <div className="ium-preview-wrapper">
                                 <img
                                     src={preview}
                                     alt="Preview"
-                                    className="image-upload-modal__preview-image"
+                                    className="ium-preview-image"
+                                />
+                            </div>
+                            <div className="ium-name-field">
+                                <label className="ium-name-label" htmlFor="ium-name-input">
+                                    Project name
+                                </label>
+                                <input
+                                    id="ium-name-input"
+                                    className="ium-name-input"
+                                    type="text"
+                                    value={fileName}
+                                    onChange={(e) => setFileName(e.target.value)}
+                                    placeholder="Enter project name"
                                 />
                             </div>
                             <CustomButton
-                                variant={buttonVariants.default}
+                                variant={buttonVariants.outline}
                                 text="Choose a different image"
+                                className="ium-change-btn"
                                 onClick={() => {
                                     setPreview(null);
                                     setSelectedFile(null);
+                                    setFileName('');
                                 }}
-
                             />
-
                         </div>
                     )}
-                </div>
-                <div className='image-upload-modal__description'>
-                    <CustomText
-                        variant={textVariant.p}
-                        text="Supports PNG, JPG, WEBP up to 5MB"
-                    />
+
+                    <div className="ium-description">
+                        <CustomText
+                            variant={textVariant.p}
+                            text="Supports PNG, JPG, WEBP up to 5MB"
+                        />
+                    </div>
                 </div>
 
-
-                <div className="image-upload-modal__footer">
+                <div className="ium-footer">
                     <CustomButton
                         variant={buttonVariants.outline}
                         text="Cancel"
                         onClick={handleClose}
-
+                        className="ium-btn"
                     />
                     <CustomButton
                         variant={buttonVariants.default}
                         text="Upload"
                         disabled={!selectedFile}
                         onClick={handleUpload}
-
+                        className="ium-btn"
                     />
                 </div>
             </div>
