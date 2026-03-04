@@ -7,6 +7,7 @@ import CustomText from './CustomComponents/CustomText';
 import '../styles/ProfileDropdown.css';
 import { textVariant } from '../constants/textVariants';
 import { buttonVariants } from '../constants/buttonVariants';
+import { LogOut, Settings, LayoutDashboard } from 'lucide-react';
 
 interface User {
   id: number;
@@ -54,7 +55,6 @@ const ProfileDropdown: React.FC = () => {
     await authService.logout();
     setIsOpen(false);
     navigate(ROUTES.HOME);
-    
     window.location.href = ROUTES.HOME;
   };
 
@@ -70,48 +70,78 @@ const ProfileDropdown: React.FC = () => {
   };
 
   return (
-    <div className="profile-dropdown-container" ref={dropdownRef}>
+    <div className="pd-container" ref={dropdownRef}>
       <button
-        className="profile-avatar-button"
+        className="pd-trigger"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="User profile menu"
       >
         {user.picture ? (
-          <img src={user.picture} alt={user.name} className="profile-avatar-image" />
+          <img src={user.picture} alt={user.name} className="pd-trigger-img" referrerPolicy="no-referrer" />
         ) : (
-          <div className="profile-avatar-placeholder">
+          <div className="pd-trigger-placeholder">
             {getInitials(user.name)}
           </div>
         )}
       </button>
 
       {isOpen && (
-        <div className="profile-dropdown-modal">
-          <div className="profile-dropdown-header">
-            {user.picture ? (
-              <img src={user.picture} alt={user.name} className="profile-modal-image" />
-            ) : (
-              <div className="profile-modal-placeholder">
-                {getInitials(user.name)}
-              </div>
-            )}
+        <div className="pd-dropdown">
+          {/* User info header */}
+          <div className="pd-header">
+            <div className="pd-header-avatar">
+              {user.picture ? (
+                <img src={user.picture} alt={user.name} className="pd-header-img" referrerPolicy="no-referrer" />
+              ) : (
+                <div className="pd-header-placeholder">
+                  {getInitials(user.name)}
+                </div>
+              )}
+            </div>
+            <div className="pd-header-info">
+              <CustomText
+                variant={textVariant.h4}
+                text={user.name}
+              />
+              <CustomText
+                variant={textVariant.p}
+                text={user.email}
+              />
+            </div>
           </div>
-          
-          <div className="profile-dropdown-info">
-            <CustomText 
-              variant={textVariant.h4}
-              text={user.name} 
+
+          <div className="pd-divider" />
+
+          {/* Menu items */}
+          <div className="pd-menu">
+            <CustomButton
+              className="pd-menu-item"
+              variant={buttonVariants.link}
+              icon={<LayoutDashboard size={16} />}
+              text="Dashboard"
+              onClick={() => {
+                navigate(ROUTES.DASHBOARD);
+                setIsOpen(false);
+              }}
             />
-            <CustomText 
-              variant={textVariant.p}
-              text={user.email} 
+            <CustomButton
+              className="pd-menu-item"
+              variant={buttonVariants.link}
+              icon={<Settings size={16} />}
+              text="Settings"
+              disabled
             />
           </div>
 
-          <div className="profile-dropdown-actions">
+          <div className="pd-divider" />
+
+          {/* Logout */}
+          <div className="pd-menu">
             <CustomButton
-              variant={buttonVariants.default}
-              text="Logout"
+              className="pd-menu-item pd-menu-item--danger"
+              variant={buttonVariants.link}
+              icon={<LogOut size={16} />}
+              text="Log out"
               onClick={handleLogout}
             />
           </div>

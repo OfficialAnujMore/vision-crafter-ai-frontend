@@ -1,123 +1,221 @@
-.profile-dropdown-container {
+.pd-container {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
 }
 
-.profile-avatar-button {
-  width: 42px;
-  height: 42px;
+.pd-trigger {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 2px solid var(--border-secondary);
+  border: 2px solid rgba(255, 255, 255, 0.12);
   background: none;
   cursor: pointer;
   padding: 0;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.2s ease;
 }
 
-.profile-avatar-button:hover {
-  border-color: var(--border-accent);
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(124, 92, 255, 0.4);
+.pd-trigger:hover {
+  border-color: rgba(255, 148, 22, 0.5);
+  box-shadow: 0 0 14px rgba(255, 148, 22, 0.2);
+  transform: scale(1.06);
 }
 
-.profile-avatar-image {
+.pd-trigger-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
 }
 
-.profile-avatar-placeholder {
+.pd-trigger-placeholder {
   width: 100%;
   height: 100%;
-  background: var(--color-accent);
+  background: linear-gradient(135deg, var(--color-accent) 0%, #5a3fd6 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-white);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
   border-radius: 50%;
+  letter-spacing: 0.03em;
 }
 
-.profile-dropdown-modal {
+.pd-dropdown {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 10px);
   right: 0;
-  background: linear-gradient(145deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
-  border: 1px solid var(--border-primary);
-  border-radius: 16px;
-  box-shadow: var(--shadow-lg);
-  padding: 1.5rem;
-  min-width: 280px;
-  backdrop-filter: blur(30px);
-  animation: slideDown 0.2s ease-out;
+  width: 260px;
+  background: rgba(18, 18, 18, 0.94);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  box-shadow:
+    0 12px 48px rgba(0, 0, 0, 0.55),
+    0 0 0 0.5px rgba(255, 255, 255, 0.05) inset;
+  padding: 6px;
   z-index: 1100;
+  animation: pd-enter 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top right;
 }
 
-@keyframes slideDown {
+@keyframes pd-enter {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: scale(0.95) translateY(-6px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1) translateY(0);
   }
 }
 
-.profile-dropdown-header {
+
+.pd-header {
   display: flex;
-  justify-content: center;
-  margin-bottom: 1rem;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px 8px;
 }
 
-.profile-modal-image {
-  width: 80px;
-  height: 80px;
+.pd-header-avatar {
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--border-secondary);
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-.profile-modal-placeholder {
-  width: 80px;
-  height: 80px;
-  background: var(--color-accent);
+.pd-header-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pd-header-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--color-accent) 0%, #5a3fd6 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
-  font-weight: 600;
-  color: var(--color-white);
-  border-radius: 50%;
-  border: 3px solid var(--border-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.03em;
 }
 
-.profile-dropdown-info {
-  text-align: center;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--border-secondary);
-  margin-bottom: 1rem;
-}
-
-.profile-dropdown-actions {
+.pd-header-info {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  min-width: 0;
 }
 
-.profile-dropdown-actions button {
+.pd-header-info .custom-text--h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  -webkit-text-fill-color: unset;
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pd-header-info .custom-text--p {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.pd-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 4px 8px;
+}
+
+
+.pd-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 2px 0;
+}
+
+.pd-menu-item.custom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
   width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 9px;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 0.835rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  text-underline-offset: unset;
+  box-shadow: none;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
 }
 
-/* Responsive */
+.pd-menu-item.custom-btn:hover:not(:disabled) {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.07);
+  transform: none;
+  opacity: 1;
+}
+
+.pd-menu-item.custom-btn:active:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  transform: none;
+}
+
+.pd-menu-item.custom-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
+.pd-menu-item--danger.custom-btn {
+  color: var(--text-secondary);
+}
+
+.pd-menu-item--danger.custom-btn:hover:not(:disabled) {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.08);
+}
+
+.pd-menu-item--danger.custom-btn:active:not(:disabled) {
+  background: rgba(248, 113, 113, 0.14);
+}
+
+
 @media (max-width: 768px) {
-  .profile-dropdown-modal {
-    right: -1rem;
-    min-width: 260px;
+  .pd-dropdown {
+    right: -8px;
+    width: 240px;
   }
 }
