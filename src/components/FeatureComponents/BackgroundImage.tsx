@@ -2,8 +2,7 @@ import React, { useRef, useState } from 'react'
 import { useCanvasContext } from '../../context/canvasContext';
 import CustomButton from '../CustomComponents/CustomButton';
 import CustomText from '../CustomComponents/CustomText';
-import CustomInput from '../CustomComponents/CustomInput';
-import { ImageIcon, Search, Upload, Loader2, Trash2, ExternalLink } from 'lucide-react';
+import { ImageIcon, Search, Upload, Loader2, Trash2, ExternalLink, X } from 'lucide-react';
 import { FabricImage } from 'fabric';
 import { showErrorToast, showSuccessToast } from '../../utils/toast';
 import { API_CONFIG } from '../../services/config/api';
@@ -188,21 +187,32 @@ const BackgroundImage: React.FC = () => {
 
       {activeTab === 'unsplash' && (
         <div className="bg-image-unsplash">
-          <div className="bg-image-search" onKeyDown={handleSearchKeyDown}>
-            <div className="bg-image-search-field">
-              <CustomInput
-                value={searchQuery}
-                onChange={(value) => setSearchQuery(value)}
-                placeholder="Search photos..."
-              />
-            </div>
-            <CustomButton
+          <div className="bg-image-search-bar" onKeyDown={handleSearchKeyDown}>
+            <Search size={16} className="bg-image-search-icon" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search Unsplash photos..."
+              className="bg-image-search-input"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                className="bg-image-search-clear"
+                onClick={() => setSearchQuery('')}
+              >
+                <X size={14} />
+              </button>
+            )}
+            <button
+              type="button"
+              className="bg-image-search-btn"
               onClick={searchUnsplashImages}
               disabled={isSearching || !searchQuery.trim()}
-              variant={buttonVariants.default}
-              icon={isSearching ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
-              text={isSearching ? '' : 'Search'}
-            />
+            >
+              {isSearching ? <Loader2 size={15} className="animate-spin" /> : 'Go'}
+            </button>
           </div>
 
           {unsplashImages && unsplashImages.length > 0 && (

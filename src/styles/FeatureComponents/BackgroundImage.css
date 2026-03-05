@@ -95,14 +95,92 @@
   animation: bgImgFadeIn 0.2s ease-out;
 }
 
-.bg-image-search {
+.bg-image-search-bar {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--glass-radius-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.bg-image-search-field {
+.bg-image-search-bar:focus-within {
+  border-color: rgba(255, 148, 22, 0.4);
+  box-shadow: 0 0 0 2px rgba(255, 148, 22, 0.08);
+}
+
+.bg-image-search-icon {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.bg-image-search-bar:focus-within .bg-image-search-icon {
+  color: #ff9416;
+}
+
+.bg-image-search-input {
   flex: 1;
   min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.825rem;
+  font-family: inherit;
+}
+
+.bg-image-search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.bg-image-search-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  border-radius: 50%;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.bg-image-search-clear:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-secondary);
+}
+
+.bg-image-search-btn {
+  padding: 0.3rem 0.75rem;
+  background: rgba(255, 148, 22, 0.15);
+  border: 1px solid rgba(255, 148, 22, 0.25);
+  border-radius: 6px;
+  color: #ff9416;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+}
+
+.bg-image-search-btn:hover:not(:disabled) {
+  background: rgba(255, 148, 22, 0.25);
+  border-color: rgba(255, 148, 22, 0.4);
+}
+
+.bg-image-search-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .bg-image-results {
