@@ -6,7 +6,7 @@
   /* Base Colors */
   --color-black: #000000;
   --color-white: #FFFFFF;
-  --color-accent: #7C5CFF;
+  --color-accent: #ff9416;
 
   /* Grey Shades */
   --color-grey-50: #FAFAFA;
@@ -47,14 +47,14 @@
 
   --glass-bg: rgba(30, 30, 30, 0.72);
   --glass-bg-hover: rgba(40, 40, 40, 0.82);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.36);
   --glass-border-hover: rgba(255, 255, 255, 0.14);
   --glass-blur: 20px;
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
   --glass-radius: 16px;
   --glass-radius-sm: 10px;
 
-  --glow-accent: 0 0 12px rgba(255, 148, 22, 0.4);
+  --glow-accent: 0 0 12px rgba(255, 146, 22, 0.561);
   --glow-accent-strong: 0 0 20px rgba(255, 148, 22, 0.6);
   --active-bg: rgba(255, 148, 22, 0.12);
 }

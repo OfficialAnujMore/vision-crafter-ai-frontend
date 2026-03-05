@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
-import CustomButton from '../components/CustomComponents/CustomButton';
 import CustomText from '../components/CustomComponents/CustomText';
+import CustomButton from '../components/CustomComponents/CustomButton';
+import EditorPreviewCard from '../components/CustomComponents/EditorPreviewCard';
 import { ROUTES } from '../constants/routes';
 import { authService } from '../services/api/authService';
-import '../styles/SignUp.css';
 import { textVariant } from '../constants/textVariants';
 import { buttonVariants } from '../constants/buttonVariants';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Sparkles, Wand2, Shield, Zap } from 'lucide-react';
+import '../styles/SignUp.css';
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
@@ -44,69 +45,69 @@ const SignUp: React.FC = () => {
   };
 
   const features = [
-    { icon: '🎨', text: 'AI-powered creative tools' },
-    { icon: '⚡', text: 'Lightning-fast processing' },
-    { icon: '🔒', text: 'Secure and private' },
+    { icon: <Wand2 size={18} />, text: 'AI-powered creative tools' },
+    { icon: <Zap size={18} />, text: 'Lightning-fast processing' },
+    { icon: <Shield size={18} />, text: 'Secure and private' },
   ];
 
   return (
     <div className="signup-container">
-      {/* Left Side - Branding */}
+              <div className="signup-left-grid" />
       <div className="signup-left">
-        <div className="signup-left-content">
+        <div className="signup-left-glow" />
+        <div className="signup-left-grid" />
+
+        <div className="signup-left-top">
           <CustomButton
             variant={buttonVariants.icon}
             icon={<ArrowLeft />}
             onClick={() => navigate(ROUTES.HOME)}
           />
-          <CustomText
-            variant={textVariant.h3}
-            text="Vision Crafter AI"
-          />
+          <div className="signup-logo">
+            <Sparkles size={18} />
+            <CustomText variant={textVariant.h4} text="Vision Crafter AI" />
+          </div>
         </div>
+
+        <div className="signup-left-center">
+          <EditorPreviewCard compact />
+        </div>
+
         <div className="signup-slogan">
           <CustomText
             variant={textVariant.h1}
             text="Transform Your Imagination Into Reality"
           />
-          <CustomText
-            variant={textVariant.h2}
-            text="The future of editing with AI"
-          />
+          <p className="signup-slogan-sub">
+            AI-powered image editing, right in your browser.
+          </p>
         </div>
       </div>
 
-      {/* Right Side - Google Sign Up */}
+      {/* Right Side — Sign-in Form */}
       <div className="signup-right">
         <div className="signup-form">
           <div className="signup-header">
-            <CustomText
-              variant={textVariant.h1}
-              text="Get Started"
-            />
-            <CustomText
-              variant={textVariant.p}
-              text="Sign up to start creating with AI-powered tools"
-            />
+            <CustomText variant={textVariant.h2} text="Get Started" />
+            <p className="signup-header-desc">
+              Sign up to start creating with AI-powered tools
+            </p>
           </div>
 
           {error && (
-            <div className="error-message">
+            <div className="signup-error">
               {error}
             </div>
           )}
 
           <div className="signup-google-container">
             {isLoading ? (
-              <div className="signup-loading-overlay">
+              <div className="signup-loading">
                 <div className="signup-spinner" />
-                <CustomText
-                  variant={textVariant.p}
-                  text="Signing you in..."
-                />
+                <p className="signup-loading-text">Signing you in...</p>
               </div>
             ) : (
-              <div className="google-login-wrapper">
+              <div className="signup-google-wrapper">
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={handleGoogleError}
@@ -121,29 +122,20 @@ const SignUp: React.FC = () => {
           </div>
 
           <div className="signup-divider">
-            <CustomText
-              variant={textVariant.h3}
-              text="Quick and secure sign up"
-            />
+            <span>Quick and secure sign up</span>
           </div>
 
           <div className="signup-features">
             {features.map((feature, index) => (
-              <div key={index} className="feature-item">
-                <span className="feature-icon">{feature.icon}</span>
-                <CustomText
-                  variant={textVariant.p}
-                  text={feature.text}
-                />
+              <div key={index} className="signup-feature-item">
+                <span className="signup-feature-icon">{feature.icon}</span>
+                <span className="signup-feature-text">{feature.text}</span>
               </div>
             ))}
           </div>
 
           <div className="signup-footer">
-            <CustomText
-              variant={textVariant.p}
-              text="By signing up, you agree to our Terms of Service and Privacy Policy"
-            />
+            <p>By signing up, you agree to our Terms of Service and Privacy Policy</p>
           </div>
         </div>
       </div>
