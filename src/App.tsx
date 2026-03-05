@@ -13,6 +13,7 @@ import { Toaster } from 'sonner';
 import './styles/Toast.css'
 import Editor from './pages/Editor';
 import { authService } from './services/api/authService';
+import FaintDotGrid from './components/FaintDotGrid';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = authService.isAuthenticated();
@@ -31,6 +32,7 @@ function App() {
 
   return (
     <LoaderProvider>
+      <FaintDotGrid/>
       <GlobalLoader />
       <Toaster
         position="top-right"
