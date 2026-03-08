@@ -1,0 +1,66 @@
+.crop-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.crop-status {
+  padding: 0.625rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 188, 212, 0.25);
+  background: rgba(0, 188, 212, 0.06);
+}
+
+.crop-start-btn {
+  width: 100%;
+}
+
+.crop-ratio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.crop-ratio-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.625rem 0.375rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.crop-ratio-btn:hover {
+  border-color: rgba(0, 188, 212, 0.4);
+  background: rgba(0, 188, 212, 0.06);
+}
+
+.crop-ratio-btn--active {
+  border-color: #00bcd4;
+  background: rgba(0, 188, 212, 0.1);
+}
+
+.crop-ratio-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.crop-ratio-value {
+  font-size: 0.65rem;
+  opacity: 0.6;
+}
+
+.crop-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.crop-actions .custom-btn {
+  width: 100%;
+}
