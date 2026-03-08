@@ -31,20 +31,25 @@ const BackgroundImage: React.FC = () => {
         crossOrigin: "anonymous",
       });
 
-      bgImage.set({
-        left: fabricCanvas.width / 2,
-        top: fabricCanvas.height / 2,
-        originX: 'center',
-        originY: 'center',
-        selectable: false,
-        evented: false,
-      });
+      const zoom = fabricCanvas.getZoom();
+      const canvasW = fabricCanvas.width / zoom;
+      const canvasH = fabricCanvas.height / zoom;
 
       const scale = Math.max(
-        fabricCanvas.width / bgImage.width,
-        fabricCanvas.height / bgImage.height
+        canvasW / bgImage.width,
+        canvasH / bgImage.height
       );
-      bgImage.set({ scaleX: scale, scaleY: scale });
+
+      bgImage.set({
+        left: canvasW / 2,
+        top: canvasH / 2,
+        originX: 'center',
+        originY: 'center',
+        scaleX: scale,
+        scaleY: scale,
+        selectable: true,
+        evented: true,
+      });
 
       fabricCanvas.backgroundImage = bgImage;
       fabricCanvas.requestRenderAll();
