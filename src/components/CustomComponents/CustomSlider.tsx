@@ -6,13 +6,14 @@ interface SliderProps {
     label: string;
     min: number;
     max: number;
-    value: number;
+    value: number | number;
     onChange: (value: number) => void;
     step?: number;
+    disabled: boolean;
 }
 
 const CustomSlider: React.FC<SliderProps> = ({
-    label, min, max, value, onChange, step = 1
+    label, min, max, value, onChange, step = 1, disabled
 }) => {
     const fillPercent = ((value - min) / (max - min)) * 100;
 
@@ -29,6 +30,7 @@ const CustomSlider: React.FC<SliderProps> = ({
                     className="slider"
                     style={{ '--slider-fill': `${fillPercent}%` } as React.CSSProperties}
                     onChange={(e) => onChange(Number(e.target.value))}
+                    disabled={disabled}
                 />
                 <div
                     className="slider-tooltip"

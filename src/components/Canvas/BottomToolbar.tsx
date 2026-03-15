@@ -21,7 +21,7 @@ interface ToolItem {
 
 const tools: ToolItem[] = [
   { icon: SlidersHorizontal, label: 'Adjust', tool: 'adjust' },
-  { icon: Crop, label: 'Crop', tool: 'crop' },
+  // { icon: Crop, label: 'Crop', tool: 'crop' },
   { icon: Scaling, label: 'Resize', tool: 'resize' },
   { icon: Type, label: 'Text', tool: 'text' },
   { icon: Wand2, label: 'AI BG', tool: 'bg-remove' },
