@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import CustomButton from '../CustomComponents/CustomButton'
 import { ArrowLeft, Undo, Redo, Share2,Download } from 'lucide-react'
 import CustomText from '../CustomComponents/CustomText'
@@ -17,6 +17,19 @@ declare global {
 
 const TopBar: React.FC<{ title: string }> = ({ title }) => {
   const navigate = useNavigate();
+  const [canUndo, setCanUndo] = useState(false);
+  const [canRedo, setCanRedo] = useState(false);
+
+  useEffect(() => {
+    const handleHistoryChange = (e: Event) => {
+      const { canUndo, canRedo } = (e as CustomEvent).detail;
+      setCanUndo(canUndo);
+      setCanRedo(canRedo);
+    };
+    window.addEventListener('historychange', handleHistoryChange);
+    return () => window.removeEventListener('historychange', handleHistoryChange);
+  }, []);
+
   const handleUndoClick = () => {
     window.canvasUndo?.();
   };
@@ -48,11 +61,13 @@ const TopBar: React.FC<{ title: string }> = ({ title }) => {
           variant={buttonVariants.icon}
           icon={<Undo size={20} />}
           onClick={handleUndoClick}
+          disabled={!canUndo}
         />
         <CustomButton
           variant={buttonVariants.icon}
           icon={<Redo size={20} />}
           onClick={handleRedoClick}
+          disabled={!canRedo}
         />
         <CustomButton
           variant={buttonVariants.icon}

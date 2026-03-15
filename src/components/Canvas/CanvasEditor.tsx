@@ -50,9 +50,23 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
         window.canvasUndo = handleUndo;
         window.canvasRedo = handleRedo;
 
+        const handleKeyDown = (e: KeyboardEvent) => {
+            const isMeta = e.metaKey || e.ctrlKey;
+            if (isMeta && e.key === 'z' && !e.shiftKey) {
+                e.preventDefault();
+                handleUndo();
+            } else if ((isMeta && e.key === 'z' && e.shiftKey) || (e.ctrlKey && e.key === 'y')) {
+                e.preventDefault();
+                handleRedo();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
         return () => {
             delete window.canvasUndo;
             delete window.canvasRedo;
+            window.removeEventListener('keydown', handleKeyDown);
         };
     }, [handleUndo, handleRedo]);
 
@@ -91,6 +105,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
         }
         finally {
             isRestoringRef.current = false;
+            addToHistory();
         }
     };
 
@@ -124,11 +139,11 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
                         canvas.setZoom(viewportScale);
                     }
 
-                    canvas.loadFromJSON(canvasState, () => {
-                        canvas.calcOffset();
-                        canvas.requestRenderAll();
-                        isRestoringRef.current = false;
-                    });
+                    await canvas.loadFromJSON(canvasState);
+                    canvas.calcOffset();
+                    canvas.requestRenderAll();
+                    isRestoringRef.current = false;
+                    addToHistory();
                 }
                 else {
                     console.log('No saved state found, loading image instead');
@@ -173,7 +188,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
 
         const handleCanvasChange = () => {
 
-            // addToHistory(); // Add to history immediately
+            addToHistory(); // Add to history immediately
             debouncedSave(); // Debounce DB save
         };
 

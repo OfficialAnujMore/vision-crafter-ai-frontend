@@ -1,68 +1,96 @@
+/* Base toast - dark glassmorphism */
 [data-sonner-toast] {
-  border-radius: 12px !important;
+  border-radius: 16px !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  padding: 16px 20px !important;
+  position: relative !important;
+  background: rgba(30, 30, 30, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45) !important;
 }
 
+/* Success - green accent glow */
 [data-sonner-toast][data-type="success"] {
-  background: white !important;
-  border: 1px solid #e5e7eb !important;
+  border-left: 3px solid #4ADE80 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 12px rgba(74, 222, 128, 0.15) !important;
 }
 
 [data-sonner-toast][data-type="success"] [data-icon] {
-  color: #10b981 !important;
+  color: #4ADE80 !important;
 }
 
+/* Error - red accent glow */
 [data-sonner-toast][data-type="error"] {
-  background: white !important;
-  border: 1px solid #e5e7eb !important;
+  border-left: 3px solid #F87171 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 12px rgba(248, 113, 113, 0.15) !important;
 }
 
 [data-sonner-toast][data-type="error"] [data-icon] {
-  color: #ef4444 !important;
+  color: #F87171 !important;
 }
 
+/* Info - orange accent glow (matches site accent) */
 [data-sonner-toast][data-type="info"] {
-  background: white !important;
-  border: 1px solid #e5e7eb !important;
+  border-left: 3px solid #ff9416 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 12px rgba(255, 148, 22, 0.15) !important;
 }
 
 [data-sonner-toast][data-type="info"] [data-icon] {
-  color: #3b82f6 !important;
+  color: #ff9416 !important;
 }
 
+/* Warning - amber accent glow */
 [data-sonner-toast][data-type="warning"] {
-  background: white !important;
-  border: 1px solid #e5e7eb !important;
+  border-left: 3px solid #FBBF24 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 12px rgba(251, 191, 36, 0.15) !important;
 }
 
 [data-sonner-toast][data-type="warning"] [data-icon] {
-  color: #f59e0b !important;
+  color: #FBBF24 !important;
 }
 
+/* Title - white text */
 [data-sonner-toast] [data-title] {
   font-weight: 600;
   font-size: 14px;
-  color: #111827;
+  color: #ffffff !important;
 }
 
+/* Description - muted text */
 [data-sonner-toast] [data-description] {
   font-size: 13px;
-  color: #6b7280;
+  color: #A3A3A3 !important;
   margin-top: 2px;
 }
 
+/* Close button - top right circle */
 [data-sonner-toast] [data-close-button] {
-  background: #f3f4f6;
-  border: none;
-  border-radius: 6px;
-  color: #6b7280;
-  padding: 4px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  transition: all 0.2s;
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 50% !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  cursor: pointer;
+  transition: all 0.15s ease !important;
 }
 
 [data-sonner-toast] [data-close-button]:hover {
-  background: #e5e7eb;
-  color: #111827;
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }

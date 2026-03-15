@@ -3,7 +3,7 @@ import type { Canvas } from "fabric";
 export class CanvasHistoryManager {
     private history: string[] = [];
     private currentIndex: number = -1;
-    private maxHistory: number = 20;
+    private maxHistory: number = 50;
 
     addState(canvasJSON: Canvas) {
         // Remove any redo states when new change is made

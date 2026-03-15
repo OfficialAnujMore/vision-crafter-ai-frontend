@@ -9,7 +9,7 @@ interface SliderProps {
     value: number | number;
     onChange: (value: number) => void;
     step?: number;
-    disabled: boolean;
+    disabled?: boolean;
 }
 
 const CustomSlider: React.FC<SliderProps> = ({

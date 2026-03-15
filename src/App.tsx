@@ -35,16 +35,17 @@ function App() {
       <FaintDotGrid/>
       <GlobalLoader />
       <Toaster
-        position="top-right"
+        position="bottom-right"
         expand={false}
-        richColors
         closeButton
         toastOptions={{
           style: {
-            background: 'white',
-            border: '1px solid #e5e7eb',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-            padding: '16px',
+            background: 'rgba(30, 30, 30, 0.85)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.45)',
+            padding: '16px 20px',
           },
         }}
       />

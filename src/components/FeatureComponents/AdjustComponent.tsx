@@ -120,8 +120,10 @@ const AdjustComponent = () => {
     };
 
     const onApplyReset = () => {
+        if (!fabricCanvas) return
         setFilterValues(DEFAULT_VALUES);
         applyFilters(DEFAULT_VALUES);
+        fabricCanvas.fire('object:modified');
     };
 
     const applyFilters = async (newValues: Record<string, number>): Promise<void> => {
@@ -150,6 +152,7 @@ const AdjustComponent = () => {
             await new Promise<void>((resolve) => {
                 (imageObject as FabricImage).applyFilters();
                 fabricCanvas.requestRenderAll();
+                fabricCanvas.fire('object:modified');
                 setTimeout(resolve, 50);
             });
         } catch (error) {
