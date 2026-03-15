@@ -152,9 +152,9 @@ const AdjustComponent = () => {
             await new Promise<void>((resolve) => {
                 (imageObject as FabricImage).applyFilters();
                 fabricCanvas.requestRenderAll();
-                fabricCanvas.fire('object:modified');
                 setTimeout(resolve, 50);
             });
+            fabricCanvas.fire('object:modified');
         } catch (error) {
             console.error("Error applying filters:", error);
         } finally {
