@@ -108,7 +108,7 @@ const Dashboard = () => {
         <div className='create'>
           <CustomButton
             variant={buttonVariants.default}
-            text='Create Image'
+            // text='Create Image'
             icon={<Plus />}
             onClick={() => setIsModalOpen(true)}
           />

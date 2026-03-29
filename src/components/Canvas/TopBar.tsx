@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import CustomButton from '../CustomComponents/CustomButton'
-import { ArrowLeft, Undo, Redo, Share2,Download } from 'lucide-react'
+import { ArrowLeft, Undo, Redo, Download } from 'lucide-react'
 import CustomText from '../CustomComponents/CustomText'
 import '../../styles/Canvas/Topbar.css'
 import { textVariant } from '../../constants/textVariants'
