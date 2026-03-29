@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import '../styles/ProjectsCards.css';
 import CustomText from './CustomComponents/CustomText';
 import ConfirmationModal from './CustomComponents/ConfirmationModal';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import { textVariant } from '../constants/textVariants';
-import { MoreVertical, Pencil, Edit, Trash2 } from 'lucide-react';
+import { MoreVertical, Pencil, Edit, Trash2, Loader2 } from 'lucide-react';
 import type { SaveFileResponse } from '../interface/project';
 
 interface ProjectCardProps {
     project: SaveFileResponse;
     onDelete: (fileId: string) => void;
-    onRename: (projectId: number, newTitle: string) => void;
+    onRename: (projectId: number, newTitle: string) => Promise<void>;
 }
 
 const formatDate = (dateStr: string): string => {
@@ -23,16 +23,32 @@ const formatDate = (dateStr: string): string => {
     });
 };
 
+const withCacheBust = (url: string, updatedAt: string): string => {
+    try {
+        const parsed = new URL(url);
+        parsed.searchParams.set('v', String(new Date(updatedAt).getTime()));
+        return parsed.toString();
+    } catch {
+        const separator = url.includes('?') ? '&' : '?';
+        return `${url}${separator}v=${encodeURIComponent(String(new Date(updatedAt).getTime()))}`;
+    }
+};
+
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onDelete, onRename }) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [renaming, setRenaming] = useState(false);
     const [renameValue, setRenameValue] = useState(project.title);
     const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
+    const [isRenameSaving, setIsRenameSaving] = useState(false);
 
     const menuRef = useRef<HTMLDivElement>(null);
     const renameInputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
+    const thumbnailSrc = useMemo(
+        () => withCacheBust(project.thumbnail_url, project.updated_at),
+        [project.thumbnail_url, project.updated_at],
+    );
 
     useEffect(() => {
         if (!menuOpen) return;
@@ -59,6 +75,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onDelete, onRename }
         }
     }, [renaming]);
 
+    useEffect(() => {
+        setImageLoaded(false);
+    }, [thumbnailSrc]);
+
     const handleEdit = () => {
         setMenuOpen(false);
         navigate(ROUTES.EDITOR.replace(':projectId', `${project.id}`));
@@ -70,18 +90,30 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onDelete, onRename }
         setRenaming(true);
     };
 
-    const handleRenameSubmit = () => {
+    const handleRenameSubmit = async () => {
+        if (isRenameSaving) return;
+
         const trimmed = renameValue.trim();
-        if (trimmed && trimmed !== project.title) {
-            onRename(project.id, trimmed);
+        if (!trimmed || trimmed === project.title) {
+            setRenaming(false);
+            return;
         }
-        setRenaming(false);
+
+        setIsRenameSaving(true);
+        try {
+            await onRename(project.id, trimmed);
+            setRenaming(false);
+        } finally {
+            setIsRenameSaving(false);
+        }
     };
 
     const handleRenameKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
-            handleRenameSubmit();
+            e.preventDefault();
+            void handleRenameSubmit();
         } else if (e.key === 'Escape') {
+            if (isRenameSaving) return;
             setRenaming(false);
         }
     };
@@ -102,7 +134,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onDelete, onRename }
                 <div className="pc-thumb" onClick={handleEdit}>
                     {!imageLoaded && <div className="pc-shimmer" />}
                     <img
-                        src={project.thumbnail_url}
+                        src={thumbnailSrc}
                         alt={project.title}
                         className={`pc-thumb-img${imageLoaded ? ' pc-thumb-img--loaded' : ''}`}
                         loading="lazy"
@@ -113,14 +145,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onDelete, onRename }
                 <div className="pc-info">
                     <div className="pc-title-row">
                         {renaming ? (
-                            <input
-                                ref={renameInputRef}
-                                className="pc-rename-input"
-                                value={renameValue}
-                                onChange={(e) => setRenameValue(e.target.value)}
-                                onKeyDown={handleRenameKeyDown}
-                                onBlur={handleRenameSubmit}
-                            />
+                            <div className="pc-rename-wrapper">
+                                <input
+                                    ref={renameInputRef}
+                                    className="pc-rename-input"
+                                    value={renameValue}
+                                    onChange={(e) => setRenameValue(e.target.value)}
+                                    onKeyDown={handleRenameKeyDown}
+                                    onBlur={() => void handleRenameSubmit()}
+                                    disabled={isRenameSaving}
+                                />
+                                {isRenameSaving && <Loader2 size={14} className="pc-rename-loader" />}
+                            </div>
                         ) : (
                             <CustomText
                                 variant={textVariant.p}

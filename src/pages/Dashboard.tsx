@@ -53,12 +53,13 @@ const Dashboard = () => {
 
   const handleRename = useCallback(async (projectId: number, newTitle: string) => {
     try {
-      await projectService.updateProject(projectId, { title: newTitle });
+      const updatedProject = await projectService.updateProject(projectId, { title: newTitle });
       setProjects((prev) =>
-        prev.map((p) => (p.id === projectId ? { ...p, title: newTitle } : p))
+        prev.map((p) => (p.id === projectId ? updatedProject : p))
       );
     } catch (error) {
       console.error('Failed to rename project:', error);
+      throw error;
     }
   }, []);
 

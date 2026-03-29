@@ -114,6 +114,29 @@
   box-shadow: 0 0 0 2px rgba(255, 148, 22, 0.12);
 }
 
+.pc-rename-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.pc-rename-loader {
+  color: var(--color-accent);
+  flex-shrink: 0;
+  animation: pc-spin 0.9s linear infinite;
+}
+
+@keyframes pc-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 
 .pc-menu-container {
   position: relative;
