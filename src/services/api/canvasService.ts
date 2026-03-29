@@ -1,13 +1,21 @@
 import type { Canvas } from 'fabric';
 import { projectService } from '../api/projectService';
 
+interface SaveCanvasStateOptions {
+    thumbnail_url?: string;
+    project_url?: string;
+}
+
 export const saveCanvasState = async (
     projectId: number,
-    canvasJSON: Canvas
+    canvasJSON: Canvas,
+    options?: SaveCanvasStateOptions,
 ): Promise<void> => {
     try {
         await projectService.updateProject(projectId, {
             canvas_state: canvasJSON,
+            ...(options?.thumbnail_url ? { thumbnail_url: options.thumbnail_url } : {}),
+            ...(options?.project_url ? { project_url: options.project_url } : {}),
         });
 
         console.log('Canvas state saved successfully!');

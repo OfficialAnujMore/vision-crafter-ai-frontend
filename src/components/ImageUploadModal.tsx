@@ -112,14 +112,24 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
         setLoading(true);
 
         try {
-            const response = await uploadFileToImageKit(selectedFile);
+            const originalExtension = selectedFile.name.includes('.')
+                ? selectedFile.name.slice(selectedFile.name.lastIndexOf('.') + 1)
+                : '';
+            const resolvedTitle = fileName.trim() || selectedFile.name.replace(/\.[^/.]+$/, '');
+            const imageKitFileName = originalExtension
+                ? `${resolvedTitle}.${originalExtension}`
+                : resolvedTitle;
+
+            const response = await uploadFileToImageKit(selectedFile, {
+                fileName: imageKitFileName,
+            });
             const currentUser = authService.getCurrentUser();
 
             if (!currentUser?.id) {
                 throw new Error('User not authenticated');
             }
 
-            const imageData = { ...response, user_id: currentUser.id, title: fileName.trim() || response.title };
+            const imageData = { ...response, user_id: currentUser.id, title: resolvedTitle };
             await projectService.saveCreatedFile(imageData);
             onUploadSuccess?.();
             handleClose();

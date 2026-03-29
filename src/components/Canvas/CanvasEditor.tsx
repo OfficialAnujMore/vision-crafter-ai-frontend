@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import type { CanvasEditorProps } from '../../interface/canvas'
 import { Canvas, FabricImage } from 'fabric';
 import '../../styles/Canvas/Editor.css'
 import { showInfoToast } from '../../utils/toast';
 import { saveCanvasState } from '../../services/api/canvasService';
+import { uploadFileToImageKit } from '../../services/api/imageKitService';
 import { useCanvasHistory } from '../../hooks/useCanvasHistory';
 import { useCanvasContext } from '../../context/canvasContext';
-import { useLoader } from '../LoaderContext';
 
 declare global {
     interface Window {
@@ -28,6 +28,60 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
 
     const projectUrl = project?.project_url;
     const canvasState = project?.canvas_state;
+
+    const dataUrlToFile = (dataUrl: string, filename: string): File => {
+        const [header, base64Data] = dataUrl.split(',');
+        const mimeMatch = header.match(/data:(.*?);base64/);
+        const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+        const binary = atob(base64Data);
+        const bytes = new Uint8Array(binary.length);
+
+        for (let index = 0; index < binary.length; index += 1) {
+            bytes[index] = binary.charCodeAt(index);
+        }
+
+        return new File([bytes], filename, { type: mimeType });
+    };
+
+    const getImageKitUploadTarget = (url: string): { fileName: string; folder?: string } | null => {
+        try {
+            const parsedUrl = new URL(url);
+            let pathSegments = parsedUrl.pathname
+                .split('/')
+                .filter(Boolean)
+                .map((segment) => decodeURIComponent(segment));
+
+            // Remove ImageKit transformation segments if present in the URL path.
+            while (pathSegments.length > 0 && pathSegments[0].startsWith('tr:')) {
+                pathSegments = pathSegments.slice(1);
+            }
+
+            // For default ImageKit URL endpoints, first path segment is endpoint ID, not a media folder.
+            if (parsedUrl.hostname.endsWith('imagekit.io') && pathSegments.length > 1) {
+                pathSegments = pathSegments.slice(1);
+            }
+
+            if (pathSegments.length === 0) {
+                return null;
+            }
+
+            const fileName = pathSegments[pathSegments.length - 1];
+            const folderSegments = pathSegments.slice(0, -1);
+            const folder = folderSegments.length > 0 ? `/${folderSegments.join('/')}` : undefined;
+
+            return {
+                fileName,
+                folder,
+            };
+        } catch {
+            return null;
+        }
+    };
+
+    const getCanvasExportFormat = (fileName: string): 'png' | 'jpeg' => {
+        const lowerName = fileName.toLowerCase();
+        return lowerName.endsWith('.png') ? 'png' : 'jpeg';
+    };
 
 
     /*
@@ -72,7 +126,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
 
 
 
-    const loadImage = async () => {
+    const loadImage = useCallback(async () => {
         if (!fabricCanvasRef.current || !projectUrl) return;
         isRestoringRef.current = true;
         try {
@@ -107,7 +161,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
             isRestoringRef.current = false;
             addToHistory();
         }
-    };
+    }, [addToHistory, projectUrl]);
 
     // Load canvas state when project loads
     useEffect(() => {
@@ -122,8 +176,13 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
                     const canvas = fabricCanvasRef.current!;
                     canvas.clear();
 
-                    const savedWidth = canvasState.canvasWidth;
-                    const savedHeight = canvasState.canvasHeight;
+                    const savedCanvasState = canvasState as Canvas & {
+                        canvasWidth?: number;
+                        canvasHeight?: number;
+                    };
+
+                    const savedWidth = savedCanvasState.canvasWidth;
+                    const savedHeight = savedCanvasState.canvasHeight;
                     if (savedWidth && savedHeight) {
                         const wrapper = wrapperRef.current;
                         const PADDING = 40;
@@ -157,7 +216,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
         };
 
         loadSavedState();
-    }, [project?.id]);
+    }, [project?.id, canvasState, loadImage, addToHistory]);
 
     // // Auto-save canvas state on changes
     useEffect(() => {
@@ -174,10 +233,49 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
             saveTimeoutRef.current = setTimeout(async () => {
                 console.log('Saving canvas state to DB...');
                 try {
-                    const canvasJSON = fabricCanvasRef.current!.toJSON();
-                    canvasJSON.canvasWidth = fabricCanvasRef.current!.width;
-                    canvasJSON.canvasHeight = fabricCanvasRef.current!.height;
-                    await saveCanvasState(project.id, canvasJSON);
+                    const canvas = fabricCanvasRef.current!;
+                    const canvasJSON = canvas.toJSON();
+                    canvasJSON.canvasWidth = canvas.width;
+                    canvasJSON.canvasHeight = canvas.height;
+
+                    let latestThumbnailUrl: string | undefined;
+                    let latestProjectUrl: string | undefined;
+
+                    try {
+                        const uploadTarget = getImageKitUploadTarget(project.project_url);
+
+                        if (!uploadTarget) {
+                            throw new Error('Unable to parse project_url for ImageKit overwrite upload target');
+                        }
+
+                        const exportFormat = getCanvasExportFormat(uploadTarget.fileName);
+                        const thumbnailDataUrl = canvas.toDataURL({
+                            format: exportFormat,
+                            quality: exportFormat === 'jpeg' ? 0.9 : undefined,
+                            multiplier: 1,
+                            enableRetinaScaling: true,
+                        });
+
+                        const uploadedCanvasFile = dataUrlToFile(thumbnailDataUrl, uploadTarget.fileName);
+
+                        const uploadedThumbnail = await uploadFileToImageKit(uploadedCanvasFile, {
+                            fileName: uploadTarget.fileName,
+                            folder: uploadTarget.folder,
+                            useUniqueFileName: false,
+                            overwriteFile: true,
+                        });
+
+                        latestThumbnailUrl = uploadedThumbnail.thumbnail_url;
+                        latestProjectUrl = uploadedThumbnail.project_url;
+                    } catch (thumbnailError) {
+                        // Canvas JSON save should still proceed if thumbnail refresh fails.
+                        console.warn('Thumbnail upload during autosave failed:', thumbnailError);
+                    }
+
+                    await saveCanvasState(project.id, canvasJSON, {
+                        thumbnail_url: latestThumbnailUrl,
+                        project_url: latestProjectUrl,
+                    });
                     showInfoToast("Auto saved")
                 } catch (error) {
                     showInfoToast("Failed to auto save");
@@ -208,14 +306,14 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
                 fabricCanvasRef.current.off('path:created', handleCanvasChange);
             }
         };
-    }, [project?.id, addToHistory]);
+    }, [project?.id, project?.project_url, addToHistory]);
 
 
     useEffect(() => {
         if (!fabricCanvas) return
 
-        const handleSelection = (e) => {
-            const selectedObject = e.selected?.[0];
+        const handleSelection = (event: unknown) => {
+            const selectedObject = (event as { selected?: Array<{ type?: string }> }).selected?.[0];
 
             if (selectedObject && selectedObject.type === "i-text") {
                 setActiveTool("text")

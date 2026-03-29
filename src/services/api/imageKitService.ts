@@ -4,6 +4,13 @@ import type { ApiResponse } from "../../interface/api";
 import type { BaseFileResponse } from "../../interface/common";
 import type { ImageKitAuthResponse } from "../../interface/imagekit";
 
+interface UploadFileOptions {
+    fileName?: string;
+    folder?: string;
+    useUniqueFileName?: boolean;
+    overwriteFile?: boolean;
+}
+
 const authenticateImageKit = async (): Promise<ImageKitAuthResponse> => {
     const authResponse = await axiosInstance.get<ApiResponse<ImageKitAuthResponse>>(
         API_CONFIG.ENDPOINTS.IMAGEKIT.AUTH,
@@ -23,7 +30,10 @@ const authenticateImageKit = async (): Promise<ImageKitAuthResponse> => {
     return authData;
 };
 
-export const uploadFileToImageKit = async (file: File): Promise<BaseFileResponse> => {
+export const uploadFileToImageKit = async (
+    file: File,
+    options?: UploadFileOptions,
+): Promise<BaseFileResponse> => {
     const { token, signature, expire } = await authenticateImageKit();
 
     const formData = new FormData();
@@ -32,7 +42,17 @@ export const uploadFileToImageKit = async (file: File): Promise<BaseFileResponse
     formData.append('signature', signature);
     formData.append('expire', expire.toString());
     formData.append('token', token);
-    formData.append('fileName', file.name);
+    formData.append('fileName', options?.fileName ?? file.name);
+
+    if (options?.folder) {
+        formData.append('folder', options.folder);
+    }
+    if (typeof options?.useUniqueFileName === 'boolean') {
+        formData.append('useUniqueFileName', String(options.useUniqueFileName));
+    }
+    if (typeof options?.overwriteFile === 'boolean') {
+        formData.append('overwriteFile', String(options.overwriteFile));
+    }
 
     const uploadResponse = await fetch(API_CONFIG.IMAGEKIT_UPLOAD_URL, {
         method: 'POST',
