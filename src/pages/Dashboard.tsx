@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import CustomButton from '../components/CustomComponents/CustomButton';
 import ProjectCard from '../components/ProjectsCard';
 import { ImageUploadModal } from '../components/ImageUploadModal';
@@ -7,7 +7,7 @@ import { authService } from '../services/api/authService';
 import { useLoader } from '../components/LoaderContext';
 import type { SaveFileResponse } from '../interface/project';
 import { projectService } from '../services/api/projectService';
-import { Plus } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import CustomText from '../components/CustomComponents/CustomText';
 import { textVariant } from '../constants/textVariants';
 import { buttonVariants } from '../constants/buttonVariants';
@@ -16,7 +16,30 @@ import { buttonVariants } from '../constants/buttonVariants';
 const Dashboard = () => {
   const [projects, setProjects] = useState<Array<SaveFileResponse>>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { setLoading } = useLoader();
+
+  const getFileNameFromUrl = (url: string) => {
+    try {
+      const parsed = new URL(url);
+      const pathname = parsed.pathname;
+      const fileName = pathname.substring(pathname.lastIndexOf('/') + 1);
+      return decodeURIComponent(fileName);
+    } catch {
+      return '';
+    }
+  };
+
+  const filteredProjects = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return projects;
+
+    return projects.filter((project) => {
+      const titleMatch = project.title.toLowerCase().includes(query);
+      const fileNameMatch = getFileNameFromUrl(project.project_url).toLowerCase().includes(query);
+      return titleMatch || fileNameMatch;
+    });
+  }, [projects, searchQuery]);
 
   const loadProjects = useCallback(async () => {
     try {
@@ -36,7 +59,7 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setLoading]);
 
   useEffect(() => {
     loadProjects();
@@ -69,17 +92,33 @@ const Dashboard = () => {
         onClose={() => setIsModalOpen(false)}
         onUploadSuccess={loadProjects}
       />
-      <section className='create'>
-        <CustomButton
-          variant={buttonVariants.default}
-          text='Create'
-          icon={<Plus />}
-          onClick={() => setIsModalOpen(true)} />
+
+      <section className='dashboard-toolbar'>
+        <div className='dashboard-search-wrap'>
+          <Search size={16} className='dashboard-search-icon' />
+          <input
+            type='text'
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className='dashboard-search-input'
+            placeholder='Search by file name...'
+            aria-label='Search projects by file name'
+          />
+        </div>
+        <div className='create'>
+          <CustomButton
+            variant={buttonVariants.default}
+            text='Create Image'
+            icon={<Plus />}
+            onClick={() => setIsModalOpen(true)}
+          />
+        </div>
       </section>
+
       <section>
         <section className='projects-grid'>
-          {projects.length > 0 ? (
-            projects.map((project) => (
+          {filteredProjects.length > 0 ? (
+            filteredProjects.map((project) => (
               <ProjectCard
                 key={project.id}
                 project={project}
@@ -87,11 +126,34 @@ const Dashboard = () => {
                 onRename={handleRename}
               />
             ))
+          ) : projects.length === 0 ? (
+            <div className='dashboard-empty-state'>
+              <CustomText
+                variant={textVariant.h4}
+                text='No projects yet'
+              />
+              <CustomText
+                variant={textVariant.p}
+                text='Start creating your first image project. It will appear here once uploaded.'
+              />
+              <CustomButton
+                variant={buttonVariants.default}
+                text='Create Your First Image'
+                icon={<Plus />}
+                onClick={() => setIsModalOpen(true)}
+              />
+            </div>
           ) : (
-            <CustomText
-              variant={textVariant.p}
-              text={"No projects yet. Create your first project!"}
-            />
+            <div className='dashboard-empty-state'>
+              <CustomText
+                variant={textVariant.h4}
+                text='No matching projects'
+              />
+              <CustomText
+                variant={textVariant.p}
+                text={`No results found for "${searchQuery.trim()}". Try another file name.`}
+              />
+            </div>
           )}
         </section>
       </section>
