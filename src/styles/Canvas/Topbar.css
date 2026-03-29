@@ -48,6 +48,11 @@
     flex-shrink: 0;
 }
 
+.topbar-download-anchor {
+    position: relative;
+    display: inline-flex;
+}
+
 .topbar-avatar {
     width: 34px;
     height: 34px;
