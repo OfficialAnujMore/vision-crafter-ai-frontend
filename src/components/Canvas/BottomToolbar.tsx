@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   SlidersHorizontal,
-  Crop,
   Type,
   Wand2,
   Images,

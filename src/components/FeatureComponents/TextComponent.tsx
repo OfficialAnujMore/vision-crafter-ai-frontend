@@ -13,8 +13,9 @@ import Divider from '../Divider';
 import { buttonVariants } from '../../constants/buttonVariants';
 
 const FONT_SIZES = { min: 10, max: 120, default: 20 };
+type TextAlignValue = "left" | "center" | "right" | "justify";
 
-const TEXT_ALIGNMENT = {
+const TEXT_ALIGNMENT: Record<TextAlignValue, typeof AlignLeft> = {
   "left": AlignLeft,
   "center": AlignCenter,
   "right": AlignRight,
@@ -32,7 +33,7 @@ const TextComponent = () => {
   const [fontFamily, setFontFamily] = useState("Arial");
   const [fontSize, setFontSize] = useState(FONT_SIZES.default);
   const [textColor, setTextColor] = useState("#000000");
-  const [textAlign, setTextAlign] = useState("left");
+  const [textAlign, setTextAlign] = useState<TextAlignValue>("left");
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
@@ -48,7 +49,7 @@ const TextComponent = () => {
       setFontFamily(textObject.fontFamily || "Arial")
       setFontSize(textObject.fontSize || FONT_SIZES.default)
       setTextColor(typeof textObject.fill === "string" ? textObject.fill : "#000000")
-      setTextAlign(textObject.textAlign || "left")
+      setTextAlign((textObject.textAlign as TextAlignValue) || "left")
       setIsBold(textObject.fontWeight === "bold" || textObject.fontWeight === 700);
       setIsItalic(textObject.fontStyle === "italic");
       setIsUnderline(textObject.underline || false);
@@ -121,7 +122,7 @@ const TextComponent = () => {
     fabricCanvas?.requestRenderAll();
   }
 
-  const onApplyTextAlignment = (textAlignment: string) => {
+  const onApplyTextAlignment = (textAlignment: TextAlignValue) => {
     if (!selectedText) return;
     setTextAlign(textAlignment);
     selectedText.set("textAlign", textAlignment)
@@ -218,7 +219,7 @@ const TextComponent = () => {
                 <CustomText text="Alignment" variant='p' fontSize="0.85rem" />
               </div>
               <div className='text-comp-toggle-group'>
-                {Object.entries(TEXT_ALIGNMENT).map(([align, IconComponent]) => (
+                {(Object.entries(TEXT_ALIGNMENT) as Array<[TextAlignValue, typeof AlignLeft]>).map(([align, IconComponent]) => (
                   <button
                     key={align}
                     className={`text-comp-toggle-btn${textAlign === align ? ' text-comp-toggle-btn--active' : ''}`}

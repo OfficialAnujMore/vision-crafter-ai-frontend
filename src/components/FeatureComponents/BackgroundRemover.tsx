@@ -1,14 +1,19 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useCanvasContext } from '../../context/canvasContext';
 import CustomButton from '../CustomComponents/CustomButton';
 import CustomText from '../CustomComponents/CustomText';
-import { Trash2, Loader2, CheckCircle2, XCircle, Sparkles, Wand2, Image, ArrowRight } from 'lucide-react';
+import { Loader2, CheckCircle2, XCircle, Sparkles, Wand2, Image, ArrowRight } from 'lucide-react';
 import { FabricImage } from 'fabric';
 import { showErrorToast, showSuccessToast } from '../../utils/toast';
 import { buttonVariants } from '../../constants/buttonVariants';
+import type { SaveFileResponse } from '../../interface/project';
 import '../../styles/FeatureComponents/BackgroundRemover.css';
 
-const BackgroundRemover = ({ project }) => {
+interface BackgroundRemoverProps {
+  project: SaveFileResponse;
+}
+
+const BackgroundRemover = ({ project }: BackgroundRemoverProps) => {
 
   const { fabricCanvas } = useCanvasContext();
   const [isRemoving, setIsRemoving] = useState(false);
