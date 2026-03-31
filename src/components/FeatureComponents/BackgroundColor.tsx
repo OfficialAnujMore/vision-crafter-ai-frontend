@@ -88,7 +88,7 @@ const BackgroundColor: React.FC = () => {
           <div className="bg-color-input-field">
             <CustomInput
               value={backgroundColor}
-              onChange={(value) => setBackgroundColor(value)}
+              onChange={(value) => setBackgroundColor(String(value))}
               placeholder="#ffffff"
               label="Hex"
             />

@@ -14,9 +14,11 @@ const DIRECTIONS = [
   { key: "bottom", label: "Bottom", icon: ArrowDown },
   { key: "left", label: "Left", icon: ArrowLeft },
   { key: "right", label: "Right", icon: ArrowRight },
-];
+] as const;
 
-const FOCUS_MAP = {
+type DirectionKey = typeof DIRECTIONS[number]['key'];
+
+const FOCUS_MAP: Record<DirectionKey, string> = {
   left: "fo-right",
   right: "fo-left",
   top: "fo-bottom",
@@ -27,7 +29,7 @@ const IMAGE_LOAD_TIMEOUT = 120_000; // 120 seconds
 
 const ImageExtender = () => {
   const { fabricCanvas } = useCanvasContext();
-  const [selectedDirection, setSelectedDirection] = useState(null);
+  const [selectedDirection, setSelectedDirection] = useState<DirectionKey | null>(null);
   const [extensionAmount, setExtensionAmount] = useState(200);
   const [isExtending, setIsExtending] = useState(false);
   const [extensionStatus, setExtensionStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -61,11 +63,15 @@ const ImageExtender = () => {
     showInfoToast("Extension cancelled");
   }, [stopTimer]);
 
-  const getMainImage = () =>
-    fabricCanvas?.getObjects().find((obj) => obj.type === "image") || null;
+  const isFabricImage = (obj: unknown): obj is FabricImage =>
+    typeof obj === 'object' && obj !== null && (obj as { type?: string }).type === 'image';
 
-  const getImageSrc = (image) =>
-    image?.getSrc?.() || image?._element?.src || image?.src;
+  const getMainImage = (): FabricImage | null => {
+    const found = fabricCanvas?.getObjects().find(isFabricImage);
+    return found ?? null;
+  };
+
+  const getImageSrc = (image: FabricImage | null | undefined): string => image?.getSrc() ?? '';
 
   const hasBackgroundRemoval = () => {
     const imageSrc = getImageSrc(getMainImage());
@@ -92,7 +98,7 @@ const ImageExtender = () => {
     };
   };
 
-  const selectDirection = (direction) => {
+  const selectDirection = (direction: DirectionKey) => {
     setSelectedDirection((prev) => (prev === direction ? null : direction));
     setExtensionStatus('idle');
   };
@@ -120,7 +126,7 @@ const ImageExtender = () => {
     );
   }
 
-  const buildExtensionUrl = (imageUrl) => {
+  const buildExtensionUrl = (imageUrl: string) => {
     if (!imageUrl || !selectedDirection) return imageUrl;
 
     const baseUrl = imageUrl.split("?")[0];
