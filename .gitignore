@@ -12,8 +12,12 @@ dist
 dist-ssr
 *.local
 sample.ts
+coverage
 
 .env
+
+# Test cache
+.vitest
 
 # Editor directories and files
 .vscode/*
