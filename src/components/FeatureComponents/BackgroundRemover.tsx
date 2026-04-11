@@ -6,6 +6,7 @@ import { Loader2, CheckCircle2, XCircle, Sparkles, Wand2, Image, ArrowRight } fr
 import { FabricImage } from 'fabric';
 import { showErrorToast, showSuccessToast } from '../../utils/toast';
 import { buttonVariants } from '../../constants/buttonVariants';
+import { removeBackground } from '../../services/api/aiService';
 import type { SaveFileResponse } from '../../interface/project';
 import '../../styles/FeatureComponents/BackgroundRemover.css';
 
@@ -34,9 +35,7 @@ const BackgroundRemover = ({ project }: BackgroundRemoverProps) => {
 
     try {
       const currentImageUrl = project.project_url;
-      const bgRemovedUrl = currentImageUrl.includes("ik.imagekit.io")
-        ? `${currentImageUrl.split("?")[0]}?tr=e-bgremove`
-        : currentImageUrl;
+      const bgRemovedUrl = await removeBackground(currentImageUrl);
 
       const processedImage = await FabricImage.fromURL(bgRemovedUrl, {
         crossOrigin: "anonymous",

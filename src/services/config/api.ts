@@ -24,6 +24,9 @@ export const API_CONFIG = {
       USER_PROJECTS: "/api/projects/user/",
       DELETE_BY_FILE_ID: "/api/projects/",
       UPDATE: "/api/projects/",
+    },
+    AI: {
+      REMOVE_BACKGROUND: "/api/ai/remove-background",
     }
   },
 } as const;
