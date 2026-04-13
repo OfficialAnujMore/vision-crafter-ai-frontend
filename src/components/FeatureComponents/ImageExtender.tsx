@@ -1,36 +1,77 @@
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Expand, Image, Loader2, Wand2, CheckCircle2, XCircle, AlertTriangle, X } from 'lucide-react';
+import { ArrowRight, Expand, Image, Loader2, Wand2, CheckCircle2, XCircle, AlertTriangle, X } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useCanvasContext } from '../../context/canvasContext';
 import CustomButton from '../CustomComponents/CustomButton';
 import CustomText from '../CustomComponents/CustomText';
-import CustomSlider from '../CustomComponents/CustomSlider';
 import { buttonVariants } from '../../constants/buttonVariants';
 import { FabricImage } from 'fabric';
 import { showErrorToast, showSuccessToast, showInfoToast } from '../../utils/toast';
+import { extendImage, ASPECT_RATIOS, type AspectRatio } from '../../services/api/aiService';
 import '../../styles/FeatureComponents/ImageExtender.css';
-
-const DIRECTIONS = [
-  { key: "top", label: "Top", icon: ArrowUp },
-  { key: "bottom", label: "Bottom", icon: ArrowDown },
-  { key: "left", label: "Left", icon: ArrowLeft },
-  { key: "right", label: "Right", icon: ArrowRight },
-] as const;
-
-type DirectionKey = typeof DIRECTIONS[number]['key'];
-
-const FOCUS_MAP: Record<DirectionKey, string> = {
-  left: "fo-right",
-  right: "fo-left",
-  top: "fo-bottom",
-  bottom: "fo-top",
-};
 
 const IMAGE_LOAD_TIMEOUT = 120_000; // 120 seconds
 
+const parseRatio = (ratio: AspectRatio): number => {
+  const [a, b] = ratio.split(':').map(Number);
+  return a / b;
+};
+
+interface RatioPreviewProps {
+  targetRatio: number;
+  currentRatio: number;
+  selected: boolean;
+}
+
+const RatioPreview = ({ targetRatio, currentRatio, selected }: RatioPreviewProps) => {
+  const BOX = 38;
+
+  const outerW = targetRatio >= 1 ? BOX : BOX * targetRatio;
+  const outerH = targetRatio >= 1 ? BOX / targetRatio : BOX;
+
+  let innerW: number;
+  let innerH: number;
+  if (currentRatio < targetRatio) {
+    innerH = outerH;
+    innerW = outerH * currentRatio;
+  } else if (currentRatio > targetRatio) {
+    innerW = outerW;
+    innerH = outerW / currentRatio;
+  } else {
+    innerW = outerW;
+    innerH = outerH;
+  }
+
+  const offsetX = (BOX - outerW) / 2;
+  const offsetY = (BOX - outerH) / 2;
+  const innerX = offsetX + (outerW - innerW) / 2;
+  const innerY = offsetY + (outerH - innerH) / 2;
+
+  return (
+    <svg width={BOX} height={BOX} className="img-extender-ratio-svg" aria-hidden>
+      <rect
+        x={offsetX + 0.5}
+        y={offsetY + 0.5}
+        width={outerW - 1}
+        height={outerH - 1}
+        fill="rgba(255, 148, 22, 0.12)"
+        stroke={selected ? '#ff9416' : 'rgba(255, 255, 255, 0.35)'}
+        strokeWidth="1"
+        strokeDasharray="2 2"
+      />
+      <rect
+        x={innerX}
+        y={innerY}
+        width={innerW}
+        height={innerH}
+        fill={selected ? 'rgba(255, 148, 22, 0.7)' : 'rgba(255, 255, 255, 0.55)'}
+      />
+    </svg>
+  );
+};
+
 const ImageExtender = () => {
   const { fabricCanvas } = useCanvasContext();
-  const [selectedDirection, setSelectedDirection] = useState<DirectionKey | null>(null);
-  const [extensionAmount, setExtensionAmount] = useState(200);
+  const [selectedRatio, setSelectedRatio] = useState<AspectRatio | null>(null);
   const [isExtending, setIsExtending] = useState(false);
   const [extensionStatus, setExtensionStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
@@ -82,24 +123,8 @@ const ImageExtender = () => {
     );
   };
 
-  const calculateDimensions = () => {
-    const image = getMainImage();
-    if (!image || !selectedDirection) return { width: 0, height: 0 };
-
-    const currentWidth = image.width * (image.scaleX || 1);
-    const currentHeight = image.height * (image.scaleY || 1);
-
-    const isHorizontal = ["left", "right"].includes(selectedDirection);
-    const isVertical = ["top", "bottom"].includes(selectedDirection);
-
-    return {
-      width: Math.round(currentWidth + (isHorizontal ? extensionAmount : 0)),
-      height: Math.round(currentHeight + (isVertical ? extensionAmount : 0)),
-    };
-  };
-
-  const selectDirection = (direction: DirectionKey) => {
-    setSelectedDirection((prev) => (prev === direction ? null : direction));
+  const selectRatio = (ratio: AspectRatio) => {
+    setSelectedRatio((prev) => (prev === ratio ? null : ratio));
     setExtensionStatus('idle');
   };
 
@@ -110,7 +135,7 @@ const ImageExtender = () => {
       <div className="img-extender-container">
         <div className="img-extender-header">
           <CustomText variant="h4" text="AI Image Extension" />
-          <CustomText variant="p" text="Extend your image in any direction" fontSize="0.85rem" />
+          <CustomText variant="p" text="Extend your image to a new aspect ratio" fontSize="0.85rem" />
         </div>
         <div className="img-extender-unavailable">
           <div className="img-extender-unavailable-title">
@@ -126,28 +151,9 @@ const ImageExtender = () => {
     );
   }
 
-  const buildExtensionUrl = (imageUrl: string) => {
-    if (!imageUrl || !selectedDirection) return imageUrl;
-
-    const baseUrl = imageUrl.split("?")[0];
-    const { width, height } = calculateDimensions();
-
-    const transformations = [
-      "bg-genfill",
-      `w-${width}`,
-      `h-${height}`,
-      "cm-pad_resize",
-    ];
-
-    const focus = FOCUS_MAP[selectedDirection];
-    if (focus) transformations.push(focus);
-
-    return `${baseUrl}?tr=${transformations.join(",")}`;
-  };
-
   const applyExtension = async () => {
     const mainImage = getMainImage();
-    if (!mainImage || !selectedDirection || !fabricCanvas) return;
+    if (!mainImage || !selectedRatio || !fabricCanvas) return;
 
     setIsExtending(true);
     setExtensionStatus('idle');
@@ -156,7 +162,13 @@ const ImageExtender = () => {
 
     try {
       const currentImageUrl = getImageSrc(mainImage);
-      const extendedUrl = buildExtensionUrl(currentImageUrl);
+
+      const extendedUrl = await extendImage({
+        image_url: currentImageUrl,
+        aspect_ratio: selectedRatio,
+      });
+
+      if (abortRef.current) return;
 
       const loadedImg = await new Promise<HTMLImageElement>((resolve, reject) => {
         const img = new window.Image();
@@ -213,7 +225,7 @@ const ImageExtender = () => {
       fabricCanvas.requestRenderAll();
 
       setExtensionStatus('success');
-      setSelectedDirection(null);
+      setSelectedRatio(null);
       showSuccessToast("Image extended successfully");
     } catch (error) {
       if (abortRef.current) return;
@@ -222,7 +234,7 @@ const ImageExtender = () => {
 
       const message = error instanceof Error ? error.message : "";
       if (message === "timeout") {
-        showErrorToast("Extension timed out. ImageKit may be under heavy load — try again.");
+        showErrorToast("Extension timed out — try again.");
       } else {
         showErrorToast("Failed to extend image. Please try again.");
       }
@@ -234,14 +246,16 @@ const ImageExtender = () => {
     }
   };
 
-  const { width: newWidth, height: newHeight } = calculateDimensions();
   const currentImage = getMainImage();
+  const currentWidth = currentImage ? Math.round(currentImage.width * (currentImage.scaleX || 1)) : 0;
+  const currentHeight = currentImage ? Math.round(currentImage.height * (currentImage.scaleY || 1)) : 0;
+  const currentRatio = currentHeight > 0 ? currentWidth / currentHeight : 1;
 
   return (
     <div className="img-extender-container">
       <div className="img-extender-header">
         <CustomText variant="h4" text="AI Image Extension" />
-        <CustomText variant="p" text="Extend your image in any direction using AI" fontSize="0.85rem" />
+        <CustomText variant="p" text="Expand your image to a new aspect ratio using AI" fontSize="0.85rem" />
       </div>
 
       <div className={`img-extender-hero ${isExtending ? 'img-extender-hero--active' : ''}`}>
@@ -262,57 +276,41 @@ const ImageExtender = () => {
       </div>
 
       <div>
-        <CustomText variant="p" text="Select direction" fontSize="0.8rem" color="white" />
+        <CustomText variant="p" text="Select aspect ratio" fontSize="0.8rem" color="white" />
         <div className="img-extender-directions" style={{ marginTop: '0.5rem' }}>
-          {DIRECTIONS.map(({ key, label, icon: Icon }) => (
-            <button
-              key={key}
-              onClick={() => selectDirection(key)}
-              disabled={isExtending}
-              className={`img-extender-dir-btn ${selectedDirection === key ? 'img-extender-dir-btn--selected' : ''}`}
-            >
-              <Icon />
-              {label}
-            </button>
-          ))}
+          {ASPECT_RATIOS.map((ratio) => {
+            const targetRatio = parseRatio(ratio);
+            const wouldCrop = Math.abs(targetRatio - currentRatio) < 0.01;
+            const isSelected = selectedRatio === ratio;
+            return (
+              <button
+                key={ratio}
+                onClick={() => selectRatio(ratio)}
+                disabled={isExtending || wouldCrop}
+                className={`img-extender-dir-btn ${isSelected ? 'img-extender-dir-btn--selected' : ''}`}
+                title={wouldCrop ? "Image already matches this ratio" : undefined}
+              >
+                <RatioPreview targetRatio={targetRatio} currentRatio={currentRatio} selected={isSelected} />
+                <span className="img-extender-ratio-label">{ratio}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div className="img-extender-slider-section">
-        <div className="img-extender-slider-header">
-          <span className="img-extender-slider-label">Extension Amount</span>
-          <span className="img-extender-slider-value">{extensionAmount}px</span>
-        </div>
-        <CustomSlider
-          label="Extension Amount"
-          value={extensionAmount}
-          onChange={(value) => setExtensionAmount(value)}
-          min={50}
-          max={500}
-          step={25}
-          disabled={!selectedDirection || isExtending}
-        />
-      </div>
-
-      {selectedDirection && currentImage && (
+      {selectedRatio && currentImage && (
         <div className="img-extender-preview">
           <span className="img-extender-preview-title">Extension Preview</span>
           <div className="img-extender-preview-row">
             <span className="img-extender-preview-label">Current size</span>
             <span className="img-extender-preview-value">
-              {Math.round(currentImage.width * (currentImage.scaleX || 1))} x {Math.round(currentImage.height * (currentImage.scaleY || 1))}px
+              {currentWidth} x {currentHeight}px
             </span>
           </div>
           <div className="img-extender-preview-row">
-            <span className="img-extender-preview-label">Extended size</span>
+            <span className="img-extender-preview-label">Target ratio</span>
             <span className="img-extender-preview-value img-extender-preview-value--accent">
-              {newWidth} x {newHeight}px
-            </span>
-          </div>
-          <div className="img-extender-preview-row">
-            <span className="img-extender-preview-label">Direction</span>
-            <span className="img-extender-preview-value">
-              {DIRECTIONS.find((d) => d.key === selectedDirection)?.label}
+              {selectedRatio}
             </span>
           </div>
         </div>
@@ -321,7 +319,7 @@ const ImageExtender = () => {
       <div className="img-extender-action">
         <CustomButton
           onClick={applyExtension}
-          disabled={!selectedDirection || !hasImage || isExtending}
+          disabled={!selectedRatio || !hasImage || isExtending}
           variant={buttonVariants.default}
           icon={isExtending ? <Loader2 className="animate-spin" /> : <Wand2 size={18} />}
           text={isExtending ? 'Extending...' : 'Apply AI Extension'}
@@ -361,7 +359,7 @@ const ImageExtender = () => {
       {!isExtending && extensionStatus === 'error' && (
         <div className="img-extender-status img-extender-status--error">
           <XCircle className="img-extender-status-icon" />
-          <span>Extension failed. Select a direction and try again.</span>
+          <span>Extension failed. Select an aspect ratio and try again.</span>
         </div>
       )}
 

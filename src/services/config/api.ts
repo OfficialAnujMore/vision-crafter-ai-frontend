@@ -27,6 +27,7 @@ export const API_CONFIG = {
     },
     AI: {
       REMOVE_BACKGROUND: "/api/ai/remove-background",
+      EXTEND_IMAGE: "/api/ai/extend-image",
     }
   },
 } as const;
