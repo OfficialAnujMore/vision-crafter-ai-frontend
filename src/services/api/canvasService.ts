@@ -7,7 +7,7 @@ interface SaveCanvasStateOptions {
 }
 
 export const saveCanvasState = async (
-    projectId: number,
+    projectId: string,
     canvasJSON: Canvas,
     options?: SaveCanvasStateOptions,
 ): Promise<void> => {
@@ -26,7 +26,7 @@ export const saveCanvasState = async (
 };
 
 export const loadCanvasState = async (
-    projectId: number
+    projectId: string
 ): Promise<Canvas | null> => {
     try {
         const project = await projectService.getProjectById(projectId);

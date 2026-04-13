@@ -5,7 +5,7 @@ export interface SaveFile extends BaseFileResponse {
 }
 
 export interface SaveFileResponse extends BaseFileResponse {
-    id: number;
+    id: string;
     user_id: number;
     created_at: string;
     updated_at: string;

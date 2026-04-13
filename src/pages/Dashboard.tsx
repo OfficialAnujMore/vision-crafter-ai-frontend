@@ -74,7 +74,7 @@ const Dashboard = () => {
     }
   }, []);
 
-  const handleRename = useCallback(async (projectId: number, newTitle: string) => {
+  const handleRename = useCallback(async (projectId: string, newTitle: string) => {
     try {
       const updatedProject = await projectService.updateProject(projectId, { title: newTitle });
       setProjects((prev) =>

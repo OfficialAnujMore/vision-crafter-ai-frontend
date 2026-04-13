@@ -1,20 +1,25 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from './CustomComponents/CustomButton';
-import CustomText from './CustomComponents/CustomText';
 import ProfileDropdown from './ProfileDropdown';
 import { LANDING_PAGE } from '../utils/local/en';
 import { ROUTES } from '../constants/routes';
 import '../styles/Navbar.css';
-import { textVariant } from '../constants/textVariants';
-import { LayoutDashboard, Sparkles, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Sparkles, Menu, X, ArrowRight } from 'lucide-react';
 import { buttonVariants } from '../constants/buttonVariants';
 import { authService } from '../services/api/authService';
+
+const NAV_SECTIONS = [
+  { id: 'features', label: LANDING_PAGE.navFeatures },
+  { id: 'pricing', label: LANDING_PAGE.navPricing },
+  { id: 'about', label: LANDING_PAGE.navAbout },
+];
 
 const Navbar: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => authService.isAuthenticated());
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,6 +42,29 @@ const Navbar: React.FC = () => {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const sections = NAV_SECTIONS
+      .map((s) => document.getElementById(s.id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) {
+          setActiveSection(visible[0].target.id);
+        }
+      },
+      { rootMargin: '-40% 0px -50% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -67,6 +95,11 @@ const Navbar: React.FC = () => {
 
   const authButtonText = isAuthenticated ? 'Dashboard' : LANDING_PAGE.navLogin;
 
+  const activeIndex = useMemo(
+    () => NAV_SECTIONS.findIndex((s) => s.id === activeSection),
+    [activeSection]
+  );
+
   return (
     <>
       <nav className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
@@ -75,19 +108,30 @@ const Navbar: React.FC = () => {
             <div className="navbar-logo-glow">
               <Sparkles className="navbar-logo-icon" size={20} />
             </div>
-            <CustomText
-              variant={textVariant.h4}
-              text={LANDING_PAGE.navLogo}
-            />
+            <span className="navbar-logo-text">
+              Vision<span className="navbar-logo-text-accent">Crafter</span>
+            </span>
           </div>
 
-          <div className="navbar-links-pill">
-            <button className="navbar-link" onClick={() => handleNavClick('features')}>
-              {LANDING_PAGE.navFeatures}
-            </button>
-            <button className="navbar-link" onClick={() => handleNavClick('pricing')}>
-              {LANDING_PAGE.navPricing}
-            </button>
+          <div
+            className="navbar-links-pill"
+            data-active-index={activeIndex >= 0 ? activeIndex : undefined}
+          >
+            {activeIndex >= 0 && (
+              <span
+                className="navbar-link-indicator"
+                style={{ transform: `translateX(${activeIndex * 100}%)` }}
+              />
+            )}
+            {NAV_SECTIONS.map((s) => (
+              <button
+                key={s.id}
+                className={`navbar-link${activeSection === s.id ? ' navbar-link--active' : ''}`}
+                onClick={() => handleNavClick(s.id)}
+              >
+                {s.label}
+              </button>
+            ))}
           </div>
 
           <div className="navbar-auth">
@@ -102,7 +146,8 @@ const Navbar: React.FC = () => {
               </div>
             ) : (
               <button className="navbar-cta" onClick={handleAuthAction}>
-                {authButtonText}
+                <span>{authButtonText}</span>
+                <ArrowRight size={15} className="navbar-cta-arrow" />
               </button>
             )}
           </div>
@@ -123,12 +168,15 @@ const Navbar: React.FC = () => {
       />
       <div className={`navbar-mobile-drawer${mobileMenuOpen ? ' navbar-mobile-drawer--open' : ''}`}>
         <div className="navbar-mobile-drawer-links">
-          <button className="navbar-mobile-link" onClick={() => handleNavClick('features')}>
-            {LANDING_PAGE.navFeatures}
-          </button>
-          <button className="navbar-mobile-link" onClick={() => handleNavClick('pricing')}>
-            {LANDING_PAGE.navPricing}
-          </button>
+          {NAV_SECTIONS.map((s) => (
+            <button
+              key={s.id}
+              className={`navbar-mobile-link${activeSection === s.id ? ' navbar-mobile-link--active' : ''}`}
+              onClick={() => handleNavClick(s.id)}
+            >
+              {s.label}
+            </button>
+          ))}
         </div>
         <div className="navbar-mobile-drawer-auth">
           {isAuthenticated ? (
@@ -145,7 +193,8 @@ const Navbar: React.FC = () => {
             </div>
           ) : (
             <button className="navbar-cta navbar-cta--full" onClick={handleAuthAction}>
-              {authButtonText}
+              <span>{authButtonText}</span>
+              <ArrowRight size={15} className="navbar-cta-arrow" />
             </button>
           )}
         </div>

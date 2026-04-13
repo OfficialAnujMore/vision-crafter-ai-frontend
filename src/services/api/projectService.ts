@@ -39,13 +39,13 @@ export const projectService = {
             'The selected project has been removed.'
         );
     },
-    getProjectById: async (projectId: number): Promise<SaveFileResponse> => {
+    getProjectById: async (projectId: string): Promise<SaveFileResponse> => {
         const response = await axiosInstance.get<ApiResponse<SaveFileResponse>>(
             `${API_CONFIG.ENDPOINTS.PROJECT.GET_PROJECT}${projectId}`
         )
         return response.data.data
     },
-    updateProject: async (projectId: number, updates: Record<string, unknown>): Promise<SaveFileResponse> => {
+    updateProject: async (projectId: string, updates: Record<string, unknown>): Promise<SaveFileResponse> => {
         const response = await axiosInstance.patch<ApiResponse<SaveFileResponse>>(
             `${API_CONFIG.ENDPOINTS.PROJECT.GET_PROJECT}${projectId}`,
             updates

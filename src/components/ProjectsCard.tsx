@@ -11,7 +11,7 @@ import type { SaveFileResponse } from '../interface/project';
 interface ProjectCardProps {
     project: SaveFileResponse;
     onDelete: (fileId: string) => void;
-    onRename: (projectId: number, newTitle: string) => Promise<void>;
+    onRename: (projectId: string, newTitle: string) => Promise<void>;
 }
 
 const formatDate = (dateStr: string): string => {

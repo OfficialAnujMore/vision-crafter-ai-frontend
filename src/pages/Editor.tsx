@@ -24,7 +24,7 @@ const Editor: React.FC = () => {
         const loadProject = async () => {
             if (!projectId) return;
             setLoading(true)
-            const data = await projectService.getProjectById(Number(projectId));
+            const data = await projectService.getProjectById(projectId);
             setProjectData(data)
             setLoading(false)
         }

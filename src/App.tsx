@@ -12,6 +12,7 @@ import GlobalLoader from './components/Loader';
 import { Toaster } from 'sonner';
 import './styles/Toast.css'
 import Editor from './pages/Editor';
+import Profile from './pages/Profile';
 import { authService } from './services/api/authService';
 import FaintDotGrid from './components/FaintDotGrid';
 
@@ -67,6 +68,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Editor />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.PROFILE}
+              element={
+                <ProtectedRoute>
+                  <Profile />
                 </ProtectedRoute>
               }
             />

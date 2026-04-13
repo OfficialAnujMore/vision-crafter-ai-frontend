@@ -7,7 +7,7 @@ import CustomText from './CustomComponents/CustomText';
 import '../styles/ProfileDropdown.css';
 import { textVariant } from '../constants/textVariants';
 import { buttonVariants } from '../constants/buttonVariants';
-import { LogOut, Settings, LayoutDashboard } from 'lucide-react';
+import { LogOut, Settings, LayoutDashboard, User } from 'lucide-react';
 
 interface User {
   id: number;
@@ -121,6 +121,16 @@ const ProfileDropdown: React.FC = () => {
               text="Dashboard"
               onClick={() => {
                 navigate(ROUTES.DASHBOARD);
+                setIsOpen(false);
+              }}
+            />
+            <CustomButton
+              className="pd-menu-item"
+              variant={buttonVariants.link}
+              icon={<User size={16} />}
+              text="Profile"
+              onClick={() => {
+                navigate(ROUTES.PROFILE);
                 setIsOpen(false);
               }}
             />
