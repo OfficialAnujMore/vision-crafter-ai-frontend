@@ -275,27 +275,53 @@ const ImageExtender = () => {
         </div>
       </div>
 
-      <div>
-        <CustomText variant="p" text="Select aspect ratio" fontSize="0.8rem" color="white" />
-        <div className="img-extender-directions" style={{ marginTop: '0.5rem' }}>
-          {ASPECT_RATIOS.map((ratio) => {
-            const targetRatio = parseRatio(ratio);
-            const wouldCrop = Math.abs(targetRatio - currentRatio) < 0.01;
-            const isSelected = selectedRatio === ratio;
-            return (
-              <button
-                key={ratio}
-                onClick={() => selectRatio(ratio)}
-                disabled={isExtending || wouldCrop}
-                className={`img-extender-dir-btn ${isSelected ? 'img-extender-dir-btn--selected' : ''}`}
-                title={wouldCrop ? "Image already matches this ratio" : undefined}
-              >
-                <RatioPreview targetRatio={targetRatio} currentRatio={currentRatio} selected={isSelected} />
-                <span className="img-extender-ratio-label">{ratio}</span>
-              </button>
+      <div className="img-extender-sections">
+        {(['horizontal', 'vertical'] as const).map((axis) => {
+          const isHorizontal = axis === 'horizontal';
+          const ratiosInAxis = ASPECT_RATIOS
+            .map((r) => ({ ratio: r, value: parseRatio(r) }))
+            .filter(({ value }) =>
+              isHorizontal
+                ? value > currentRatio + 0.01
+                : value < currentRatio - 0.01,
+            )
+            .sort((a, b) =>
+              isHorizontal ? a.value - b.value : b.value - a.value,
             );
-          })}
-        </div>
+
+          return (
+            <div key={axis} className="img-extender-section">
+              <CustomText
+                variant="p"
+                text={isHorizontal ? 'Extend horizontally' : 'Extend vertically'}
+                fontSize="0.8rem"
+                color="white"
+              />
+              {ratiosInAxis.length === 0 ? (
+                <div className="img-extender-section-empty">
+                  No {isHorizontal ? 'wider' : 'taller'} presets available for this image
+                </div>
+              ) : (
+                <div className="img-extender-directions" style={{ marginTop: '0.5rem' }}>
+                  {ratiosInAxis.map(({ ratio, value }) => {
+                    const isSelected = selectedRatio === ratio;
+                    return (
+                      <button
+                        key={ratio}
+                        onClick={() => selectRatio(ratio)}
+                        disabled={isExtending}
+                        className={`img-extender-dir-btn ${isSelected ? 'img-extender-dir-btn--selected' : ''}`}
+                      >
+                        <RatioPreview targetRatio={value} currentRatio={currentRatio} selected={isSelected} />
+                        <span className="img-extender-ratio-label">{ratio}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {selectedRatio && currentImage && (
