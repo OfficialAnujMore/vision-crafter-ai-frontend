@@ -119,8 +119,6 @@ const ResizeComponent: React.FC<CanvasEditorProps> = ({ project }) => {
     }
 
     try {
-      fabricCanvas.setDimensions({ width: newWidth, height: newHeight });
-
       fabricCanvas.getObjects().forEach((obj) => {
         const naturalW = obj.width || 1;
         const naturalH = obj.height || 1;
@@ -143,13 +141,10 @@ const ResizeComponent: React.FC<CanvasEditorProps> = ({ project }) => {
 
       const viewportScale = calculateViewportScale(newWidth, newHeight);
 
-      fabricCanvas.setDimensions(
-        {
-          width: newWidth * viewportScale,
-          height: newHeight * viewportScale,
-        },
-        { cssOnly: true }
-      );
+      fabricCanvas.setDimensions({
+        width: newWidth * viewportScale,
+        height: newHeight * viewportScale,
+      });
 
       fabricCanvas.setZoom(viewportScale);
       fabricCanvas.calcOffset();
