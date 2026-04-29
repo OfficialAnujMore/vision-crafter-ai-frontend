@@ -7,24 +7,10 @@ import { ROUTES } from '../constants/routes';
 import { textVariant } from '../constants/textVariants';
 import { buttonVariants } from '../constants/buttonVariants';
 import {
-  Eraser,
-  Expand,
-  Type,
-  SlidersHorizontal,
-  Crop,
-  Cloud,
-  ArrowRight,
-  Sparkles,
-  Upload,
-  Wand2,
-  Download,
-  Check,
-  Coins,
-  Github,
-  Linkedin,
-  Mail,
-  Globe,
-  MapPin,
+  Eraser, Expand, Type, SlidersHorizontal, Crop, Cloud,
+  ArrowRight, Sparkles, Upload, Wand2, Download, Check,
+  Coins, Github, Linkedin, Mail, Globe, MapPin,
+  Zap, Shield, Layers, Star,
 } from 'lucide-react';
 import EditorPreviewCard from '../components/CustomComponents/EditorPreviewCard';
 import '../styles/LandingPage.css';
@@ -42,6 +28,36 @@ const STEP_ICONS = [
   <Upload size={32} key="upload" />,
   <Wand2 size={32} key="wand" />,
   <Download size={32} key="download" />,
+];
+
+const MARQUEE_ITEMS = [
+  { icon: <Wand2 size={13} />, label: 'AI Background Removal' },
+  { icon: <Expand size={13} />, label: 'Smart Image Extender' },
+  { icon: <Type size={13} />, label: 'Text Overlays' },
+  { icon: <SlidersHorizontal size={13} />, label: 'Color Adjustments' },
+  { icon: <Eraser size={13} />, label: 'AI Eraser Tool' },
+  { icon: <Crop size={13} />, label: 'Custom Crop & Resize' },
+  { icon: <Layers size={13} />, label: 'Canvas Layers' },
+  { icon: <Zap size={13} />, label: 'Instant Export' },
+  { icon: <Cloud size={13} />, label: 'Cloud Storage' },
+  { icon: <Shield size={13} />, label: 'Free Editing Tools' },
+  { icon: <Star size={13} />, label: 'Token Credits System' },
+  { icon: <Download size={13} />, label: 'Multi-format Export' },
+];
+
+const PARTICLES = [
+  { top: '12%', left: '8%', size: 3, delay: 0, duration: 7 },
+  { top: '30%', left: '18%', size: 2, delay: 1.2, duration: 9 },
+  { top: '55%', left: '6%', size: 4, delay: 2.5, duration: 8 },
+  { top: '70%', left: '22%', size: 2, delay: 0.8, duration: 11 },
+  { top: '18%', left: '85%', size: 3, delay: 1.5, duration: 8 },
+  { top: '40%', left: '78%', size: 2, delay: 3.0, duration: 7 },
+  { top: '65%', left: '90%', size: 4, delay: 0.5, duration: 10 },
+  { top: '80%', left: '72%', size: 2, delay: 2.0, duration: 9 },
+  { top: '8%', left: '50%', size: 3, delay: 1.8, duration: 6 },
+  { top: '90%', left: '45%', size: 2, delay: 0.3, duration: 12 },
+  { top: '48%', left: '42%', size: 3, delay: 4.0, duration: 8 },
+  { top: '25%', left: '62%', size: 2, delay: 2.8, duration: 10 },
 ];
 
 const useInView = (threshold = 0.15) => {
@@ -86,8 +102,28 @@ const LandingPage: React.FC = () => {
     <div className="landing-page">
       {/* ===== HERO ===== */}
       <section ref={heroRef} className="hero-section">
-        <div className="hero-glow hero-glow--left" />
-        <div className="hero-glow hero-glow--right" />
+        <div className="hero-orb hero-orb--1" />
+        <div className="hero-orb hero-orb--2" />
+        <div className="hero-orb hero-orb--3" />
+        <div className="hero-orb hero-orb--4" />
+        <div className="hero-grid-overlay" />
+
+        <div className="hero-particles" aria-hidden="true">
+          {PARTICLES.map((p, i) => (
+            <span
+              key={i}
+              className="hero-particle"
+              style={{
+                top: p.top,
+                left: p.left,
+                width: p.size,
+                height: p.size,
+                animationDelay: `${p.delay}s`,
+                animationDuration: `${p.duration}s`,
+              }}
+            />
+          ))}
+        </div>
 
         <div className="hero-content">
           <span className="hero-badge">
@@ -95,14 +131,14 @@ const LandingPage: React.FC = () => {
             AI-Powered Image Editor
           </span>
 
-          <CustomText variant={textVariant.h1} text={LANDING_PAGE.homeTitle} />
+          <h1 className="hero-title">{LANDING_PAGE.homeTitle}</h1>
 
           <p className="hero-subtitle">{LANDING_PAGE.homeSubtitle}</p>
           <p className="hero-description">{LANDING_PAGE.homeDescription}</p>
 
           <ul className="hero-highlights">
             {LANDING_PAGE.homeHighlights.map((h, i) => (
-              <li key={i}>
+              <li key={i} style={{ animationDelay: `${0.4 + i * 0.08}s` }}>
                 <Check size={16} className="hero-highlight-icon" />
                 {h}
               </li>
@@ -116,19 +152,31 @@ const LandingPage: React.FC = () => {
               icon={<ArrowRight size={18} />}
               onClick={() => navigate(ROUTES.SIGNUP)}
             />
-            <button
-              className="hero-secondary-btn"
-              onClick={() => scrollTo('pricing')}
-            >
+            <button className="hero-secondary-btn" onClick={() => scrollTo('pricing')}>
               {LANDING_PAGE.homeSecondaryCta}
             </button>
           </div>
         </div>
 
         <div className="hero-visual">
+          <div className="hero-visual-glow" />
           <EditorPreviewCard />
         </div>
       </section>
+
+      {/* ===== MARQUEE STRIP ===== */}
+      <div className="marquee-strip" aria-hidden="true">
+        <div className="marquee-fade marquee-fade--left" />
+        <div className="marquee-fade marquee-fade--right" />
+        <div className="marquee-track">
+          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+            <span key={i} className="marquee-item">
+              <span className="marquee-item__icon">{item.icon}</span>
+              {item.label}
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* ===== FEATURES ===== */}
       <section
@@ -148,6 +196,7 @@ const LandingPage: React.FC = () => {
               key={i}
               style={{ transitionDelay: `${i * 80}ms` }}
             >
+              <div className="feature-card__shimmer" />
               <div className="feature-icon">
                 {FEATURE_ICONS[f.icon] ?? <Sparkles size={28} />}
               </div>
@@ -176,7 +225,10 @@ const LandingPage: React.FC = () => {
               <h3 className="step-title">{s.title}</h3>
               <p className="step-desc">{s.description}</p>
               {i < LANDING_PAGE.steps.length - 1 && (
-                <ArrowRight size={20} className="step-arrow" />
+                <div className="step-connector">
+                  <div className="step-connector__line" />
+                  <div className="step-connector__dot" />
+                </div>
               )}
             </div>
           ))}
@@ -263,10 +315,7 @@ const LandingPage: React.FC = () => {
         <div className="about-card">
           <div className="about-left">
             <div className="about-avatar">
-              {dev.name
-                .split(' ')
-                .map((n) => n[0])
-                .join('')}
+              {dev.name.split(' ').map((n) => n[0]).join('')}
             </div>
             <h3 className="about-name">{dev.name}</h3>
             <p className="about-role">{dev.role}</p>
@@ -274,7 +323,6 @@ const LandingPage: React.FC = () => {
               <MapPin size={14} />
               {dev.location}
             </div>
-
             <div className="about-socials">
               <a href={dev.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
                 <Github size={18} />
@@ -293,7 +341,6 @@ const LandingPage: React.FC = () => {
 
           <div className="about-right">
             <p className="about-bio">{dev.bio}</p>
-
             <ul className="about-highlights">
               {dev.highlights.map((h, i) => (
                 <li key={i}>
@@ -302,7 +349,6 @@ const LandingPage: React.FC = () => {
                 </li>
               ))}
             </ul>
-
             <div className="about-contact">
               <a href={`mailto:${dev.email}`} className="about-contact-item">
                 <Mail size={14} />
@@ -319,12 +365,15 @@ const LandingPage: React.FC = () => {
 
       {/* ===== CTA ===== */}
       <section ref={cta.ref} className={`cta-section${cta.visible ? ' in-view' : ''}`}>
-        <div className="cta-glow" />
+        <div className="cta-orb cta-orb--1" />
+        <div className="cta-orb cta-orb--2" />
+        <div className="cta-orb cta-orb--3" />
         <div className="cta-content">
-          <CustomText
-            variant={textVariant.h2}
-            text="Ready to Craft Your Vision?"
-          />
+          <span className="cta-badge">
+            <Sparkles size={13} />
+            Start creating today
+          </span>
+          <CustomText variant={textVariant.h2} text="Ready to Craft Your Vision?" />
           <p className="cta-desc">
             Join creators using AI to bring their ideas to life. Start with 50 free tokens — no credit card required.
           </p>

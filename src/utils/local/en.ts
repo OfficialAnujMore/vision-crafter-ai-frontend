@@ -21,6 +21,7 @@ export const LANDING_PAGE = {
   navFeatures: "Features",
   navPricing: "Pricing",
   navAbout: "About",
+  navContact: "Contact",
   navLogin: "Log in",
 
   // Home Section

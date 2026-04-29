@@ -1,18 +1,55 @@
+/* ============================================================
+   NAVBAR — Enhanced design
+   ============================================================ */
+
+/* ---- Keyframes ---- */
 
 @keyframes logo-glow-pulse {
   0%, 100% { opacity: 0.4; transform: scale(1); }
-  50%      { opacity: 0.75; transform: scale(1.18); }
+  50%       { opacity: 0.85; transform: scale(1.22); }
+}
+
+@keyframes logo-icon-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @keyframes navbar-slide-in {
-  from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+  from { opacity: 0; transform: translateX(-50%) translateY(-16px); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
 @keyframes mobile-link-enter {
-  from { opacity: 0; transform: translateX(-12px); }
+  from { opacity: 0; transform: translateX(-14px); }
   to   { opacity: 1; transform: translateX(0); }
 }
+
+@keyframes border-breathe {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 1; }
+}
+
+@keyframes cta-idle-pulse {
+  0%, 100% {
+    box-shadow:
+      0 4px 16px rgba(255, 148, 22, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+  50% {
+    box-shadow:
+      0 4px 28px rgba(255, 148, 22, 0.52),
+      inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  }
+}
+
+@keyframes dot-appear {
+  from { transform: translateX(-50%) scale(0); opacity: 0; }
+  to   { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+/* ============================================================
+   NAVBAR SHELL
+   ============================================================ */
 
 .navbar {
   position: fixed;
@@ -22,23 +59,25 @@
   z-index: 1000;
   width: calc(100% - 2rem);
   max-width: 1120px;
-  background: rgba(18, 18, 20, 0.55);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  background: rgba(14, 14, 17, 0.6);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.04) inset,
-    0 20px 50px -20px rgba(0, 0, 0, 0.55);
-  animation: navbar-slide-in 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+    0 20px 50px -20px rgba(0, 0, 0, 0.6);
+  animation: navbar-slide-in 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
   transition:
     top 0.45s cubic-bezier(0.4, 0, 0.2, 1),
     background 0.45s cubic-bezier(0.4, 0, 0.2, 1),
     border-color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.45s cubic-bezier(0.4, 0, 0.2, 1),
     border-radius 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  /* NOTE: no overflow:hidden here — it would clip the ProfileDropdown */
 }
 
+/* Animated gradient border overlay */
 .navbar::before {
   content: '';
   position: absolute;
@@ -47,10 +86,10 @@
   padding: 1px;
   background: linear-gradient(
     135deg,
-    rgba(255, 148, 22, 0.35) 0%,
-    rgba(255, 148, 22, 0) 35%,
-    rgba(255, 255, 255, 0) 65%,
-    rgba(255, 148, 22, 0.15) 100%
+    rgba(255, 148, 22, 0.4) 0%,
+    rgba(255, 148, 22, 0) 30%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 148, 22, 0.2) 100%
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -58,27 +97,42 @@
   -webkit-mask-composite: xor;
           mask-composite: exclude;
   pointer-events: none;
-  opacity: 0.7;
+  animation: border-breathe 4s ease-in-out infinite;
+}
+
+/* Subtle inner highlight line at the very top */
+.navbar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 148, 22, 0.5), transparent);
+  pointer-events: none;
+  opacity: 0;
   transition: opacity 0.45s ease;
 }
 
+/* Scrolled state */
 .navbar--scrolled {
   top: 10px;
-  background: rgba(10, 10, 12, 0.85);
-  backdrop-filter: blur(28px) saturate(160%);
-  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  background: rgba(8, 8, 10, 0.88);
+  backdrop-filter: blur(30px) saturate(170%);
+  -webkit-backdrop-filter: blur(30px) saturate(170%);
   border-color: rgba(255, 255, 255, 0.1);
   border-radius: 14px;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.06) inset,
-    0 12px 40px rgba(0, 0, 0, 0.55),
-    0 0 30px -5px rgba(255, 148, 22, 0.08);
+    0 16px 44px rgba(0, 0, 0, 0.6),
+    0 0 40px -8px rgba(255, 148, 22, 0.12);
 }
 
-.navbar--scrolled::before {
+.navbar--scrolled::after {
   opacity: 1;
 }
 
+/* ---- Container ---- */
 
 .navbar-container {
   display: flex;
@@ -90,9 +144,12 @@
 }
 
 .navbar--scrolled .navbar-container {
-  padding: 0.55rem 1.5rem;
+  padding: 0.52rem 1.5rem;
 }
 
+/* ============================================================
+   LOGO
+   ============================================================ */
 
 .navbar-logo {
   display: flex;
@@ -104,11 +161,11 @@
 }
 
 .navbar-logo:hover .navbar-logo-glow {
-  transform: scale(1.08) rotate(-4deg);
+  transform: scale(1.1) rotate(-6deg);
 }
 
-.navbar-logo:hover .navbar-logo-glow::before {
-  opacity: 0.9;
+.navbar-logo:hover .navbar-logo-icon {
+  animation: logo-icon-spin 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .navbar-logo:hover .navbar-logo-text-accent {
@@ -124,16 +181,20 @@
   height: 34px;
   border-radius: 11px;
   background: linear-gradient(135deg, rgba(255, 148, 22, 0.22) 0%, rgba(255, 106, 0, 0.12) 100%);
-  border: 1px solid rgba(255, 148, 22, 0.22);
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid rgba(255, 148, 22, 0.25);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s ease;
+}
+
+.navbar-logo:hover .navbar-logo-glow {
+  border-color: rgba(255, 148, 22, 0.5);
 }
 
 .navbar-logo-glow::before {
   content: '';
   position: absolute;
-  inset: -4px;
-  border-radius: 14px;
-  background: radial-gradient(circle, rgba(255, 148, 22, 0.4) 0%, transparent 70%);
+  inset: -5px;
+  border-radius: 16px;
+  background: radial-gradient(circle, rgba(255, 148, 22, 0.45) 0%, transparent 70%);
   opacity: 0.45;
   animation: logo-glow-pulse 3s ease-in-out infinite;
   pointer-events: none;
@@ -143,7 +204,12 @@
   color: #ff9416;
   position: relative;
   z-index: 1;
-  filter: drop-shadow(0 0 6px rgba(255, 148, 22, 0.5));
+  filter: drop-shadow(0 0 6px rgba(255, 148, 22, 0.55));
+  transition: filter 0.3s ease;
+}
+
+.navbar-logo:hover .navbar-logo-icon {
+  filter: drop-shadow(0 0 10px rgba(255, 148, 22, 0.9));
 }
 
 .navbar-logo-text {
@@ -164,6 +230,64 @@
   transition: background-position 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ============================================================
+   CENTER NAV WRAPPER  (Home · pill · Contact)
+   ============================================================ */
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Plain standalone nav links (Home, Contact) */
+.navbar-plain-link {
+  position: relative;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.45rem 0.8rem;
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition: color 0.22s ease, background 0.22s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.navbar-plain-link:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.navbar-plain-link--active {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.navbar-plain-link--active::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ff9416;
+  box-shadow: 0 0 7px rgba(255, 148, 22, 0.9);
+  animation: dot-appear 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ============================================================
+   NAV LINKS PILL
+   ============================================================ */
 
 .navbar-links-pill {
   position: relative;
@@ -172,22 +296,23 @@
   gap: 2px;
   padding: 4px;
   border-radius: 13px;
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
+/* Sliding active background */
 .navbar-link-indicator {
   position: absolute;
   top: 4px;
   left: 4px;
-  width: calc((100% - 8px) / 3);
+  width: calc((100% - 8px) / var(--nav-count, 5));
   height: calc(100% - 8px);
   border-radius: 10px;
   background: linear-gradient(135deg, rgba(255, 148, 22, 0.18) 0%, rgba(255, 148, 22, 0.08) 100%);
-  border: 1px solid rgba(255, 148, 22, 0.3);
+  border: 1px solid rgba(255, 148, 22, 0.32);
   box-shadow:
-    0 0 20px rgba(255, 148, 22, 0.15),
+    0 0 22px rgba(255, 148, 22, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
   transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
@@ -202,7 +327,7 @@
   color: var(--text-secondary);
   font-size: 0.875rem;
   font-weight: 500;
-  padding: 0.45rem 1.1rem;
+  padding: 0.45rem 1.1rem 0.55rem;
   border-radius: 10px;
   cursor: pointer;
   transition:
@@ -226,10 +351,42 @@
   font-weight: 600;
 }
 
+/* Small glowing dot below active link text */
+.navbar-link-dot {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ff9416;
+  box-shadow: 0 0 8px rgba(255, 148, 22, 0.9);
+  animation: dot-appear 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  pointer-events: none;
+}
+
+/* ============================================================
+   AUTH AREA
+   ============================================================ */
 
 .navbar-auth {
   display: flex;
   align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+/* Vertical divider between nav-pill and auth */
+.navbar-divider {
+  width: 1px;
+  height: 22px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.12) 30%,
+    rgba(255, 255, 255, 0.12) 70%,
+    transparent 100%
+  );
   flex-shrink: 0;
 }
 
@@ -239,6 +396,7 @@
   gap: 0.5rem;
 }
 
+/* ---- CTA button ---- */
 
 .navbar-cta {
   position: relative;
@@ -257,64 +415,69 @@
   border-radius: 11px;
   cursor: pointer;
   overflow: hidden;
+  /* idle pulse + transition coexist fine */
+  animation: cta-idle-pulse 3.5s ease-in-out infinite;
   transition:
     transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.25s ease;
-  box-shadow:
-    0 4px 16px rgba(255, 148, 22, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    box-shadow 0.25s ease,
+    animation-play-state 0s;
   white-space: nowrap;
 }
 
+/* Stop idle animation on hover */
+.navbar-cta:hover {
+  animation-play-state: paused;
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 28px rgba(255, 148, 22, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.navbar-cta:active {
+  animation-play-state: paused;
+  transform: translateY(0) scale(0.97);
+}
+
+/* Top-left gloss */
 .navbar-cta::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, transparent 55%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.28) 0%, transparent 55%);
   opacity: 0;
   transition: opacity 0.25s ease;
   pointer-events: none;
-}
-
-.navbar-cta::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.35) 50%,
-    transparent 100%
-  );
-  transform: skewX(-20deg);
-  transition: left 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
-}
-
-.navbar-cta:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 6px 24px rgba(255, 148, 22, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .navbar-cta:hover::before {
   opacity: 1;
 }
 
+/* Shimmer sweep */
+.navbar-cta::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    118deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.38) 50%,
+    transparent 100%
+  );
+  transform: skewX(-22deg);
+  transition: left 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
 .navbar-cta:hover::after {
-  left: 125%;
+  left: 130%;
 }
 
 .navbar-cta:hover .navbar-cta-arrow {
   transform: translateX(3px);
-}
-
-.navbar-cta:active {
-  transform: translateY(0) scale(0.97);
 }
 
 .navbar-cta-arrow {
@@ -332,6 +495,35 @@
   width: 100%;
 }
 
+/* ============================================================
+   SCROLL PROGRESS BAR
+   ============================================================ */
+
+.navbar-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  /* max-width keeps it inside the pill even without overflow:hidden */
+  max-width: 100%;
+  background: linear-gradient(90deg, #ff9416 0%, #ffb558 60%, #ff6a00 100%);
+  border-radius: 999px;
+  box-shadow: 0 0 10px rgba(255, 148, 22, 0.7), 0 0 20px rgba(255, 148, 22, 0.3);
+  opacity: 0;
+  transition:
+    width 0.08s linear,
+    opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.navbar--scrolled .navbar-progress-bar {
+  opacity: 1;
+}
+
+/* ============================================================
+   MOBILE TOGGLE
+   ============================================================ */
 
 .navbar-mobile-toggle {
   display: none;
@@ -344,19 +536,23 @@
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
-    transform 0.2s ease;
+    transform 0.2s ease,
+    color 0.2s ease;
 }
 
 .navbar-mobile-toggle:hover {
   background: rgba(255, 148, 22, 0.1);
-  border-color: rgba(255, 148, 22, 0.3);
+  border-color: rgba(255, 148, 22, 0.35);
   color: #ff9416;
 }
 
 .navbar-mobile-toggle:active {
-  transform: scale(0.92);
+  transform: scale(0.9);
 }
 
+/* ============================================================
+   MOBILE OVERLAY
+   ============================================================ */
 
 .navbar-mobile-overlay {
   display: none;
@@ -373,46 +569,75 @@
 }
 
 .navbar-mobile-overlay--open {
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   pointer-events: auto;
 }
 
+/* ============================================================
+   MOBILE DRAWER
+   ============================================================ */
 
 .navbar-mobile-drawer {
   display: none;
   position: fixed;
   top: 80px;
   left: 50%;
-  transform: translateX(-50%) translateY(-8px);
+  transform: translateX(-50%) translateY(-10px);
   z-index: 999;
   width: calc(100% - 2rem);
   max-width: 1120px;
-  background: rgba(14, 14, 16, 0.95);
-  backdrop-filter: blur(28px) saturate(150%);
-  -webkit-backdrop-filter: blur(28px) saturate(150%);
+  background: rgba(10, 10, 13, 0.96);
+  backdrop-filter: blur(30px) saturate(160%);
+  -webkit-backdrop-filter: blur(30px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 148, 22, 0.2);
   border-radius: 16px;
   padding: 0;
   max-height: 0;
   overflow: hidden;
   opacity: 0;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 148, 22, 0.06) inset;
   transition:
-    max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    max-height 0.42s cubic-bezier(0.4, 0, 0.2, 1),
     opacity 0.3s ease,
-    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.38s cubic-bezier(0.4, 0, 0.2, 1),
     padding 0.4s ease;
 }
 
 .navbar-mobile-drawer--open {
-  max-height: 400px;
+  max-height: 460px;
   padding: 1.25rem;
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
 
+/* Drawer header with brand + badge */
+.navbar-mobile-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.navbar-mobile-drawer-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #ff9416;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid rgba(255, 148, 22, 0.3);
+  border-radius: 999px;
+  background: rgba(255, 148, 22, 0.07);
+}
+
+/* Nav links */
 .navbar-mobile-drawer-links {
   display: flex;
   flex-direction: column;
@@ -442,14 +667,16 @@
   animation: mobile-link-enter 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-.navbar-mobile-drawer--open .navbar-mobile-link:nth-child(1) { animation-delay: 0.05s; }
-.navbar-mobile-drawer--open .navbar-mobile-link:nth-child(2) { animation-delay: 0.1s; }
-.navbar-mobile-drawer--open .navbar-mobile-link:nth-child(3) { animation-delay: 0.15s; }
+.navbar-mobile-drawer--open .navbar-mobile-link:nth-child(1) { animation-delay: 0.04s; }
+.navbar-mobile-drawer--open .navbar-mobile-link:nth-child(2) { animation-delay: 0.08s; }
+.navbar-mobile-drawer--open .navbar-mobile-link:nth-child(3) { animation-delay: 0.12s; }
+.navbar-mobile-drawer--open .navbar-mobile-link:nth-child(4) { animation-delay: 0.16s; }
+.navbar-mobile-drawer--open .navbar-mobile-link:nth-child(5) { animation-delay: 0.20s; }
 
 .navbar-mobile-link:hover {
   color: var(--text-primary);
   background: rgba(255, 255, 255, 0.06);
-  padding-left: 1.2rem;
+  padding-left: 1.25rem;
 }
 
 .navbar-mobile-link:active {
@@ -469,17 +696,35 @@
   top: 50%;
   transform: translateY(-50%);
   width: 3px;
-  height: 60%;
-  background: #ff9416;
+  height: 55%;
+  background: linear-gradient(180deg, #ff9416, #ff6a00);
   border-radius: 0 3px 3px 0;
   box-shadow: 0 0 10px rgba(255, 148, 22, 0.6);
 }
 
+/* Contact link in mobile drawer */
+.navbar-mobile-link--contact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--text-secondary);
+}
+
+.navbar-mobile-link--contact:hover {
+  color: #ff9416;
+  background: rgba(255, 148, 22, 0.07);
+}
+
+/* Auth area in drawer */
 .navbar-mobile-drawer-auth {
   padding-top: 0.75rem;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 
 @media (max-width: 768px) {
   .navbar {
