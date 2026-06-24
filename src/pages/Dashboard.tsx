@@ -94,10 +94,10 @@ const Dashboard = () => {
     loadProjects();
   }, [loadProjects]);
 
-  const handleDelete = useCallback(async (fileId: string) => {
+  const handleDelete = useCallback(async (projectId: string) => {
     try {
-      await projectService.deleteProjectByFileId(fileId);
-      setProjects((prev) => prev.filter((p) => p.file_id !== fileId));
+      await projectService.deleteProjectById(projectId);
+      setProjects((prev) => prev.filter((p) => p.id !== projectId));
     } catch (error) {
       console.error('Failed to delete project:', error);
     }

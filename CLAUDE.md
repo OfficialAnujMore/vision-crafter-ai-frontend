@@ -29,7 +29,7 @@ src/
 │   ├── FeatureComponents/  # One component per editing tool (Text, Crop, Resize, Adjust, etc.)
 │   └── CustomComponents/   # Reusable UI elements (Button, Slider, ColorPicker, Input)
 ├── services/
-│   ├── api/            # Axios instance + service modules (auth, project, canvas, imageKit)
+│   ├── api/            # Axios instance + service modules (auth, project, canvas, s3)
 │   ├── config/         # API endpoint constants
 │   └── export/         # Canvas export utilities (PNG, JPG, WebP, PDF)
 ├── context/            # React Context (canvasContext — stores Fabric canvas ref + active tool)
@@ -50,7 +50,7 @@ src/
 - Undo/redo exposed globally via `window.canvasUndo()` / `window.canvasRedo()`
 
 ### Auto-Save Pipeline
-Canvas change → `addToHistory()` → debounced save (5s) → export canvas to data URL → upload thumbnail to ImageKit → save `canvas_state` JSON to backend
+Canvas change → `addToHistory()` → debounced save (5s) → export canvas to data URL → overwrite the project's S3 object in place via presigned PUT (URL stays stable, `?v=ts` cache-buster) → save `canvas_state` JSON to backend
 
 ### Tool Activation Flow
 `BottomToolbar` click → `setActiveTool()` via context → `FeatureBar` renders the matching `FeatureComponent`
@@ -58,7 +58,7 @@ Canvas change → `addToHistory()` → debounced save (5s) → export canvas to 
 ### API Layer
 - Axios instance in `services/api/index.ts` with request/response interceptors
 - 401 responses trigger token refresh automatically
-- Service modules: `authService`, `projectService`, `canvasService`, `imageKitService`
+- Service modules: `authService`, `projectService`, `canvasService`, `s3Service` (presigned uploads)
 
 ### Auth
 - Google OAuth via `@react-oauth/google`

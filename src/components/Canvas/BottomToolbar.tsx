@@ -23,10 +23,11 @@ const tools: ToolItem[] = [
   // { icon: Crop, label: 'Crop', tool: 'crop' },
   { icon: Scaling, label: 'Resize', tool: 'resize' },
   { icon: Type, label: 'Text', tool: 'text' },
-  { icon: Wand2, label: 'AI BG', tool: 'bg-remove' },
   { icon: Palette, label: 'BG Color', tool: 'bg-color' },
   { icon: ImageIcon, label: 'BG Image', tool: 'bg-image' },
-  { icon: Images, label: 'Extend', tool: 'extend' },
+  { icon: Wand2, label: 'AI BG', tool: 'bg-remove' },
+  { icon: Images, label: 'AI Extend', tool: 'extend' },
+
 ];
 
 const BottomToolbar: React.FC = () => {

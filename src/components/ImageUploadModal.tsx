@@ -5,7 +5,7 @@ import CustomText from './CustomComponents/CustomText';
 import CustomButton from './CustomComponents/CustomButton';
 import { useLoader } from './LoaderContext';
 import { authService } from '../services/api/authService';
-import { uploadFileToImageKit } from '../services/api/imageKitService';
+import { uploadFileToS3 } from '../services/api/s3Service';
 import { projectService } from '../services/api/projectService';
 import '../styles/ImageUploadModal.css';
 import { showWarningToast } from '../utils/toast';
@@ -116,12 +116,12 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                 ? selectedFile.name.slice(selectedFile.name.lastIndexOf('.') + 1)
                 : '';
             const resolvedTitle = fileName.trim() || selectedFile.name.replace(/\.[^/.]+$/, '');
-            const imageKitFileName = originalExtension
+            const uploadFileName = originalExtension
                 ? `${resolvedTitle}.${originalExtension}`
                 : resolvedTitle;
 
-            const response = await uploadFileToImageKit(selectedFile, {
-                fileName: imageKitFileName,
+            const response = await uploadFileToS3(selectedFile, {
+                fileName: uploadFileName,
             });
             const currentUser = authService.getCurrentUser();
 

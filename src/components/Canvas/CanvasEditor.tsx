@@ -4,7 +4,7 @@ import { Canvas, FabricImage } from 'fabric';
 import '../../styles/Canvas/Editor.css'
 import { showInfoToast } from '../../utils/toast';
 import { saveCanvasState } from '../../services/api/canvasService';
-import { uploadFileToImageKit } from '../../services/api/imageKitService';
+import { uploadFileToS3 } from '../../services/api/s3Service';
 import { useCanvasHistory } from '../../hooks/useCanvasHistory';
 import { useCanvasContext } from '../../context/canvasContext';
 
@@ -43,44 +43,14 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
         return new File([bytes], filename, { type: mimeType });
     };
 
-    const getImageKitUploadTarget = (url: string): { fileName: string; folder?: string } | null => {
-        try {
-            const parsedUrl = new URL(url);
-            let pathSegments = parsedUrl.pathname
-                .split('/')
-                .filter(Boolean)
-                .map((segment) => decodeURIComponent(segment));
-
-            // Remove ImageKit transformation segments if present in the URL path.
-            while (pathSegments.length > 0 && pathSegments[0].startsWith('tr:')) {
-                pathSegments = pathSegments.slice(1);
-            }
-
-            // For default ImageKit URL endpoints, first path segment is endpoint ID, not a media folder.
-            if (parsedUrl.hostname.endsWith('imagekit.io') && pathSegments.length > 1) {
-                pathSegments = pathSegments.slice(1);
-            }
-
-            if (pathSegments.length === 0) {
-                return null;
-            }
-
-            const fileName = pathSegments[pathSegments.length - 1];
-            const folderSegments = pathSegments.slice(0, -1);
-            const folder = folderSegments.length > 0 ? `/${folderSegments.join('/')}` : undefined;
-
-            return {
-                fileName,
-                folder,
-            };
-        } catch {
-            return null;
-        }
-    };
-
     const getCanvasExportFormat = (fileName: string): 'png' | 'jpeg' => {
         const lowerName = fileName.toLowerCase();
         return lowerName.endsWith('.png') ? 'png' : 'jpeg';
+    };
+
+    const getKeyBasename = (key: string): string => {
+        const segments = key.split('/');
+        return segments[segments.length - 1] || 'canvas.png';
     };
 
 
@@ -242,13 +212,14 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
                     let latestProjectUrl: string | undefined;
 
                     try {
-                        const uploadTarget = getImageKitUploadTarget(project.project_url);
+                        const objectKey = project.file_id;
 
-                        if (!uploadTarget) {
-                            throw new Error('Unable to parse project_url for ImageKit overwrite upload target');
+                        if (!objectKey) {
+                            throw new Error('Project is missing its S3 object key (file_id)');
                         }
 
-                        const exportFormat = getCanvasExportFormat(uploadTarget.fileName);
+                        const fileName = getKeyBasename(objectKey);
+                        const exportFormat = getCanvasExportFormat(fileName);
                         const thumbnailDataUrl = canvas.toDataURL({
                             format: exportFormat,
                             quality: exportFormat === 'jpeg' ? 0.9 : undefined,
@@ -256,17 +227,20 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
                             enableRetinaScaling: true,
                         });
 
-                        const uploadedCanvasFile = dataUrlToFile(thumbnailDataUrl, uploadTarget.fileName);
+                        const uploadedCanvasFile = dataUrlToFile(thumbnailDataUrl, fileName);
 
-                        const uploadedThumbnail = await uploadFileToImageKit(uploadedCanvasFile, {
-                            fileName: uploadTarget.fileName,
-                            folder: uploadTarget.folder,
-                            useUniqueFileName: false,
-                            overwriteFile: true,
+                        
+                        const uploaded = await uploadFileToS3(uploadedCanvasFile, {
+                            fileName,
+                            key: objectKey,
                         });
 
-                        latestThumbnailUrl = uploadedThumbnail.thumbnail_url;
-                        latestProjectUrl = uploadedThumbnail.project_url;
+                        const cacheBuster = `v=${Date.now()}`;
+                        const withCacheBuster = (url: string) =>
+                            url.includes('?') ? `${url}&${cacheBuster}` : `${url}?${cacheBuster}`;
+
+                        latestThumbnailUrl = withCacheBuster(uploaded.thumbnail_url);
+                        latestProjectUrl = withCacheBuster(uploaded.project_url);
                     } catch (thumbnailError) {
                         // Canvas JSON save should still proceed if thumbnail refresh fails.
                         console.warn('Thumbnail upload during autosave failed:', thumbnailError);

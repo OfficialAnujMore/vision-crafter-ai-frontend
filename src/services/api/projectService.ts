@@ -29,10 +29,10 @@ export const projectService = {
         return response.data.data;
     },
 
-    deleteProjectByFileId: async (fileId: string): Promise<void> => {
+    deleteProjectById: async (projectId: string): Promise<void> => {
 
         await axiosInstance.delete<ApiResponse<null>>(
-            `${API_CONFIG.ENDPOINTS.PROJECT.DELETE_BY_FILE_ID}${fileId}`
+            `${API_CONFIG.ENDPOINTS.PROJECT.DELETE}${projectId}`
         );
         showSuccessToast(
             'Project deleted successfully',

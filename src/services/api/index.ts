@@ -80,6 +80,15 @@ axiosInstance.interceptors.response.use(
 
     const customError = new ApiError(errorMessage, statusCode, errorCode);
 
+    if (import.meta.env.DEV) {
+      console.error('[API error]', {
+        url: originalRequest?.url,
+        status: statusCode,
+        message: errorMessage,
+        response: error.response?.data,
+      });
+    }
+
     if (!isAuthEndpoint) {
       showErrorToast(customError);
     }

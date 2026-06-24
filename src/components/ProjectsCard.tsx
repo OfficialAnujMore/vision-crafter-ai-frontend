@@ -10,7 +10,7 @@ import type { SaveFileResponse } from '../interface/project';
 
 interface ProjectCardProps {
     project: SaveFileResponse;
-    onDelete: (fileId: string) => void;
+    onDelete: (projectId: string) => void;
     onRename: (projectId: string, newTitle: string) => Promise<void>;
 }
 
@@ -125,7 +125,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onDelete, onRename }
 
     const handleDeleteConfirm = () => {
         setConfirmDeleteOpen(false);
-        onDelete(project.file_id);
+        onDelete(project.id);
     };
 
     return (
