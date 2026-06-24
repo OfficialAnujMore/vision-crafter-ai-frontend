@@ -10,11 +10,18 @@ import {
   Shield,
   Sparkles,
   User as UserIcon,
+  Zap,
+  ExternalLink,
+  Check,
 } from 'lucide-react';
 import CustomText from '../components/CustomComponents/CustomText';
 import CustomButton from '../components/CustomComponents/CustomButton';
 import CustomInput from '../components/CustomComponents/CustomInput';
+import PurchaseModal from '../components/PurchaseModal';
 import { authService } from '../services/api/authService';
+import { useTokens } from '../context/tokenContext';
+import { paymentService } from '../services/api/paymentService';
+import type { PurchasesResponse } from '../services/api/paymentService';
 import { ROUTES } from '../constants/routes';
 import { textVariant } from '../constants/textVariants';
 import { buttonVariants } from '../constants/buttonVariants';
@@ -37,20 +44,21 @@ const getInitials = (name: string) =>
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<ProfileUser | null>(null);
-  const [displayName, setDisplayName] = useState('');
+  const [user] = useState<ProfileUser | null>(() => authService.getCurrentUser());
+  const [displayName, setDisplayName] = useState(() => authService.getCurrentUser()?.name ?? '');
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [productUpdates, setProductUpdates] = useState(false);
+  const [isPurchaseOpen, setIsPurchaseOpen] = useState(false);
+  const [purchases, setPurchases] = useState<PurchasesResponse['purchases']>([]);
+  const { tokenBalance } = useTokens();
 
   useEffect(() => {
-    const current = authService.getCurrentUser();
-    if (!current) {
+    if (!user) {
       navigate(ROUTES.SIGNUP);
       return;
     }
-    setUser(current);
-    setDisplayName(current.name ?? '');
-  }, [navigate]);
+    paymentService.getPurchases().then((data) => setPurchases(data.purchases)).catch(() => {});
+  }, [navigate, user]);
 
   const memberSince = useMemo(() => {
     const now = new Date();
@@ -201,20 +209,55 @@ const Profile = () => {
         <div className="profile-section-body">
           <div className="profile-row">
             <div className="profile-row-info">
-              <CustomText variant={textVariant.h4} text="Free plan" />
-              <CustomText
-                variant={textVariant.p}
-                text="Upgrade to unlock AI generations and higher export limits"
-              />
+              <Zap size={16} className="profile-zap-icon" />
+              <div>
+                <CustomText variant={textVariant.h4} text="Token balance" />
+                <CustomText
+                  variant={textVariant.p}
+                  text={tokenBalance !== null ? `${tokenBalance} AI tokens remaining` : 'Loading…'}
+                />
+              </div>
             </div>
             <CustomButton
               variant={buttonVariants.default}
-              text="Upgrade"
-              disabled
+              icon={<ExternalLink size={14} />}
+              text="Buy Tokens"
+              onClick={() => setIsPurchaseOpen(true)}
             />
           </div>
+
+          {purchases.length > 0 && (
+            <div className="profile-purchase-history">
+              <CustomText variant={textVariant.p} text="Purchase history" />
+              <div className="profile-purchase-list">
+                {purchases.map((p) => (
+                  <div key={p.id} className="profile-purchase-item">
+                    <div className="profile-purchase-info">
+                      <Zap size={13} />
+                      <span>+{p.tokens_granted.toLocaleString()} tokens</span>
+                      <span className="profile-purchase-amount">${(p.amount_cents / 100).toFixed(2)}</span>
+                    </div>
+                    <div className="profile-purchase-meta">
+                      {p.status === 'completed' ? (
+                        <span className="profile-purchase-status profile-purchase-status--ok">
+                          <Check size={11} /> Fulfilled
+                        </span>
+                      ) : (
+                        <span className="profile-purchase-status profile-purchase-status--pending">
+                          Pending
+                        </span>
+                      )}
+                      <span>{new Date(p.created_at).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
+
+      <PurchaseModal isOpen={isPurchaseOpen} onClose={() => setIsPurchaseOpen(false)} />
 
       <section className="profile-section">
         <div className="profile-section-head">

@@ -11,13 +11,21 @@ import '../../styles/FeatureComponents/BackgroundImage.css';
 
 type Tab = 'upload' | 'unsplash';
 
+interface UnsplashImage {
+  id: string;
+  alt_description: string | null;
+  urls: { small: string; regular: string };
+  user: { name: string; links: { html: string } };
+  links: { download_location: string };
+}
+
 const BackgroundImage: React.FC = () => {
 
   const { fabricCanvas } = useCanvasContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState<Tab>('upload');
   const [searchQuery, setSearchQuery] = useState("");
-  const [unsplashImages, setUnsplashImages] = useState<any[] | null>(null);
+  const [unsplashImages, setUnsplashImages] = useState<UnsplashImage[] | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -76,7 +84,7 @@ const BackgroundImage: React.FC = () => {
     try {
       const url = URL.createObjectURL(file);
       await applyBackgroundImage(url);
-    } catch (error) {
+    } catch {
       showErrorToast('Failed to load image');
     } finally {
       setIsUploading(false);
@@ -121,10 +129,11 @@ const BackgroundImage: React.FC = () => {
         },
       });
     } catch {
+      // Unsplash download tracking is best-effort; failures are silent
     }
   };
 
-  const handleUnsplashSelect = async (image: any) => {
+  const handleUnsplashSelect = async (image: UnsplashImage) => {
     if (image.links?.download_location) {
       triggerUnsplashDownload(image.links.download_location);
     }

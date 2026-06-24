@@ -18,14 +18,9 @@ interface User {
 
 const ProfileDropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [user] = useState<User | null>(() => authService.getCurrentUser());
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const currentUser = authService.getCurrentUser();
-    setUser(currentUser);
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

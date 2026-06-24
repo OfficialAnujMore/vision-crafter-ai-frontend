@@ -46,6 +46,13 @@
     align-self: flex-end;
 }
 
+.dashboard-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    align-self: flex-end;
+}
+
 .dashboard-empty-state {
     width: min(680px, 100%);
     margin: 1.5rem auto 0;

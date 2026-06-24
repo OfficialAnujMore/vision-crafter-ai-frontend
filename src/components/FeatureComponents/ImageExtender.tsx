@@ -1,13 +1,17 @@
-import { ArrowRight, Expand, Image, Loader2, Wand2, CheckCircle2, XCircle, AlertTriangle, X } from 'lucide-react';
+import { ArrowRight, Expand, Image, Loader2, Wand2, CheckCircle2, XCircle, AlertTriangle, X, Zap } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useCanvasContext } from '../../context/canvasContext';
+import { useTokens } from '../../context/tokenContext';
 import CustomButton from '../CustomComponents/CustomButton';
 import CustomText from '../CustomComponents/CustomText';
+import PurchaseModal from '../PurchaseModal';
 import { buttonVariants } from '../../constants/buttonVariants';
 import { FabricImage } from 'fabric';
 import { showErrorToast, showSuccessToast, showInfoToast } from '../../utils/toast';
 import { extendImage, ASPECT_RATIOS, type AspectRatio } from '../../services/api/aiService';
 import '../../styles/FeatureComponents/ImageExtender.css';
+
+const TOKEN_COST = 5;
 
 const IMAGE_LOAD_TIMEOUT = 120_000; // 120 seconds
 
@@ -71,10 +75,12 @@ const RatioPreview = ({ targetRatio, currentRatio, selected }: RatioPreviewProps
 
 const ImageExtender = () => {
   const { fabricCanvas } = useCanvasContext();
+  const { tokenBalance, deductOptimistic, refreshBalance } = useTokens();
   const [selectedRatio, setSelectedRatio] = useState<AspectRatio | null>(null);
   const [isExtending, setIsExtending] = useState(false);
   const [extensionStatus, setExtensionStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [isPurchaseOpen, setIsPurchaseOpen] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const abortRef = useRef(false);
 
@@ -155,15 +161,21 @@ const ImageExtender = () => {
     const mainImage = getMainImage();
     if (!mainImage || !selectedRatio || !fabricCanvas) return;
 
+    if (tokenBalance !== null && tokenBalance < TOKEN_COST) {
+      setIsPurchaseOpen(true);
+      return;
+    }
+
     setIsExtending(true);
     setExtensionStatus('idle');
     abortRef.current = false;
     startTimer();
+    deductOptimistic(TOKEN_COST);
 
     try {
       const currentImageUrl = getImageSrc(mainImage);
 
-      const extendedUrl = await extendImage({
+      const { resultUrl: extendedUrl } = await extendImage({
         image_url: currentImageUrl,
         aspect_ratio: selectedRatio,
       });
@@ -227,10 +239,12 @@ const ImageExtender = () => {
       setExtensionStatus('success');
       setSelectedRatio(null);
       showSuccessToast("Image extended successfully");
+      await refreshBalance();
     } catch (error) {
       if (abortRef.current) return;
       console.error("Error applying extension:", error);
       setExtensionStatus('error');
+      await refreshBalance();
 
       const message = error instanceof Error ? error.message : "";
       if (message === "timeout") {
@@ -395,6 +409,18 @@ const ImageExtender = () => {
           <span>Add an image to the canvas first</span>
         </div>
       )}
+
+      {hasImage && tokenBalance !== null && tokenBalance < TOKEN_COST && !isExtending && (
+        <div className="img-extender-notice img-extender-notice--tokens">
+          <Zap size={16} />
+          <span>Need {TOKEN_COST} tokens (you have {tokenBalance})</span>
+          <button className="img-extender-buy-btn" onClick={() => setIsPurchaseOpen(true)}>
+            Buy tokens
+          </button>
+        </div>
+      )}
+
+      <PurchaseModal isOpen={isPurchaseOpen} onClose={() => setIsPurchaseOpen(false)} />
     </div>
   );
 }

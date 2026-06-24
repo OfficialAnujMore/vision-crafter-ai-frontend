@@ -28,6 +28,11 @@ export const API_CONFIG = {
     AI: {
       REMOVE_BACKGROUND: "/api/ai/remove-background",
       EXTEND_IMAGE: "/api/ai/extend-image",
-    }
+    },
+    PAYMENTS: {
+      BALANCE: "/api/payments/balance",
+      PURCHASES: "/api/payments/purchases",
+      CHECKOUT: "/api/payments/checkout",
+    },
   },
 } as const;

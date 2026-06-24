@@ -9,6 +9,7 @@ import { injectCSSVariables } from './utils/injectColors';
 import { ROUTES } from './constants/routes';
 import { LoaderProvider } from './components/LoaderContext';
 import GlobalLoader from './components/Loader';
+import { TokenProvider } from './context/tokenContext';
 import { Toaster } from 'sonner';
 import './styles/Toast.css'
 import Editor from './pages/Editor';
@@ -33,6 +34,7 @@ function App() {
 
   return (
     <LoaderProvider>
+      <TokenProvider>
       <FaintDotGrid/>
       <GlobalLoader />
       <Toaster
@@ -83,6 +85,7 @@ function App() {
           </Routes>
         </MainLayout>
       </BrowserRouter>
+      </TokenProvider>
     </LoaderProvider>
   );
 }

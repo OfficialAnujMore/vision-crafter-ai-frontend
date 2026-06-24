@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs */
 import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CustomText from '../components/CustomComponents/CustomText';

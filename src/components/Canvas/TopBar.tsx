@@ -12,6 +12,8 @@ import { useCanvasContext } from '../../context/canvasContext'
 import { exportCanvas } from '../../services/export/exportService'
 import { exportFormats, type ExportFormat } from '../../constants/exportFormats'
 import { showErrorToast, showSuccessToast } from '../../utils/toast'
+import TokenBalance from '../TokenBalance'
+import PurchaseModal from '../PurchaseModal'
 
 declare global {
   interface Window {
@@ -26,6 +28,7 @@ const TopBar: React.FC<{ title: string }> = ({ title }) => {
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+  const [isPurchaseOpen, setIsPurchaseOpen] = useState(false);
   const [selectedExportFormat, setSelectedExportFormat] = useState<ExportFormat>(exportFormats.PNG);
   const downloadRef = useRef<HTMLDivElement>(null);
 
@@ -87,56 +90,57 @@ const TopBar: React.FC<{ title: string }> = ({ title }) => {
   };
 
   return (
-    <section className='topbar-container'>
-      <div className='topbar-left'>
-        <CustomButton
-          onClick={() => navigate(ROUTES.DASHBOARD)}
-          variant={buttonVariants.icon}
-          icon={<ArrowLeft size={20} />}
-        />
-      </div>
+    <>
+      <section className='topbar-container'>
+        <div className='topbar-left'>
+          <CustomButton
+            onClick={() => navigate(ROUTES.DASHBOARD)}
+            variant={buttonVariants.icon}
+            icon={<ArrowLeft size={20} />}
+          />
+        </div>
 
-      <div className='topbar-title-group'>
-        <CustomText
-          variant={textVariant.h4}
-          text={title}
-          fontSize="0.95rem"
-        />
-      </div>
+        <div className='topbar-title-group'>
+          <CustomText
+            variant={textVariant.h4}
+            text={title}
+            fontSize="0.95rem"
+          />
+        </div>
 
-      <div className='topbar-action'>
-        <CustomButton
-          variant={buttonVariants.icon}
-          icon={<Undo size={20} />}
-          onClick={handleUndoClick}
-          disabled={!canUndo}
-        />
-        <CustomButton
-          variant={buttonVariants.icon}
-          icon={<Redo size={20} />}
-          onClick={handleRedoClick}
-          disabled={!canRedo}
-        />
-        {/* <CustomButton
-          variant={buttonVariants.icon}
-          icon={<Share2 size={20} />}
-        /> */}
-        <div className='topbar-download-anchor' ref={downloadRef}>
+        <div className='topbar-action'>
+          <TokenBalance onClick={() => setIsPurchaseOpen(true)} />
           <CustomButton
             variant={buttonVariants.icon}
-            icon={<Download size={20} />}
-            onClick={() => setIsDownloadOpen((prev) => !prev)}
+            icon={<Undo size={20} />}
+            onClick={handleUndoClick}
+            disabled={!canUndo}
           />
-          {isDownloadOpen && (
-            <DownloadImageModal
-              selectedFormat={selectedExportFormat}
-              onFormatChange={setSelectedExportFormat}
-              onExport={handleExportClick}
+          <CustomButton
+            variant={buttonVariants.icon}
+            icon={<Redo size={20} />}
+            onClick={handleRedoClick}
+            disabled={!canRedo}
+          />
+          <div className='topbar-download-anchor' ref={downloadRef}>
+            <CustomButton
+              variant={buttonVariants.icon}
+              icon={<Download size={20} />}
+              onClick={() => setIsDownloadOpen((prev) => !prev)}
             />
-          )}
+            {isDownloadOpen && (
+              <DownloadImageModal
+                selectedFormat={selectedExportFormat}
+                onFormatChange={setSelectedExportFormat}
+                onExport={handleExportClick}
+              />
+            )}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <PurchaseModal isOpen={isPurchaseOpen} onClose={() => setIsPurchaseOpen(false)} />
+    </>
   )
 }
 

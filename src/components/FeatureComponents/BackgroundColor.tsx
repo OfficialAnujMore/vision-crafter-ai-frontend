@@ -22,7 +22,9 @@ const BackgroundColor: React.FC = () => {
 
   const applyColor = (color: string) => {
     if (!fabricCanvas) return;
+    // eslint-disable-next-line react-hooks/immutability
     fabricCanvas.backgroundImage = undefined;
+    // eslint-disable-next-line react-hooks/immutability
     fabricCanvas.backgroundColor = color;
     fabricCanvas.requestRenderAll();
     fabricCanvas.fire('object:modified');
@@ -40,7 +42,9 @@ const BackgroundColor: React.FC = () => {
 
   const handleRemoveBackground = () => {
     if (!fabricCanvas) return;
+    // eslint-disable-next-line react-hooks/immutability
     fabricCanvas.backgroundColor = "";
+    // eslint-disable-next-line react-hooks/immutability
     fabricCanvas.backgroundImage = undefined;
     fabricCanvas.requestRenderAll();
     fabricCanvas.fire('object:modified');

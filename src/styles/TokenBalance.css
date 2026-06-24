@@ -1,0 +1,43 @@
+.token-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.65rem;
+  background: rgba(255, 148, 22, 0.12);
+  border: 1px solid rgba(255, 148, 22, 0.3);
+  border-radius: 999px;
+  color: #ff9416;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.token-badge:hover {
+  background: rgba(255, 148, 22, 0.2);
+  border-color: #ff9416;
+  box-shadow: 0 0 8px rgba(255, 148, 22, 0.25);
+}
+
+.token-badge--low {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  animation: pulse-low 2s ease-in-out infinite;
+}
+
+.token-badge--low:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.25);
+}
+
+.token-badge-icon {
+  flex-shrink: 0;
+}
+
+@keyframes pulse-low {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}

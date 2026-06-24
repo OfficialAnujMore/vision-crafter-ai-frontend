@@ -1,0 +1,223 @@
+.pm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: pm-overlay-in 0.2s ease;
+}
+
+@keyframes pm-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.pm-card {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 1rem;
+  background: rgba(15, 15, 15, 0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 0 0 0.5px rgba(255, 255, 255, 0.05) inset;
+  animation: pm-card-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+@keyframes pm-card-in {
+  from { opacity: 0; transform: scale(0.94) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.pm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pm-header-text {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pm-header-icon {
+  color: #ff9416;
+  flex-shrink: 0;
+}
+
+.pm-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.1rem;
+}
+
+.pm-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.pm-subtitle strong {
+  color: #ff9416;
+}
+
+.pm-close {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s;
+}
+
+.pm-close:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pm-plans {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+}
+
+.pm-plan {
+  position: relative;
+  padding: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color 0.2s ease;
+}
+
+.pm-plan:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.pm-plan--popular {
+  border-color: rgba(255, 148, 22, 0.35);
+  background: rgba(255, 148, 22, 0.04);
+}
+
+.pm-plan--popular:hover {
+  border-color: rgba(255, 148, 22, 0.5);
+}
+
+.pm-plan-badge {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #ff9416, #ff6b00);
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.7rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+.pm-plan-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.pm-plan-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.pm-plan-price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.pm-plan-period {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+}
+
+.pm-plan-tokens {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: #ff9416;
+}
+
+.pm-plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.pm-plan-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.pm-plan-check {
+  color: #22c55e;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.pm-plan-btn.custom-btn {
+  font-size: 0.82rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 9px;
+  width: 100%;
+  justify-content: center;
+}
+
+.pm-footer-note {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 0 1.5rem 1.25rem;
+  margin: 0;
+}
+
+@media (max-width: 540px) {
+  .pm-plans {
+    grid-template-columns: 1fr;
+  }
+
+  .pm-card {
+    margin: 0 0.75rem;
+  }
+}

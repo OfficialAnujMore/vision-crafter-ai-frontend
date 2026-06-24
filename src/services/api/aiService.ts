@@ -4,9 +4,12 @@ import type { ApiResponse } from "../../interface/api";
 
 interface RemoveBackgroundResponse {
   result_url: string;
+  token_balance: number;
 }
 
-export const removeBackground = async (imageUrl: string): Promise<string> => {
+export const removeBackground = async (
+  imageUrl: string
+): Promise<{ resultUrl: string; tokenBalance: number }> => {
   const response = await axiosInstance.post<ApiResponse<RemoveBackgroundResponse>>(
     API_CONFIG.ENDPOINTS.AI.REMOVE_BACKGROUND,
     { image_url: imageUrl }
@@ -17,7 +20,7 @@ export const removeBackground = async (imageUrl: string): Promise<string> => {
     throw new Error("No result URL returned from background removal");
   }
 
-  return resultUrl;
+  return { resultUrl, tokenBalance: response.data.data.token_balance };
 };
 
 export const ASPECT_RATIOS = [
@@ -41,11 +44,12 @@ interface ExtendImageRequest {
 
 interface ExtendImageResponse {
   result_url: string;
+  token_balance: number;
 }
 
 export const extendImage = async (
   params: ExtendImageRequest
-): Promise<string> => {
+): Promise<{ resultUrl: string; tokenBalance: number }> => {
   const response = await axiosInstance.post<ApiResponse<ExtendImageResponse>>(
     API_CONFIG.ENDPOINTS.AI.EXTEND_IMAGE,
     params,
@@ -57,5 +61,5 @@ export const extendImage = async (
     throw new Error("No result URL returned from image extension");
   }
 
-  return resultUrl;
+  return { resultUrl, tokenBalance: response.data.data.token_balance };
 };
