@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { PanelLeftClose } from 'lucide-react'
+import { PanelRightClose, PanelRightOpen } from 'lucide-react'
 import CustomButton from '../CustomComponents/CustomButton'
 import { buttonVariants } from '../../constants/buttonVariants'
 import CropComponent from '../FeatureComponents/CropComponent'
@@ -45,16 +45,27 @@ const FeatureBar: React.FC<CanvasEditorProps> = ({ project }) => {
   const shouldHide = activeTool === 'editing'
 
   return (
-    <div className={`sidebar-container ${shouldHide ? 'hidden' : ''}`}>
-      <CustomButton
-        variant={buttonVariants.icon}
-        className="sidebar-close-btn"
-        icon={<PanelLeftClose size={16} />}
-        onClick={() => canvasContext?.setActiveTool('editing')}
-        aria-label="Close panel"
-      />
-      {renderActiveTool()}
-    </div>
+    <>
+      <div className={`sidebar-container ${shouldHide ? 'hidden' : ''}`}>
+        <CustomButton
+          variant={buttonVariants.icon}
+          className="sidebar-close-btn"
+          icon={<PanelRightClose size={16} />}
+          onClick={() => canvasContext?.setActiveTool('editing')}
+          aria-label="Close panel"
+        />
+        {renderActiveTool()}
+      </div>
+      {shouldHide && (
+        <CustomButton
+          variant={buttonVariants.icon}
+          className="sidebar-open-btn"
+          icon={<PanelRightOpen size={18} />}
+          onClick={() => canvasContext?.setActiveTool('adjust')}
+          aria-label="Open panel"
+        />
+      )}
+    </>
   )
 }
 

@@ -93,7 +93,7 @@ const BackgroundRemover = ({ project }: BackgroundRemoverProps) => {
     <div className="bg-remover-container">
       <div className="bg-remover-header">
         <CustomText variant="h4" text="AI Background Removal" />
-        <CustomText variant="p" text="Remove backgrounds with one click" fontSize="0.85rem" />
+        <CustomText variant="p" text={`Remove backgrounds with one click - ${TOKEN_COST} tokens`} fontSize="0.85rem" />
       </div>
 
       <div className={`bg-remover-hero ${isRemoving ? 'bg-remover-hero--active' : ''}`}>
@@ -135,7 +135,7 @@ const BackgroundRemover = ({ project }: BackgroundRemoverProps) => {
           disabled={!hasImage || isRemoving}
           variant={buttonVariants.default}
           icon={isRemoving ? <Loader2 className="animate-spin" /> : <Wand2 size={18} />}
-          text={isRemoving ? 'Processing...' : `Remove Background (${TOKEN_COST} tokens)`}
+          text={isRemoving ? 'Processing...' : `Remove Background`}
         />
       </div>
 
