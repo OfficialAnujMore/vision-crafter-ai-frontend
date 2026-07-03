@@ -11,7 +11,7 @@ import type { SaveFileResponse } from '../interface/project';
 import type { Canvas } from 'fabric';
 import { CanvasContext } from '../context/canvasContext';
 
-export type ToolType = 'adjust' | 'crop' | 'resize' | 'text' | 'bg-remove' | 'bg-color' | 'bg-image' | 'extend' | 'editing' | 'filters' | 'liquify' | 'draw' | 'layers' | 'tools';
+export type ToolType = 'adjust' | 'resize' | 'text' | 'bg-color' | 'bg-image' | 'generate'| 'bg-remove' | 'extend'  ;
 
 const Editor: React.FC = () => {
     const { setLoading } = useLoader();

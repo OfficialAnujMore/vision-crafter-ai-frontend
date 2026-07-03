@@ -1,0 +1,75 @@
+.canvas-sel-toolbar {
+    position: fixed;
+    z-index: 200;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 10px;
+
+    background: rgba(28, 28, 30, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+
+    transform: translate(0, -50%);
+}
+
+.canvas-sel-toolbar[data-placement='left'] {
+    transform: translate(-100%, -50%);
+}
+
+.canvas-sel-toolbar--visible {
+    display: flex;
+}
+
+.canvas-sel-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 7px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: #d4d4d4;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.canvas-sel-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.canvas-sel-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+.canvas-sel-btn:active {
+    background: rgba(255, 148, 22, 0.25);
+    color: #ff9416;
+}
+
+.canvas-sel-divider {
+    height: 1px;
+    width: auto;
+    margin: 2px 4px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.canvas-sel-btn--danger:hover {
+    background: rgba(248, 113, 113, 0.18);
+    color: #f87171;
+}
+
+.canvas-sel-btn--danger:active {
+    background: rgba(248, 113, 113, 0.28);
+    color: #f87171;
+}

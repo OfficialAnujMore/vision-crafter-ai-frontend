@@ -7,6 +7,7 @@ import {
   Scaling,
   Palette,
   ImageIcon,
+  Sparkles,
 } from 'lucide-react';
 import { useCanvasContext } from '../../context/canvasContext';
 import type { ToolType } from '../../pages/Editor';
@@ -20,11 +21,11 @@ interface ToolItem {
 
 const tools: ToolItem[] = [
   { icon: SlidersHorizontal, label: 'Adjust', tool: 'adjust' },
-  // { icon: Crop, label: 'Crop', tool: 'crop' },
   { icon: Scaling, label: 'Resize', tool: 'resize' },
   { icon: Type, label: 'Text', tool: 'text' },
   { icon: Palette, label: 'BG Color', tool: 'bg-color' },
   { icon: ImageIcon, label: 'BG Image', tool: 'bg-image' },
+  { icon: Sparkles, label: 'AI Generate', tool: 'generate' },
   { icon: Wand2, label: 'AI BG', tool: 'bg-remove' },
   { icon: Images, label: 'AI Extend', tool: 'extend' },
 

@@ -83,6 +83,62 @@
   padding: 1.25rem 1.5rem;
 }
 
+.ium-back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.ium-back-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ium-choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.ium-choice-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 1.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.ium-choice-card:hover {
+  border-color: #ff9416;
+  background: rgba(255, 148, 22, 0.08);
+  transform: translateY(-2px);
+}
+
+.ium-choice-icon {
+  color: #ff9416;
+}
+
+@media (max-width: 480px) {
+  .ium-choice-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .ium-dropzone {
   border: 2px dashed rgba(255, 255, 255, 0.12);
   border-radius: 12px;

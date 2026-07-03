@@ -9,6 +9,7 @@ import BackgroundRemover from '../FeatureComponents/BackgroundRemover'
 import BackgroundColor from '../FeatureComponents/BackgroundColor'
 import BackgroundImage from '../FeatureComponents/BackgroundImage'
 import ImageExtender from '../FeatureComponents/ImageExtender'
+import GenerateComponent from '../FeatureComponents/GenerateComponent'
 import { CanvasContext } from '../../context/canvasContext'
 import AdjustComponent from '../FeatureComponents/AdjustComponent'
 import PlaceholderPanel from '../FeatureComponents/PlaceholderPanel'
@@ -37,6 +38,8 @@ const FeatureBar: React.FC<CanvasEditorProps> = ({ project }) => {
         return <BackgroundRemover project={project} />
       case 'extend':
         return <ImageExtender />
+      case 'generate':
+        return <GenerateComponent />
       default:
         return <PlaceholderPanel title="Select a Tool" description="Choose a tool from the bottom toolbar to begin editing." />
     }

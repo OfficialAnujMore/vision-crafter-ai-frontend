@@ -27,6 +27,8 @@ export const API_CONFIG = {
     AI: {
       REMOVE_BACKGROUND: "/api/ai/remove-background",
       EXTEND_IMAGE: "/api/ai/extend-image",
+      GENERATE_IMAGE: "/api/ai/generate-image",
+      EDIT_IMAGE: "/api/ai/edit-image",
     },
     PAYMENTS: {
       BALANCE: "/api/payments/balance",

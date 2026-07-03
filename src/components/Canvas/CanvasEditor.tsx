@@ -7,6 +7,7 @@ import { saveCanvasState } from '../../services/api/canvasService';
 import { uploadFileToS3 } from '../../services/api/s3Service';
 import { useCanvasHistory } from '../../hooks/useCanvasHistory';
 import { useCanvasContext } from '../../context/canvasContext';
+import CanvasSelectionToolbar from './CanvasSelectionToolbar';
 
 declare global {
     interface Window {
@@ -304,6 +305,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ project }) => {
     return (
         <div className='canvas-wrapper' ref={wrapperRef}>
             <canvas ref={canvasRef} className='canvas' />
+            <CanvasSelectionToolbar canvas={fabricCanvas} />
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone, type FileRejection } from 'react-dropzone';
-import { X, Upload } from 'lucide-react';
+import { X, Upload, ImagePlus, Sparkles, ArrowLeft } from 'lucide-react';
 import CustomText from './CustomComponents/CustomText';
 import CustomButton from './CustomComponents/CustomButton';
 import { useLoader } from './LoaderContext';
@@ -23,12 +23,14 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
     onClose,
     onUploadSuccess,
 }) => {
+    const [mode, setMode] = useState<'choose' | 'upload' | 'blank'>('choose');
     const [preview, setPreview] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [fileName, setFileName] = useState('');
     const { setLoading } = useLoader();
 
     const handleClose = useCallback(() => {
+        setMode('choose');
         setPreview(null);
         setSelectedFile(null);
         setFileName('');
@@ -140,15 +142,75 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
         }
     };
 
+    const createBlankPng = (): Promise<File> =>
+        new Promise((resolve, reject) => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 1024;
+            canvas.toBlob((blob) => {
+                if (!blob) {
+                    reject(new Error('Failed to create blank canvas'));
+                    return;
+                }
+                resolve(new File([blob], 'blank-canvas.png', { type: 'image/png' }));
+            }, 'image/png');
+        });
+
+    const handleCreateBlank = async () => {
+        setLoading(true);
+        try {
+            const resolvedTitle = fileName.trim() || 'Untitled';
+            const file = await createBlankPng();
+            const response = await uploadFileToS3(file, {
+                fileName: `${resolvedTitle}.png`,
+            });
+            const currentUser = authService.getCurrentUser();
+
+            if (!currentUser?.id) {
+                throw new Error('User not authenticated');
+            }
+
+            const imageData = { ...response, user_id: currentUser.id, title: resolvedTitle };
+            await projectService.saveCreatedFile(imageData);
+            onUploadSuccess?.();
+            handleClose();
+        } catch (err) {
+            console.error('Blank canvas creation failed:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     if (!isOpen) return null;
 
     return (
         <div className="ium-overlay" onClick={handleClose}>
             <div className="ium-card" onClick={(e) => e.stopPropagation()}>
                 <div className="ium-header">
+                    {mode !== 'choose' ? (
+                        <button
+                            type="button"
+                            className="ium-back-btn"
+                            onClick={() => {
+                                setMode('choose');
+                                setPreview(null);
+                                setSelectedFile(null);
+                                setFileName('');
+                            }}
+                            aria-label="Back"
+                        >
+                            <ArrowLeft size={18} />
+                        </button>
+                    ) : null}
                     <CustomText
                         variant={textVariant.h4}
-                        text="Upload Image"
+                        text={
+                            mode === 'choose'
+                                ? 'Create Project'
+                                : mode === 'blank'
+                                    ? 'Start with a blank canvas'
+                                    : 'Upload Image'
+                        }
                     />
                     <CustomButton
                         variant={buttonVariants.icon}
@@ -158,6 +220,62 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                     />
                 </div>
 
+                {mode === 'choose' && (
+                    <div className="ium-content">
+                        <div className="ium-choice-grid">
+                            <button
+                                type="button"
+                                className="ium-choice-card"
+                                onClick={() => setMode('upload')}
+                            >
+                                <ImagePlus className="ium-choice-icon" size={32} />
+                                <CustomText variant={textVariant.h4} text="Upload an image" />
+                                <CustomText
+                                    variant={textVariant.p}
+                                    text="Start from your own image"
+                                />
+                            </button>
+                            <button
+                                type="button"
+                                className="ium-choice-card"
+                                onClick={() => setMode('blank')}
+                            >
+                                <Sparkles className="ium-choice-icon" size={32} />
+                                <CustomText variant={textVariant.h4} text="Blank canvas" />
+                                <CustomText
+                                    variant={textVariant.p}
+                                    text="Start empty and generate with AI"
+                                />
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {mode === 'blank' && (
+                    <div className="ium-content">
+                        <div className="ium-name-field">
+                            <label className="ium-name-label" htmlFor="ium-blank-name-input">
+                                Project name
+                            </label>
+                            <input
+                                id="ium-blank-name-input"
+                                className="ium-name-input"
+                                type="text"
+                                value={fileName}
+                                onChange={(e) => setFileName(e.target.value)}
+                                placeholder="Enter project name"
+                            />
+                        </div>
+                        <div className="ium-description">
+                            <CustomText
+                                variant={textVariant.p}
+                                text="A 1024x1024 blank canvas will be created. Use the AI Generate tool in the editor to add images."
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {mode === 'upload' && (
                 <div className="ium-content">
                     {!preview ? (
                         <div
@@ -219,22 +337,34 @@ export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                         />
                     </div>
                 </div>
+                )}
 
-                <div className="ium-footer">
-                    <CustomButton
-                        variant={buttonVariants.outline}
-                        text="Cancel"
-                        onClick={handleClose}
-                        className="ium-btn"
-                    />
-                    <CustomButton
-                        variant={buttonVariants.default}
-                        text="Upload"
-                        disabled={!selectedFile}
-                        onClick={handleUpload}
-                        className="ium-btn"
-                    />
-                </div>
+                {mode !== 'choose' && (
+                    <div className="ium-footer">
+                        <CustomButton
+                            variant={buttonVariants.outline}
+                            text="Cancel"
+                            onClick={handleClose}
+                            className="ium-btn"
+                        />
+                        {mode === 'upload' ? (
+                            <CustomButton
+                                variant={buttonVariants.default}
+                                text="Upload"
+                                disabled={!selectedFile}
+                                onClick={handleUpload}
+                                className="ium-btn"
+                            />
+                        ) : (
+                            <CustomButton
+                                variant={buttonVariants.default}
+                                text="Create"
+                                onClick={handleCreateBlank}
+                                className="ium-btn"
+                            />
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
