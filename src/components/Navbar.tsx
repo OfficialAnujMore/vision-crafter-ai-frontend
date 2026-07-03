@@ -146,7 +146,7 @@ const Navbar: React.FC = () => {
               <Sparkles className="navbar-logo-icon" size={20} />
             </div>
             <span className="navbar-logo-text">
-              Vision<span className="navbar-logo-text-accent">Crafter</span>
+              Vision Crafter AI
             </span>
           </div>
 

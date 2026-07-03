@@ -49,7 +49,7 @@ export const LANDING_PAGE = {
   // Features Section
   featuresTitle: "Everything You Need, In One Canvas",
   featuresSubtitle:
-    "A production-grade toolkit that combines classic image editing with modern generative AI — all running in your browser.",
+    "Classic editing meets generative AI, right in your browser.",
   features: [
     {
       title: "AI Background Removal",
@@ -116,7 +116,7 @@ export const LANDING_PAGE = {
   // Pricing — Token Credits Model
   pricingTitle: "Pay Only For What You Create",
   pricingSubtitle:
-    "Non-AI editing is always free. AI features use tokens — buy a pack that fits your workflow, no subscription required.",
+    "Editing is free. AI features use tokens — no subscription.",
   tokenCostsTitle: "Token Cost Per AI Action",
   tokenCosts: [
     { action: "Background Removal", cost: "2 tokens" },

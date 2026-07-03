@@ -11,10 +11,17 @@ import {
   Eraser, Expand, Type, SlidersHorizontal, Crop, Cloud,
   ArrowRight, Sparkles, Upload, Wand2, Download, Check,
   Coins, Github, Linkedin, Mail, Globe, MapPin,
-  Zap, Shield, Layers, Star,
 } from 'lucide-react';
 import EditorPreviewCard from '../components/CustomComponents/EditorPreviewCard';
+import { authService } from '../services/api/authService';
+import { paymentService } from '../services/api/paymentService';
+import { showErrorToast } from '../utils/toast';
 import '../styles/LandingPage.css';
+
+const PLAN_CHECKOUT_KEYS: Record<string, 'creator' | 'pro'> = {
+  Creator: 'creator',
+  Pro: 'pro',
+};
 
 const FEATURE_ICONS: Record<string, React.ReactElement> = {
   eraser: <Eraser size={28} />,
@@ -29,21 +36,6 @@ const STEP_ICONS = [
   <Upload size={32} key="upload" />,
   <Wand2 size={32} key="wand" />,
   <Download size={32} key="download" />,
-];
-
-const MARQUEE_ITEMS = [
-  { icon: <Wand2 size={13} />, label: 'AI Background Removal' },
-  { icon: <Expand size={13} />, label: 'Smart Image Extender' },
-  { icon: <Type size={13} />, label: 'Text Overlays' },
-  { icon: <SlidersHorizontal size={13} />, label: 'Color Adjustments' },
-  { icon: <Eraser size={13} />, label: 'AI Eraser Tool' },
-  { icon: <Crop size={13} />, label: 'Custom Crop & Resize' },
-  { icon: <Layers size={13} />, label: 'Canvas Layers' },
-  { icon: <Zap size={13} />, label: 'Instant Export' },
-  { icon: <Cloud size={13} />, label: 'Cloud Storage' },
-  { icon: <Shield size={13} />, label: 'Free Editing Tools' },
-  { icon: <Star size={13} />, label: 'Token Credits System' },
-  { icon: <Download size={13} />, label: 'Multi-format Export' },
 ];
 
 const PARTICLES = [
@@ -95,8 +87,37 @@ const LandingPage: React.FC = () => {
 
   const dev = LANDING_PAGE.developer;
 
+  const [checkoutPlan, setCheckoutPlan] = useState<string | null>(null);
+
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handlePlanClick = async (planName: string) => {
+    const planKey = PLAN_CHECKOUT_KEYS[planName];
+
+    // Free plan (or unknown) → sign up.
+    if (!planKey) {
+      navigate(ROUTES.SIGNUP);
+      return;
+    }
+
+    // Guests must create an account before they can pay.
+    if (!authService.getCurrentUser()?.id) {
+      navigate(ROUTES.SIGNUP);
+      return;
+    }
+
+    // Logged-in users go straight to the Stripe checkout for that plan.
+    setCheckoutPlan(planName);
+    try {
+      const checkoutUrl = await paymentService.createCheckout(planKey);
+      // eslint-disable-next-line react-hooks/immutability
+      window.location.href = checkoutUrl;
+    } catch {
+      showErrorToast(new Error('Failed to start checkout. Please try again.'));
+      setCheckoutPlan(null);
+    }
   };
 
   return (
@@ -135,16 +156,6 @@ const LandingPage: React.FC = () => {
           <h1 className="hero-title">{LANDING_PAGE.homeTitle}</h1>
 
           <p className="hero-subtitle">{LANDING_PAGE.homeSubtitle}</p>
-          <p className="hero-description">{LANDING_PAGE.homeDescription}</p>
-
-          <ul className="hero-highlights">
-            {LANDING_PAGE.homeHighlights.map((h, i) => (
-              <li key={i} style={{ animationDelay: `${0.4 + i * 0.08}s` }}>
-                <Check size={16} className="hero-highlight-icon" />
-                {h}
-              </li>
-            ))}
-          </ul>
 
           <div className="hero-actions">
             <CustomButton
@@ -153,9 +164,6 @@ const LandingPage: React.FC = () => {
               icon={<ArrowRight size={18} />}
               onClick={() => navigate(ROUTES.SIGNUP)}
             />
-            <button className="hero-secondary-btn" onClick={() => scrollTo('pricing')}>
-              {LANDING_PAGE.homeSecondaryCta}
-            </button>
           </div>
         </div>
 
@@ -164,20 +172,6 @@ const LandingPage: React.FC = () => {
           <EditorPreviewCard />
         </div>
       </section>
-
-      {/* ===== MARQUEE STRIP ===== */}
-      <div className="marquee-strip" aria-hidden="true">
-        <div className="marquee-fade marquee-fade--left" />
-        <div className="marquee-fade marquee-fade--right" />
-        <div className="marquee-track">
-          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
-            <span key={i} className="marquee-item">
-              <span className="marquee-item__icon">{item.icon}</span>
-              {item.label}
-            </span>
-          ))}
-        </div>
-      </div>
 
       {/* ===== FEATURES ===== */}
       <section
@@ -275,8 +269,9 @@ const LandingPage: React.FC = () => {
               </ul>
               <CustomButton
                 variant={plan.popular ? buttonVariants.default : buttonVariants.outline}
-                text={plan.buttonText}
-                onClick={() => navigate(ROUTES.SIGNUP)}
+                text={checkoutPlan === plan.name ? 'Redirecting…' : plan.buttonText}
+                disabled={checkoutPlan !== null}
+                onClick={() => handlePlanClick(plan.name)}
                 className="pricing-btn"
               />
             </div>
